@@ -25,6 +25,7 @@ SECRET_KEY = (env("SECRET_KEY"),)
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -32,7 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users.apps.UsersConfig',
+    'users.apps.UserConfig',
     'places.apps.PlacesConfig',
     'requests.apps.RequestsConfig',
     'rest_framework.authtoken',
@@ -40,6 +41,8 @@ INSTALLED_APPS = [
     'dj_rest_auth',
     'corsheaders',
 ]
+
+AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -143,7 +146,7 @@ else:
         }
     }
 
-    MEDIA_URL = "media/"
+    MEDIA_URL = "/media/"
     
     SITE = "localhost:8000"
 

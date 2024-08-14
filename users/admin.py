@@ -1,13 +1,15 @@
 from django.contrib import admin
-from .models import Users
+from django.contrib.auth.admin import UserAdmin
+from .models import User
 
-class UserAdmin(admin.ModelAdmin):
-    list_display = ('user', 'cpf', 'phone_number', 'full_name')
-    list_filter = ('user__is_active', 'user__is_staff')
-    search_fields = ('user__username', 'cpf', 'full_name', 'user__email')
-    fields = ('user', 'cpf', 'phone_number', 'full_name')
-    list_per_page = 20
-    verbose_name = "Usuário"
-    verbose_name_plural = "Usuários"
+class UserAdmin(UserAdmin):
+    fieldsets = UserAdmin.fieldsets + (
+        (None, {'fields': ('cpf', 'phone_number', 'full_name')}),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        (None, {'fields': ('email','cpf', 'phone_number', 'full_name')}),
+    )
+    list_display = ('username', 'email', 'cpf', 'full_name', 'phone_number', 'is_staff')
+    search_fields = ('username', 'email', 'cpf', 'full_name', 'phone_number')
 
-admin.site.register(Users, UserAdmin)
+admin.site.register(User, UserAdmin)

@@ -1,14 +1,14 @@
 from django.db import models
-from users.models import Users
+from users.models import User
 
 class Places(models.Model):
     
-    representative = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='place_representative')
-    residents = models.ManyToManyField(Users, related_name='place_residents')
-    unions = models.ManyToManyField(Users, related_name='place_unions')
+    representative = models.ForeignKey(User, on_delete=models.CASCADE, related_name='place_representative')
+    residents = models.ManyToManyField(User, related_name='place_residents')
+    unions = models.ManyToManyField(User, related_name='place_unions')
     name = models.CharField(max_length=255)
-    number = models.CharField(max_length=20)
-    street = models.CharField(max_length=255)
+    number = models.CharField(max_length=20, null=True)
+    street = models.CharField(max_length=255, null=True)
     city = models.CharField(max_length=255)
     state = models.CharField(max_length=2)
     enabled = models.BooleanField(default=True)
