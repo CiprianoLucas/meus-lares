@@ -1,5 +1,5 @@
 from django.db import models
-
+import uuid
 from users.models import User
 from places.models import Places
 
@@ -14,7 +14,7 @@ class Request(models.Model):
         ('C', 'CONCLUIDO'),
         ('P', 'PENDENTE'),
     ]
-    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     requester = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,  related_name='request_requester')
     guardian = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='request_guardian')
     place = models.ForeignKey(Places, on_delete=models.CASCADE, related_name='request_place')

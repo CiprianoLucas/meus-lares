@@ -9,7 +9,7 @@ class UserAdmin(UserAdmin):
     add_fieldsets = UserAdmin.add_fieldsets + (
         (None, {'fields': ('email','cpf', 'phone_number', 'full_name')}),
     )
-    list_display = ('username', 'email', 'cpf', 'full_name', 'phone_number', 'is_staff')
+    list_display = ('id', 'username', 'email', 'cpf', 'full_name', 'phone_number', 'is_staff')
     search_fields = ('username', 'email', 'cpf', 'full_name', 'phone_number')
 
 admin.site.register(User, UserAdmin)
