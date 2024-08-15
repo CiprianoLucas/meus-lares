@@ -49,7 +49,7 @@ class ResidentPlaceView(APIView):
         place = get_object_or_404(Places, pk=pk)
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            user_id = serializer.validated_data.get('user_id')
+            user_id = serializer.validated_data.get('id')
             place.residents.remove(user_id)
             return Response({'detail': 'Resident removed successfully'}, status=status.HTTP_200_OK)
         return Response({'detail': 'User ID not provided'}, status=status.HTTP_400_BAD_REQUEST)
@@ -58,7 +58,7 @@ class ResidentPlaceView(APIView):
         place = get_object_or_404(Places, pk=pk)
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            user_id = serializer.validated_data.get('user_id')
+            user_id = serializer.validated_data.get('id')
             place.residents.add(user_id)
             return Response({'detail': 'Resident added successfully'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -76,7 +76,7 @@ class UnionPlaceView(APIView):
         place = get_object_or_404(Places, pk=pk)
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            user_id = serializer.validated_data.get('user_id')
+            user_id = serializer.validated_data.get('id')
             place.unions.remove(user_id)
             return Response({'detail': 'Resident removed successfully'}, status=status.HTTP_200_OK)
         return Response({'detail': 'User ID not provided'}, status=status.HTTP_400_BAD_REQUEST)
@@ -85,7 +85,7 @@ class UnionPlaceView(APIView):
         place = get_object_or_404(Places, pk=pk)
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            user_id = serializer.validated_data.get('user_id')
+            user_id = serializer.validated_data.get('id')
             place.unions.add(user_id)
             return Response({'detail': 'Resident added successfully'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
