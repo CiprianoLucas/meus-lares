@@ -1,50 +1,41 @@
 from rest_framework import serializers
 from .models import Request, Images
 
-class ImagesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Images
-        fields = ['id', 'image']
-
 class RequestSerializer(serializers.ModelSerializer):
-    images = ImagesSerializer(many=True, required=False)
-
+    # images = serializers.FileField(write_only=True)
+    
     class Meta:
         model = Request
-        fields = ['id', 'requester', 'guardian', 'place', 'title', 'description', 'type', 'status', 'created_at', 'images']
+        fields = ['id', 'place', 'title', 'description', 'type', 'images', 'status']
         extra_kwargs = {
-            'requester': {'read_only': True},
-            'guardian': {'read_only': True},
-            'created_at': {'read_only': True},
+            'status': {'read_only': True},
         }
-
+        
     def create(self, validated_data):
         images_data = validated_data.pop('images', [])
         request = Request.objects.create(**validated_data)
         for image_data in images_data:
             Images.objects.create(request=request, **image_data)
         return request
-
+    
     def update(self, instance, validated_data):
         images_data = validated_data.pop('images', [])
-        if instance.status in ['A', 'C']:
-            raise serializers.ValidationError("Cannot modify request when status is 'Andamento' or 'Concluído'.")
-
-        user = self.context['request'].user
-        if user == instance.guardian:
-            instance.status = validated_data.get('status', instance.status)
-        elif user == instance.requester:
-            instance.title = validated_data.get('title', instance.title)
-            instance.description = validated_data.get('description', instance.description)
-            instance.type = validated_data.get('type', instance.type)
-        else:
-            raise serializers.PermissionDenied("You do not have permission to update this request.")
-
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        
         instance.save()
-
-        # Update images
-        instance.images.all().delete()  # Remove old images
+        instance.images.all().delete()
         for image_data in images_data:
             Images.objects.create(request=instance, **image_data)
-        
+
         return instance
+    
+    def delete(self, instance, validated_data=None):
+        instance.is_active = False
+        instance.save()
+        return instance
+    
+class StatusRequestSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(Request.STATUS_CHOICES ,help_text="status")
+    username = serializers.CharField(help_text="user_id", read_only=True)
+    email = serializers.EmailField(help_text="user_id", read_only=True)

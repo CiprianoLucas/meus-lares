@@ -4,8 +4,10 @@ from .views import (
     PlaceDetailView,
     PlaceListForResidentsView,
     PlaceListForUnionsAndRepresentativesView,
-    ResidentPlaceView,
-    UnionPlaceView,
+    ResidentPlaceCreateView,
+    ResidentPlaceRemoveView,
+    UnionPlaceCreateView,
+    UnionPlaceRemoveRemoveView,
 )
 
 urlpatterns = [
@@ -19,6 +21,18 @@ urlpatterns = [
         PlaceListForUnionsAndRepresentativesView.as_view(),
         name="place-list-unions",
     ),
-    path("<uuid:pk>/resident/", ResidentPlaceView.as_view(), name="add-resident"),
-    path("<uuid:pk>/union/", UnionPlaceView.as_view(), name="add-union"),
+    path(
+        "<uuid:pk_place>/residents/", ResidentPlaceCreateView.as_view(), name="resident"
+    ),
+    path(
+        "<uuid:pk_place>/residents/<uuid:pk_user>",
+        ResidentPlaceRemoveView.as_view(),
+        name="resident",
+    ),
+    path("<uuid:pk>/unions/", UnionPlaceCreateView.as_view(), name="union"),
+    path(
+        "<uuid:pk_place>/unions/<uuid:pk_user>",
+        UnionPlaceRemoveRemoveView.as_view(),
+        name="union",
+    ),
 ]

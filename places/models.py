@@ -11,7 +11,7 @@ class Places(models.Model):
     street = models.CharField(max_length=255, null=True)
     city = models.CharField(max_length=255)
     state = models.CharField(max_length=2)
-    enabled = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

@@ -1,7 +1,9 @@
 from rest_framework import generics
 from .models import Request
 from .serializers import RequestSerializer
-from .permissions import IsGuardian, IsRequester
+from rest_framework.exceptions import ValidationError
+from .permissions import IsRequester
+from django.db.models import Q
 
 class RequestCreateView(generics.CreateAPIView):
     queryset = Request.objects.all()
@@ -10,28 +12,28 @@ class RequestCreateView(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(requester=self.request.user)
 
-class RequestDetailView(generics.RetrieveUpdateDestroyAPIView):
+class RequestDetailView(generics.RetrieveUpdateAPIView):
     queryset = Request.objects.all()
     serializer_class = RequestSerializer
+    permission_classes = [IsRequester]
+    
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.status != 'P':
+            raise ValidationError("Only requests with status 'PENDENTE' can be updated.")
 
-    def get_permissions(self):
-        if self.request.method in ['PUT', 'PATCH']:
-            if self.request.user == self.get_object().guardian:
-                return [IsGuardian()]
-            elif self.request.user == self.get_object().requester:
-                return [IsRequester()]
-        return super().get_permissions()
-
-class RequestListForRequesterView(generics.ListAPIView):
+        return super().update(request, *args, **kwargs)
+    
+class RequestListForResidentsView(generics.ListAPIView):
     serializer_class = RequestSerializer
 
     def get_queryset(self):
         user = self.request.user
-        return Request.objects.filter(requester=user)
+        return Request.objects.filter(Q(is_active=True) & Q(requester=user))
 
-class RequestListForGuardianView(generics.ListAPIView):
+class RequestListForUnionsAndRepresentativesView(generics.ListAPIView):
     serializer_class = RequestSerializer
 
     def get_queryset(self):
         user = self.request.user
-        return Request.objects.filter(guardian=user)
+        return Request.objects.filter(Q(is_active=True) & Q(guardian=user))

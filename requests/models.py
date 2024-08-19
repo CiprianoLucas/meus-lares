@@ -15,14 +15,15 @@ class Request(models.Model):
         ('P', 'PENDENTE'),
     ]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    requester = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,  related_name='request_requester')
-    guardian = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='request_guardian')
+    requester = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank = True ,related_name='request_requester')
+    guardian = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank = True, related_name='request_guardian')
     place = models.ForeignKey(Places, on_delete=models.CASCADE, related_name='request_place')
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=20)
     type = models.CharField(max_length=1, choices=TYPE_CHOICES, default='O')
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='P')
     created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
     
     def __str__(self):
         return self.title
