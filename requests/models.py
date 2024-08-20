@@ -31,11 +31,3 @@ class Request(models.Model):
     class Meta:
         verbose_name = "Requisição"
         verbose_name_plural = "Requisições"
-        
-class Images(models.Model):
-    
-    request = models.ForeignKey(Request, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='requests')
-    
-    def __str__(self):
-        return f"Image for {self.request.title}"
