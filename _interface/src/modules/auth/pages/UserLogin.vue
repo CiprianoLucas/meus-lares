@@ -4,14 +4,14 @@
 			<h2 class="text-center mb-4">Login</h2>
 			<form @submit.prevent="login">
 				<div class="mb-3">
-					<label for="email" class="form-label">Email:</label>
+					<label for="username" class="form-label">Nome de usuário:</label>
 					<input
-						type="email"
-						id="email"
-						v-model="form.email"
+						type="text"
+						id="username"
+						v-model="form.username"
 						required
 						class="form-control"
-						placeholder="Digite seu email"
+						placeholder="Digite seu nome de usuário"
 					/>
 				</div>
 				<div class="mb-3">
@@ -32,15 +32,20 @@
 </template>
 
 <script lang="ts" setup>
-	import { ref } from 'vue'
+	import { ref, onMounted} from 'vue'
 	import { api } from '@/http'
 
 	const form = ref({
-		email: 'admin@admin.com',
+		username: 'admin',
 		password: 'admin',
 	})
 
 	const login = () => {
 		api.login(form.value)
 	}
+
+	onMounted(() => {
+        localStorage.clear()
+        api.logout()
+    })
 </script>
