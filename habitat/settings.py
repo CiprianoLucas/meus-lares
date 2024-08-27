@@ -25,10 +25,9 @@ SECRET_KEY = (env("SECRET_KEY"),)
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
-# SESSION_COOKIE_HTTPONLY = False
-
-
 INSTALLED_APPS = [
+    'corsheaders',
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,10 +37,6 @@ INSTALLED_APPS = [
     'users.apps.UserConfig',
     'places.apps.PlacesConfig',
     'requests.apps.RequestsConfig',
-    'rest_framework.authtoken',
-    'rest_framework',
-    'dj_rest_auth',
-    'corsheaders',
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -56,6 +51,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
 
 ROOT_URLCONF = 'habitat.urls'
 
@@ -149,6 +146,11 @@ else:
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
+    
+    CSRF_TRUSTED_ORIGINS = [
+        'http://localhost:5173',
+        'http://127.0.0.1:5173',
+    ]      
 
     MEDIA_URL = "/media/"
     

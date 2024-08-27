@@ -11,6 +11,6 @@ class PlacesSerializer(serializers.ModelSerializer):
         return instance
         
 class UserPlaceSerializer(serializers.Serializer):
-    id = serializers.UUIDField(help_text="user_id")
-    username = serializers.CharField(help_text="user_id", read_only=True)
-    email = serializers.EmailField(help_text="user_id", read_only=True)
+    id = serializers.UUIDField(read_only=True)
+    username = serializers.CharField(read_only=True)
+    email = serializers.EmailField()

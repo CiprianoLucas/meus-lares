@@ -10,13 +10,19 @@ class RequestStatusSerializer(serializers.ModelSerializer):
         }
 
 class RequestSerializer(serializers.ModelSerializer):
-    
+    place_name = serializers.SerializerMethodField()
     class Meta:
         model = Request
-        fields = ['id', 'place', 'title', 'description', 'type', 'status']
+        fields = ['id','place' ,'place_name', 'title', 'description', 'type', 'status']
         extra_kwargs = {
             'status': {'read_only': True},
+            'place_name': {'read_only': True},
         }
+        
+    def get_place_name(self, obj):
+        if obj.place:
+            return obj.place.name
+        return None
     
     def delete(self, instance, validated_data=None):
         instance.is_active = False

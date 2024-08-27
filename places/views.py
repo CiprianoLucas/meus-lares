@@ -59,8 +59,9 @@ class ResidentPlaceCreateView(APIView):
         place = get_object_or_404(Places, pk=pk_place)
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            user_id = serializer.validated_data.get('id')
-            place.residents.add(user_id)
+            user_email = serializer.validated_data.get('email')
+            user = get_object_or_404(User, email=user_email)
+            place.residents.add(user)
             return Response({'detail': 'Resident added successfully'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -86,8 +87,9 @@ class UnionPlaceCreateView(APIView):
         place = get_object_or_404(Places, pk=pk)
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            user_id = serializer.validated_data.get('id')
-            place.unions.add(user_id)
+            user_email = serializer.validated_data.get('email')
+            user = get_object_or_404(User, email=user_email)
+            place.unions.add(user)
             return Response({'detail': 'Resident added successfully'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

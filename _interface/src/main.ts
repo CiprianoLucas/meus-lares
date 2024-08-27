@@ -1,4 +1,3 @@
-// import { apiUrl } from '@/exports/config'
 import { createPinia } from 'pinia'
 import '@/assets/scss/app.scss'
 import { createApp } from 'vue'

@@ -33,6 +33,7 @@
 
 <script lang="ts" setup>
 	import { ref, onMounted} from 'vue'
+	import { useRouter } from 'vue-router';
 	import { api } from '@/http'
 
 	const form = ref({
@@ -40,8 +41,13 @@
 		password: 'admin',
 	})
 
+	const router = useRouter();
 	const login = () => {
 		api.login(form.value)
+		.then(()=>{
+			debugger
+			router.push('/');
+		})
 	}
 
 	onMounted(() => {

@@ -1,6 +1,6 @@
 import type { LoginResponse, LoginRequest} from './interfaces'
-import { type AxiosResponse } from 'axios';
-import Cookies from 'js-cookie';
+import { type AxiosResponse } from 'axios'
+import Cookies from 'js-cookie'
 import api from './setup'
 
 api.login = async function(form: LoginRequest): Promise<LoginResponse> {
@@ -9,21 +9,32 @@ api.login = async function(form: LoginRequest): Promise<LoginResponse> {
 			username: form.username,
 			password: form.password,
 		});
-		localStorage.setItem('username', response.data.username);
+		localStorage.setItem('username', response.data.username)
+		if (response.data.isResident){
+			localStorage.setItem('isResident', 'true')
+		} else {
+			localStorage.removeItem('isResident')
+		}
+		if (response.data.isUnion){
+			localStorage.setItem('isUnion', 'true')
+		} else {
+			localStorage.removeItem('isUnion')
+		}
       	return response.data
     } catch (error) {
-		console.error('Login failed:', error);
+		console.error('Login failed:', error)
 		throw error
     }
 }
 
 api.logout = async function() {
     try {
-		await this.post('/user/logout/', {}, {withCredentials: true});
+		await this.get('/user/logout/', {withCredentials: true})
 		localStorage.clear()
-		Cookies.remove('sessionid');
+		sessionStorage.clear()
+		Cookies.remove('sessionid')
     } catch (error) {
-		console.error('Login failed:', error);
+		console.error('Logout failed:', error)
 		throw error
     }
 }

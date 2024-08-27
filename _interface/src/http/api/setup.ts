@@ -7,15 +7,28 @@ const api: CustomAxiosInstance = axios.create({
 }) as CustomAxiosInstance;
 
 api.defaults.withCredentials = true
-const csrftoken = Cookies.get('csrftoken')
 
-if (csrftoken == undefined){
-    api.get('/csrf/').then(({data})=>{
-        api.defaults.headers.common['X-CSRFToken'] = data.csrfToken
-    })
-    .catch(() => {
-
-    })
-}
+api.get('/user/info/').then(({data})=>{
+    console.log(data)
+    const csrfToken = Cookies.get('csrftoken');
+        if (csrfToken) {
+            api.defaults.headers.common['X-CSRFToken'] = csrfToken;
+        }
+    if(data.username =! "Anonimous"){
+        localStorage.setItem("username", data.username)
+        if (data.isResident){
+            localStorage.setItem('isResident', 'true')
+        } else {
+            localStorage.removeItem('isResident')
+        }
+        if (data.isUnion){
+            localStorage.setItem('isUnion', 'true')
+        } else {
+            localStorage.removeItem('isUnion')
+        }
+    } else {
+        localStorage.clear()
+    }
+})
 export default api
 //DON'T CHANGE THIS FILE

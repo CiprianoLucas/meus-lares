@@ -2,6 +2,8 @@ import { type AxiosInstance } from 'axios';
 
 interface LoginResponse {
     username: string;
+    isResident: boolean;
+    isUnion: boolean;
 }
 
 interface LoginRequest {

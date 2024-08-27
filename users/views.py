@@ -1,18 +1,31 @@
 from rest_framework.decorators import api_view
 from django.middleware.csrf import get_token
 from .serializers import UserSerializer
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from rest_framework import generics
 from django.contrib.auth.hashers import make_password
 from .models import User
+from places.models import Places
 from django.contrib.auth import authenticate, login, logout
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.views import APIView
 from rest_framework import status
+from django.db.models import Q
 
 @api_view(['GET'])
-def get_csrf_token(request):
-    return JsonResponse({'csrfToken': get_token(request)})
+def get_info(request):
+    get_token(request)
+    user = request.user
+    is_resident = Places.objects.filter(Q(is_active=True) & Q(residents=user)).exists()
+    is_union = Places.objects.filter(Q(is_active=True) & (Q(unions=user) | Q(representative=user))).exists()
+    
+    response = {
+        'username': user.username,
+        'isResident' : is_resident,
+        'isUnion' : is_union,
+    }
+    print(response)
+    
+    return JsonResponse(response)
 
 class UserCreateView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -30,16 +43,19 @@ class LoginView(APIView):
 
         if user is not None:
             login(request, user)
-            return JsonResponse({
+            is_resident = Places.objects.filter(Q(is_active=True) & Q(residents=user)).exists()
+            is_union = Places.objects.filter(Q(is_active=True) & (Q(unions=user) | Q(representative=user))).exists()
+            response = {
                 'username': user.username,
-            })
+                'isResident' : is_resident,
+                'isUnion' : is_union
+            }
+            return JsonResponse(response)
         else:
             return JsonResponse({'error': 'Credenciais inválidas.'}, status=status.HTTP_401_UNAUTHORIZED)
         
-@csrf_exempt
 def logout_view(request):
     if request.user.is_authenticated:
         logout(request)
-    response = JsonResponse({'message': 'Logout realizado com sucesso.'})
-    response.delete_cookie('sessionid', path='/')
-    return response
+    
+    return HttpResponse(status=204)

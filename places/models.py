@@ -4,8 +4,8 @@ import uuid
 class Places(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     representative = models.ForeignKey(User, on_delete=models.CASCADE, related_name='place_representative')
-    residents = models.ManyToManyField(User, related_name='place_residents')
-    unions = models.ManyToManyField(User, related_name='place_unions')
+    residents = models.ManyToManyField(User, related_name='place_residents', blank=True, null=True)
+    unions = models.ManyToManyField(User, related_name='place_unions', blank=True, null=True)
     name = models.CharField(max_length=255)
     number = models.CharField(max_length=20, null=True)
     street = models.CharField(max_length=255, null=True)
