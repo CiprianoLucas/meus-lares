@@ -45,6 +45,24 @@ class RequestStatusView(generics.RetrieveUpdateAPIView):
     serializer_class = RequestStatusSerializer
     permission_classes = [IsAuthenticated, IsPendent]
     
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        status = serializer.validated_data.get('status')
+        
+        if status == "P":
+            instance.guardian = None
+        else:
+            instance.guardian = self.request.user
+            
+        instance.save()
+        
+        return super().update(request, *args, **kwargs)
+        
+
+    
     
 class RequestListForResidentsView(generics.ListAPIView):
     serializer_class = RequestSerializer

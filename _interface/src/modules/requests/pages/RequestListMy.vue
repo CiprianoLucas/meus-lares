@@ -2,7 +2,7 @@
     <div class="container mt-5">
         <h1 class="text-center">Meus chamados</h1>
         
-        <div v-if="pendingRequests.length === 0" class="alert alert-info text-center">
+        <div v-if="requestList.length === 0" class="alert alert-info text-center">
             Nenhum chamado pendente no momento.
         </div>
 
@@ -19,7 +19,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="request in pendingRequests" :key="request.id">
+                    <tr v-for="request in requestList" :key="request.id">
                         <td>{{ request.place_name }}</td>
                         <td>{{ request.title }}</td>
                         <td>{{ request.description }}</td>
@@ -36,28 +36,16 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import { api } from '@/http'
-
-
-const typeMap = {
-    'R': 'Reclamação',
-    'M': 'Manutenção',
-    'O': 'Outros'
-};
-
-const statusMap = {
-    'P': 'Pendente',
-    'A': 'Aprovado',
-    'C': 'Concluído'
-};
+import { type Request, typeMap, statusMap } from '../interfaces'
 
 // Armazena a lista de chamados pendentes
-const pendingRequests = ref([]);
+const requestList = ref<Request[]>([]);
 
 onMounted(() => {
     // Obtém a lista de chamados pendentes ao montar o componente
     api.get('/request/residents/')
     .then(response => {
-        pendingRequests.value = response.data;
+        requestList.value = response.data;
     })
     .catch(error => {
         console.error("Erro ao obter a lista de chamados pendentes:", error);
@@ -66,6 +54,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
+
+td a {
+        cursor: pointer;
+    }
 .text-center {
     text-align: center;
 }

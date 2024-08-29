@@ -2,7 +2,7 @@
     <div class="container mt-5">
         <h1 class="text-center">Chamados capturados</h1>
         
-        <div v-if="pendingRequests.length === 0" class="alert alert-info text-center">
+        <div v-if="requestList.length === 0" class="alert alert-info text-center">
             Nenhum chamado pendente no momento.
         </div>
 
@@ -10,22 +10,24 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Local</th>
                         <th>Título</th>
                         <th>Descrição</th>
                         <th>Tipo</th>
                         <th>Status</th>
+                        <th>Abandonar</th>
+                        <th>Concluir</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="request in pendingRequests" :key="request.id">
-                        <td>{{ request.id }}</td>
+                    <tr v-for="request in requestList" :key="request.id">
                         <td>{{ request.place_name }}</td>
                         <td>{{ request.title }}</td>
                         <td>{{ request.description }}</td>
                         <td>{{ typeMap[request.type] }}</td>
                         <td>{{ statusMap[request.status] }}</td>
+                        <td><a @click="updateRequest(request.id, 'P')"><i class="bi bi-x-circle text-danger"></i></a></td>
+                        <td><a @click="updateRequest(request.id, 'C')"><i class="bi bi-check-circle text-success"></i></a></td>
                     </tr>
                 </tbody>
             </table>
@@ -36,27 +38,27 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import { api } from '@/http'
-
-
-const typeMap = {
-    'R': 'Reclamação',
-    'M': 'Manutenção',
-    'O': 'Outros'
-};
-
-const statusMap = {
-    'P': 'Pendente',
-    'A': 'Aprovado',
-    'C': 'Concluído'
-};
+import { type Request, typeMap, statusMap } from '../interfaces'
 
 // Armazena a lista de chamados pendentes
-const pendingRequests = ref([]);
+const requestList = ref<Request[]>([]);
+
+function updateRequest(id: number, status: 'P' | 'A' | 'C') {
+    api
+    .put(`/request/pendents/${id}/`, { status: status })
+    .then(() => {
+        let obj = requestList.value.find(item => item.id === id)
+        if (obj) obj.status = status;
+    })
+    .catch((error) => {
+        console.error("Erro ao adicionar o residente:", error);
+    });
+}
 
 onMounted(() => {
     api.get('/request/guardians/')
     .then(response => {
-        pendingRequests.value = response.data;
+        requestList.value = response.data;
     })
     .catch(error => {
         console.error("Erro ao obter a lista de chamados pendentes:", error);
@@ -65,10 +67,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.text-center {
-    text-align: center;
-}
-.table {
-    margin-top: 20px;
-}
+    td a {
+        cursor: pointer;
+    }
+    .text-center {
+        text-align: center;
+    }
+    .table {
+        margin-top: 20px;
+    }
 </style>
