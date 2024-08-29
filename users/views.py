@@ -14,15 +14,19 @@ from django.db.models import Q
 @api_view(['GET'])
 def get_info(request):
     get_token(request)
-    user = request.user
-    is_resident = Places.objects.filter(Q(is_active=True) & Q(residents=user)).exists()
-    is_union = Places.objects.filter(Q(is_active=True) & (Q(unions=user) | Q(representative=user))).exists()
+    response = {'username': "Anonimous"}
     
-    response = {
-        'username': user.username,
-        'isResident' : is_resident,
-        'isUnion' : is_union,
-    }
+    if request.user.is_authenticated:
+        user = request.user
+        
+        is_resident = Places.objects.filter(Q(is_active=True) & Q(residents=user)).exists()
+        is_union = Places.objects.filter(Q(is_active=True) & (Q(unions=user) | Q(representative=user))).exists()
+    
+        response = {
+            'username': user.username,
+            'isResident' : is_resident,
+            'isUnion' : is_union,
+        }
     print(response)
     
     return JsonResponse(response)
@@ -50,6 +54,7 @@ class LoginView(APIView):
                 'isResident' : is_resident,
                 'isUnion' : is_union
             }
+            get_token(request)
             return JsonResponse(response)
         else:
             return JsonResponse({'error': 'Credenciais inválidas.'}, status=status.HTTP_401_UNAUTHORIZED)

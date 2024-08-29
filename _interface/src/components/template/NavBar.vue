@@ -1,29 +1,29 @@
 <template>
-    <header class="bg-dark text-white py-3">
-        <div class="container">
-            <nav class="d-flex justify-content-center">
-                <RouterLink class="mx-3 text-white text-decoration-none" to="/">Home</RouterLink>
-                <RouterLink v-if="!username" class="mx-3 text-white text-decoration-none" to="/login">Login</RouterLink>
-                <RouterLink v-if="!username" class="mx-3 text-white text-decoration-none" to="/usuario/cadastro/">Registrar</RouterLink>
+    <aside class="bg-dark text-white py-3 fixed-left vh-100">
+        <div class="container d-flex flex-column align-items-start">
+            <nav>
+                <router-link class="mb-3 text-white text-decoration-none d-block" to="/">Home</router-link>
+                <router-link v-if="!username" class="mb-3 text-white text-decoration-none d-block" to="/login">Login</router-link>
+                <router-link v-if="!username" class="mb-3 text-white text-decoration-none d-block" to="/usuario/cadastro/">Registrar</router-link>
                 
-                <div class="dropdown" v-if="isResident">
-                    <RouterLink class="mx-3 text-white text-decoration-none" to="/requisicao/cadastro">Abrir solicitação</RouterLink>
-                    <RouterLink class="mx-3 text-white text-decoration-none" to="/requisicao/minhas-requisicoes">Visualizar solicitações</RouterLink>
+                <div class="dropdown my-5" v-if="isResident">
+                    <router-link class="mb-3 text-white text-decoration-none d-block" to="/requisicao/cadastro">Abrir solicitação</router-link>
+                    <router-link class="mb-3 text-white text-decoration-none d-block" to="/requisicao/minhas-requisicoes">Visualizar solicitações</router-link>
                 </div>
-                <div class="dropdown" v-if="isUnion">
-                    <RouterLink class="mx-3 text-white text-decoration-none" to="/requisicao/pendentes">Solicitações pendentes</RouterLink>
-                    <RouterLink class="mx-3 text-white text-decoration-none" to="/requisicao/capturados">Solicitações capturadas</RouterLink>
+                <div class="dropdown my-5" v-if="isUnion">
+                    <router-link class="mb-3 text-white text-decoration-none d-block" to="/requisicao/pendentes">Solicitações pendentes</router-link>
+                    <router-link class="mb-3 text-white text-decoration-none d-block" to="/requisicao/capturados">Solicitações capturadas</router-link>
+                    <router-link class="mb-3 text-white text-decoration-none d-block" to="/condominio/lista">Configurações</router-link>
                 </div>
-                <RouterLink v-if="!!username" class="mx-3 text-white text-decoration-none" to="/condominio/cadastro">Cadastrar condomínio</RouterLink>
-                <a v-if="!!username" class="mx-3 text-white text-decoration-none" @click="logout">Logout</a>
+                <router-link v-if="!!username" class="my-5 text-white text-decoration-none d-block" to="/condominio/cadastro">Cadastrar condomínio</router-link>
+                <a v-if="!!username" class="my-5 text-white text-decoration-none d-block" @click="logout">Logout</a>
             </nav>
         </div>
-    </header>
+    </aside>
 </template>
   
 <script setup lang="ts">
     import { ref, onMounted } from 'vue'
-    import { RouterLink } from 'vue-router'
     import { api } from '@/http';
 
     const username = ref<string | null>(null);
@@ -37,7 +37,6 @@
     }
 
     onMounted(() => {
-        console.log(document.cookie)
         username.value = localStorage.getItem("username")
         isResident.value = !!localStorage.getItem("isResident")
         isUnion.value = !!localStorage.getItem("isUnion")
@@ -50,3 +49,19 @@
         name: 'NavBar'
     };
 </script>
+
+<style>
+.fixed-left {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+body {
+    margin-left: 250px;
+    padding: 20px;
+}
+</style>

@@ -1,7 +1,6 @@
 <template>
-    <nav-bar/>
     <div class="container mt-5">
-        <h2>Register Request</h2>
+        <h1 class="text-center">Registrar chamado</h1>
         
         <div class="mb-3">
             <label for="place" class="form-label">Local:</label>
@@ -53,14 +52,20 @@
             </select>
         </div>
 
-        <button @click="registerRequest" class="btn btn-primary">Cadastrar</button>
+        <button v-if="!requestId" @click="registerRequest" class="btn btn-primary">Cadastrar</button>
+        <button v-else @click="updatePlace" class="btn btn-primary mx-3">Atualizar</button>
     </div>
 </template>
 
 <script lang="ts" setup>
-import NavBar from '@/components/template/NavBar.vue'
+
 import { ref, onMounted  } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { api } from '@/http'
+
+const route = useRoute();
+const router = useRouter();
+const requestId = ref(route.params.id);
 
 const places = ref([]);
 
@@ -73,7 +78,15 @@ const requestForm = ref({
 
 function registerRequest() {
     api.post('/request/', requestForm.value)
+    .then(({data})=>{
+        requestId.value = data.id
+		router.push({ name: 'requisicao_editar', params: { id: data.id } })
+	})
 }
+
+function updatePlace() {
+        api.put(`/request/${requestId.value}/`, requestForm.value)
+    };
 
 onMounted(() => {
     api.get('/place/residents/')
@@ -83,6 +96,16 @@ onMounted(() => {
     .catch(error => {
         console.error("Erro ao obter a lista de locais:", error);
     });
+
+    if (requestId.value){
+        api.get(`/request/${requestId.value}/`)
+        .then(response => {
+            requestForm.value = response.data;
+        })
+        .catch(error => {
+            console.error("Erro ao obter o chamado:", error);
+        });
+    }
 });
 
 </script>

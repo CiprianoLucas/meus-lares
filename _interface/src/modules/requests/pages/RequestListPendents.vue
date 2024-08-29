@@ -1,5 +1,4 @@
 <template>
-    <nav-bar/>
     <div class="container mt-5">
         <h1 class="text-center">Chamados Pendentes</h1>
         
@@ -35,7 +34,6 @@
 </template>
 
 <script lang="ts" setup>
-import NavBar from '@/components/template/NavBar.vue'
 import { ref, onMounted } from 'vue'
 import { api } from '@/http'
 
@@ -52,11 +50,10 @@ const statusMap = {
     'C': 'Concluído'
 };
 
-// Armazena a lista de chamados pendentes
 const pendingRequests = ref([]);
 
 onMounted(() => {
-    // Obtém a lista de chamados pendentes ao montar o componente
+
     api.get('/request/pendents')
     .then(response => {
         pendingRequests.value = response.data;

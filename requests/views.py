@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 from .models import Request
 from .serializers import RequestSerializer,RequestStatusSerializer
 from rest_framework.exceptions import ValidationError
@@ -8,6 +9,7 @@ from django.db.models import Q
 class RequestCreateView(generics.CreateAPIView):
     queryset = Request.objects.all()
     serializer_class = RequestSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(requester=self.request.user)
@@ -15,6 +17,7 @@ class RequestCreateView(generics.CreateAPIView):
 class RequestListView(generics.ListAPIView):
     queryset = Request.objects.all()
     serializer_class = RequestSerializer
+    permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
         user = self.request.user
@@ -22,13 +25,13 @@ class RequestListView(generics.ListAPIView):
             Q(is_active=True) & ( 
             Q(place__unions=user) | 
             Q(place__representative=user))
-            )
+            ).distinct()
 
 
 class RequestDetailView(generics.RetrieveUpdateAPIView):
     queryset = Request.objects.all()
     serializer_class = RequestSerializer
-    permission_classes = [IsRequester]
+    permission_classes = [IsAuthenticated, IsRequester]
     
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -40,11 +43,12 @@ class RequestDetailView(generics.RetrieveUpdateAPIView):
 class RequestStatusView(generics.RetrieveUpdateAPIView):
     queryset = Request.objects.all()
     serializer_class = RequestStatusSerializer
-    permission_classes = [IsPendent]
+    permission_classes = [IsAuthenticated, IsPendent]
     
     
 class RequestListForResidentsView(generics.ListAPIView):
     serializer_class = RequestSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -52,6 +56,7 @@ class RequestListForResidentsView(generics.ListAPIView):
 
 class RequestListForUnionsAndRepresentativesView(generics.ListAPIView):
     serializer_class = RequestSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user

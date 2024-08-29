@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-	import { ref, onMounted} from 'vue'
+	import { ref } from 'vue'
 	import { useRouter } from 'vue-router';
 	import { api } from '@/http'
 
@@ -45,13 +45,7 @@
 	const login = () => {
 		api.login(form.value)
 		.then(()=>{
-			debugger
 			router.push('/');
 		})
 	}
-
-	onMounted(() => {
-        localStorage.clear()
-        api.logout()
-    })
 </script>

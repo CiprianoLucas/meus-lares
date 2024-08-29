@@ -1,46 +1,56 @@
 <template>
-    <nav-bar/>
     <div class="container mt-5">
         <h1 class="text-center">Bem-vindo ao Sistema de Gestão de Condomínios</h1>
         <p class="text-center">Gerencie seus chamados de manutenção e reclamação de forma simples e eficiente.</p>
-
-        <div class="row mt-5">
-            <div class="col-md-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <h5 class="card-title">Meus Chamados</h5>
-                        <p class="card-text">Visualize e acompanhe seus chamados de manutenção e reclamação.</p>
-                        <router-link to="/meus-chamados" class="btn btn-primary">Ver Chamados</router-link>
+        <div>
+            <div v-if="isResident" class="row mt-5">
+                <h2 class="text-center">Para você residente</h2>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Meus Chamados</h5>
+                            <p class="card-text">Visualize e acompanhe seus chamados de manutenção e reclamação.</p>
+                            <router-link to="/requisicao/minhas-requisicoes" class="btn btn-primary">Ver Chamados</router-link>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Criar Novo Chamado</h5>
+                            <p class="card-text">Abra um novo chamado de manutenção ou reclamação.</p>
+                            <router-link to="/requisicao/cadastro" class="btn btn-primary">Criar Chamado</router-link>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <h5 class="card-title">Criar Novo Chamado</h5>
-                        <p class="card-text">Abra um novo chamado de manutenção ou reclamação.</p>
-                        <router-link to="/novo-chamado" class="btn btn-primary">Criar Chamado</router-link>
+            <div v-if="isUnion" class="row mt-5">
+                <h2 class="text-center">Para você síndico ou representante</h2>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Chamados Abertos</h5>
+                            <p class="card-text">Veja todos os chamados abertos no condomínio.</p>
+                            <router-link to="/requisicao/pendentes" class="btn btn-primary">Ver Chamados Abertos</router-link>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <h5 class="card-title">Chamados Abertos</h5>
-                        <p class="card-text">Veja todos os chamados abertos no condomínio.</p>
-                        <router-link to="/chamados-abertos" class="btn btn-primary">Ver Chamados Abertos</router-link>
+                <div class="col-md-4 col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Chamados capturados</h5>
+                            <p class="card-text">Veja os chamados que você está responsável</p>
+                            <router-link to="/requisicao/capturados" class="btn btn-primary">Ver chamados capturados</router-link>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="row mt-4">
-            <div class="col-md-4 offset-md-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <h5 class="card-title">Configurações do Condomínio</h5>
-                        <p class="card-text">Gerencie as configurações do seu condomínio.</p>
-                        <router-link to="/configuracoes" class="btn btn-secondary">Configurações</router-link>
+                <div class="col-md-4 col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Configurações do Condomínio</h5>
+                            <p class="card-text">Gerencie as configurações do seu condomínio.</p>
+                            <router-link to="/condominio/lista" class="btn btn-secondary">Configurações</router-link>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -49,7 +59,17 @@
 </template>
 
 <script lang="ts" setup>
-import NavBar from '@/components/template/NavBar.vue'
+    import { ref, onMounted } from 'vue'
+
+    const username = ref<string | null>(null);
+    const isResident = ref(false)
+    const isUnion = ref(false)
+
+    onMounted(() => {
+        username.value = localStorage.getItem("username")
+        isResident.value = !!localStorage.getItem("isResident")
+        isUnion.value = !!localStorage.getItem("isUnion")
+    })
 
 </script>
 

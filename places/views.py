@@ -1,4 +1,5 @@
 from rest_framework import generics, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Places
@@ -11,6 +12,7 @@ from users.models import User
 class PlaceCreateView(generics.CreateAPIView):
     queryset = Places.objects.filter(is_active=True)
     serializer_class = PlacesSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(representative=self.request.user)
@@ -18,7 +20,7 @@ class PlaceCreateView(generics.CreateAPIView):
 class PlaceDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Places.objects.filter(is_active=True)
     serializer_class = PlacesSerializer
-    permission_classes = [IsRepresentative]
+    permission_classes = [IsAuthenticated, IsRepresentative]
     
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -28,6 +30,7 @@ class PlaceDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class PlaceListForResidentsView(generics.ListAPIView):
     serializer_class = PlacesSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -35,6 +38,7 @@ class PlaceListForResidentsView(generics.ListAPIView):
 
 class PlaceListForUnionsAndRepresentativesView(generics.ListAPIView):
     serializer_class = PlacesSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -48,6 +52,7 @@ class PlaceListForUnionsAndRepresentativesView(generics.ListAPIView):
     
 class ResidentPlaceCreateView(APIView):
     serializer_class = UserPlaceSerializer
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, pk_place):
         place = get_object_or_404(Places, pk=pk_place)
@@ -62,11 +67,17 @@ class ResidentPlaceCreateView(APIView):
             user_email = serializer.validated_data.get('email')
             user = get_object_or_404(User, email=user_email)
             place.residents.add(user)
-            return Response({'detail': 'Resident added successfully'}, status=status.HTTP_200_OK)
+            response = {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+            }
+            return Response(response, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class ResidentPlaceRemoveView(APIView):
     serializer_class = UserPlaceSerializer
+    permission_classes = [IsAuthenticated]
 
     def delete(self, request, pk_place, pk_user):
         place = get_object_or_404(Places, pk=pk_place)
@@ -76,6 +87,7 @@ class ResidentPlaceRemoveView(APIView):
 
 class UnionPlaceCreateView(APIView):
     serializer_class = UserPlaceSerializer
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
         place = get_object_or_404(Places, pk=pk)
@@ -90,11 +102,17 @@ class UnionPlaceCreateView(APIView):
             user_email = serializer.validated_data.get('email')
             user = get_object_or_404(User, email=user_email)
             place.unions.add(user)
-            return Response({'detail': 'Resident added successfully'}, status=status.HTTP_200_OK)
+            response = {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+            }
+            return Response(response, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UnionPlaceRemoveRemoveView(APIView):
     serializer_class = UserPlaceSerializer
+    permission_classes = [IsAuthenticated]
 
     def delete(self, request, pk_place, pk_user):
         place = get_object_or_404(Places, pk=pk_place)

@@ -1,7 +1,6 @@
 <template>
-    <nav-bar/>
     <div class="container mt-5">
-        <h1 class="text-center">Chamados Pendentes</h1>
+        <h1 class="text-center">Meus chamados</h1>
         
         <div v-if="pendingRequests.length === 0" class="alert alert-info text-center">
             Nenhum chamado pendente no momento.
@@ -11,22 +10,22 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Local</th>
                         <th>Título</th>
                         <th>Descrição</th>
                         <th>Tipo</th>
                         <th>Status</th>
+                        <th>Opções</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="request in pendingRequests" :key="request.id">
-                        <td>{{ request.id }}</td>
                         <td>{{ request.place_name }}</td>
                         <td>{{ request.title }}</td>
                         <td>{{ request.description }}</td>
                         <td>{{ typeMap[request.type] }}</td>
                         <td>{{ statusMap[request.status] }}</td>
+                        <td><a v-if="request.status == 'P'" :href="`/requisicao/${request.id}`">Editar</a></td>
                     </tr>
                 </tbody>
             </table>
@@ -35,7 +34,6 @@
 </template>
 
 <script lang="ts" setup>
-import NavBar from '@/components/template/NavBar.vue'
 import { ref, onMounted } from 'vue'
 import { api } from '@/http'
 

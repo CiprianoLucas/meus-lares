@@ -5,10 +5,15 @@ import api from './setup'
 
 api.login = async function(form: LoginRequest): Promise<LoginResponse> {
     try {
+		if(localStorage.getItem('username')){
+			await api.logout()
+		}
+
 		const response: AxiosResponse<LoginResponse> = await this.post('/user/login/', {
 			username: form.username,
 			password: form.password,
 		});
+
 		localStorage.setItem('username', response.data.username)
 		if (response.data.isResident){
 			localStorage.setItem('isResident', 'true')
@@ -20,6 +25,7 @@ api.login = async function(form: LoginRequest): Promise<LoginResponse> {
 		} else {
 			localStorage.removeItem('isUnion')
 		}
+		window.location.href = '/';
       	return response.data
     } catch (error) {
 		console.error('Login failed:', error)

@@ -5,6 +5,11 @@ export default [
         component: () => import(/* webpacjChunkName: "cadastro de requisicao" */ './pages/RequestRegister.vue')
     },
     {
+        path: '/requisicao/:id', //don't forget insert in router folder
+        name: 'requisicao_editar', 
+        component: () => import(/* webpacjChunkName: "Edição de requisicao" */ './pages/RequestRegister.vue')
+    },
+    {
         path: '/requisicao/pendentes', //don't forget insert in router folder
         name: 'requisicao_pendentes', 
         component: () => import(/* webpacjChunkName: "listar requisições pendentes" */ './pages/RequestListPendents.vue')

@@ -1,7 +1,6 @@
 <template>
-    <nav-bar/>
     <div class="container mt-5">
-        <h1 class="text-center">Chamados Pendentes</h1>
+        <h1 class="text-center">Chamados capturados</h1>
         
         <div v-if="pendingRequests.length === 0" class="alert alert-info text-center">
             Nenhum chamado pendente no momento.
@@ -35,7 +34,6 @@
 </template>
 
 <script lang="ts" setup>
-import NavBar from '@/components/template/NavBar.vue'
 import { ref, onMounted } from 'vue'
 import { api } from '@/http'
 
@@ -56,8 +54,7 @@ const statusMap = {
 const pendingRequests = ref([]);
 
 onMounted(() => {
-    // Obtém a lista de chamados pendentes ao montar o componente
-    api.get('/request/guardians')
+    api.get('/request/guardians/')
     .then(response => {
         pendingRequests.value = response.data;
     })
