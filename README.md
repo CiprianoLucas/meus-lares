@@ -1,5 +1,5 @@
 # Centro de Chamados para Condomínios
-Este é um projeto de extensão desenvolvido como parte do curso de Análise e Desenvolvimento de Sistemas. A aplicação tem como objetivo criar um centro de chamados de manutenção e reclamação para condomínios, utilizando Django Rest Framework para o backend e Vue 3 para o frontend.
+A aplicação tem como objetivo criar um centro de chamados de manutenção e reclamação para condomínios, utilizando Django Rest Framework para o backend e Vue 3 para o frontend.
 
 ## Propósito
 O objetivo deste projeto é facilitar a comunicação entre os residentes de um condomínio e os responsáveis pela gestão, permitindo a criação e acompanhamento de chamados de manutenção e reclamação. A aplicação busca agilizar a resolução de problemas, melhorar a organização interna e proporcionar maior transparência no gerenciamento das demandas dos residentes.
@@ -25,8 +25,8 @@ O objetivo deste projeto é facilitar a comunicação entre os residentes de um 
 ### Clonando o Repositório
 
 ```bash
-git clone https://github.com/CiprianoLucas/Habitat.git
-cd Habitat
+git clone https://github.com/CiprianoLucas/meus-lares.git
+cd meus_lares
 ```
 
 ### Backend

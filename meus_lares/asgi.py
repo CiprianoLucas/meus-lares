@@ -1,5 +1,5 @@
 """
-ASGI config for habitat project.
+ASGI config for meus_lares project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'habitat.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'meus_lares.settings')
 
 application = get_asgi_application()
