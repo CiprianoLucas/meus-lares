@@ -1,12 +1,16 @@
 # Django
 ENV=develop
-SECRET_KEY=my_secret_key
+SECRET_KEY=uVG3ULJRPbh$my_secret_key&zFtQ3ZrKXVViF
+API_PORT=9000
 # Database
 DB_NAME=meus-lares
 DB_USER=admin
 DB_PASSWORD=admin
 DB_HOST=db
+DB_PORT_DEV=5432
 DB_PORT=9002
+# Vue3
+VITE_API_URL=http://localhost:9000
 # AWS
 AWS_ACCESS_KEY_ID=123
 AWS_SECRET_ACCESS_KEY=123

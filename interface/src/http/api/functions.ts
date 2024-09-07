@@ -1,6 +1,5 @@
 import type { LoginResponse, LoginRequest} from './interfaces'
 import { type AxiosResponse } from 'axios'
-import Cookies from 'js-cookie'
 import api from './setup'
 
 api.login = async function(form: LoginRequest): Promise<LoginResponse> {

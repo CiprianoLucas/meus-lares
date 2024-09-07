@@ -11,9 +11,9 @@ services:
       - ./api:/app
     mem_limit: 512m
     memswap_limit: 1g
-    env_file: ./api/.env
+    env_file: ./.env
     ports:
-      - "9000:9000"
+      - "${API_PORT}:8000"
     depends_on:
       - db
     networks:
@@ -27,9 +27,9 @@ services:
       dockerfile: Dockerfile
     mem_limit: 512m
     memswap_limit: 1g
-    env_file: ./interface/.env
+    env_file: ./.env
     ports:
-      - "9001:9001"
+      - "${INTERFACE_PORT}:9001"
     networks:
       - app-network
 
@@ -39,11 +39,11 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      POSTGRES_DB: meus-lares
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "9002:5432"
+      - "${DB_PORT}:5432"
     networks:
       - app-network
     

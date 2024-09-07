@@ -16,11 +16,13 @@ O objetivo deste projeto é facilitar a comunicação entre os residentes de um 
     - Vue 3
     - Bootstrap
     - Axios
+- Infraestrutura:
+    - Docker
+    - PostgreSQL
 
 ## Instalação
 ### Pré-requisitos
-- Python 3.8+
-- Node.js 17+
+- Docker
 
 ### Clonando o Repositório
 
@@ -29,57 +31,32 @@ git clone https://github.com/CiprianoLucas/meus-lares.git
 cd meus_lares
 ```
 
-### Backend
-1. Crie e ative um ambiente virtual:
-
+### Fazendo funcionar
+Com docker em funcionamento, execute o comando para criar o container
 ```bash
-python -m venv venv
-source venv/bin/activate  # Para Linux/macOS
-venv\Scripts\activate  # Para Windows
+docker compose up -d --build
 ```
 
-2. Instale as dependências do backend:
-```
-pip install -r requirements.txt
-```
-3. Crie o arquivo *".env"* com base no *".env.example"*
-
-4. Execute as migrações:
+Na primeira vez será necessário efetuar as migrações, então faça.
 ```bash
+docker exec -it api /bin/bash
 python manage.py migrate
 ```
 
-5. Inicie o servidor de desenvolvimento:
+Se mexer em algum model, será necessário efetuar as configurações dos migrations, então execute
+
 ```bash
-python manage.py runserver
+docker exec -it api /bin/bash
+python manage.py makemigrations
+python manage.py migrate
 ```
 
-### Frontend
-
-1. Navegue até a pasta do frontend:
-```
-cd _interface
-```
-
-2. Instale as dependências:
-```
-npm install
-```
-
-3. Inicie o servidor de desenvolvimento:
-
-```
-npm run dev
-```
 
 ## Configuração
-- Configure as variáveis de ambiente necessárias, como credenciais do banco de dados e chaves secretas.
+- Configure as variáveis de ambiente necessárias, como credenciais do banco de dados e chaves secretas, utilize os arquivos .exaple_env para criar um .env
 
 - Certifique-se de que o backend e o frontend estejam apontando para os respectivos servidores e endpoints.
 
 ## Como Executar
-Após realizar a instalação e configuração, execute o servidor backend e frontend como descrito acima. Acesse a aplicação em http://localhost:5173 para utilizar o frontend e http://localhost:8000/admin para gerenciar o backend.
-
-#### Licença
-Este projeto é licenciado sob a Creative Commons Attribution-NonCommercial (CC BY-NC).
+Após realizar a instalação e configuração, execute o servidor backend e frontend como descrito acima. Acesse a aplicação em http://localhost:{INTERFACE_PORT} para utilizar o frontend e http://localhost:{API_PORT}/admin para gerenciar o backend.
 
