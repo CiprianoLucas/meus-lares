@@ -1,0 +1,55 @@
+version: "3"
+
+services:
+  api:
+    platform: linux/amd64
+    container_name: api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    volumes:
+      - ./api:/app
+    mem_limit: 512m
+    memswap_limit: 1g
+    env_file: ./api/.env
+    ports:
+      - "9000:9000"
+    depends_on:
+      - db
+    networks:
+      - app-network
+    
+  interface:
+    platform: linux/amd64
+    container_name: interface
+    build: 
+      context: ./interface
+      dockerfile: Dockerfile
+    mem_limit: 512m
+    memswap_limit: 1g
+    env_file: ./interface/.env
+    ports:
+      - "9001:9001"
+    networks:
+      - app-network
+
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: meus-lares
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "9002:5432"
+    networks:
+      - app-network
+    
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
