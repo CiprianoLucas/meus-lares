@@ -41,6 +41,7 @@ Na primeira vez será necessário efetuar as migrações, então faça.
 ```bash
 docker exec -it api /bin/bash
 python manage.py migrate
+exit
 ```
 
 Se mexer em algum model, será necessário efetuar as configurações dos migrations, então execute
@@ -49,6 +50,7 @@ Se mexer em algum model, será necessário efetuar as configurações dos migrat
 docker exec -it api /bin/bash
 python manage.py makemigrations
 python manage.py migrate
+exit
 ```
 
 
