@@ -28,8 +28,14 @@ O objetivo deste projeto é facilitar a comunicação entre os residentes de um 
 
 ```bash
 git clone https://github.com/CiprianoLucas/meus-lares.git
-cd meus_lares
+cd meus-lares
 ```
+
+## Configuração
+- Configure as variáveis de ambiente necessárias, como credenciais do banco de dados e chaves secretas, utilize os arquivos .exaple_env para criar um .env
+
+- Certifique-se de que o backend e o frontend estejam apontando para os respectivos servidores e endpoints.
+
 
 ### Fazendo funcionar
 Com docker em funcionamento, execute o comando para criar o container
@@ -52,12 +58,6 @@ python manage.py makemigrations
 python manage.py migrate
 exit
 ```
-
-
-## Configuração
-- Configure as variáveis de ambiente necessárias, como credenciais do banco de dados e chaves secretas, utilize os arquivos .exaple_env para criar um .env
-
-- Certifique-se de que o backend e o frontend estejam apontando para os respectivos servidores e endpoints.
 
 ## Como Executar
 Após realizar a instalação e configuração, execute o servidor backend e frontend como descrito acima. Acesse a aplicação em http://localhost:{INTERFACE_PORT} para utilizar o frontend e http://localhost:{API_PORT}/admin para gerenciar o backend.
