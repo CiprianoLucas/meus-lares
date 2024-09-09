@@ -45,7 +45,7 @@ docker compose up -d --build
 
 Na primeira vez será necessário efetuar as migrações.
 ```bash
-docker exec -it mauslares-api /bin/bash
+docker exec -it meuslares-api /bin/bash
 python manage.py migrate
 exit
 ```
@@ -53,7 +53,7 @@ exit
 Se mexer em algum model, será necessário efetuar as configurações dos migrations.
 
 ```bash
-docker exec -it mauslares-api /bin/bash
+docker exec -it meuslares-api /bin/bash
 python manage.py makemigrations
 python manage.py migrate
 exit

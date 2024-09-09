@@ -17,7 +17,11 @@ export default defineConfig({
     target: 'esnext',
   },
   server: {
+    watch: {
+      usePolling: true,
+    },
     port: 9001,
     host: true, 
-  }
+  },
+  
 })
