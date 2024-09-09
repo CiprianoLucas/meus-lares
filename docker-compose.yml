@@ -3,7 +3,7 @@ version: "3"
 services:
   api:
     platform: linux/amd64
-    container_name: api
+    container_name: meuslares-api
     build:
       context: ./api
       dockerfile: Dockerfile
@@ -17,25 +17,28 @@ services:
     depends_on:
       - db
     networks:
-      - app-network
+      - meuslares-network
     
   interface:
     platform: linux/amd64
-    container_name: interface
+    container_name: meuslares-interface
     build: 
       context: ./interface
       dockerfile: Dockerfile
+    volumes:
+      - ./interface/src:/app/src
+      - ./interface/public:/app/public
     mem_limit: 512m
     memswap_limit: 1g
     env_file: ./.env
     ports:
       - "${INTERFACE_PORT}:9001"
     networks:
-      - app-network
+      - meuslares-network
 
   db:
     image: postgres:15
-    container_name: postgres_db
+    container_name: meuslares-db
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
@@ -45,10 +48,10 @@ services:
     ports:
       - "${DB_PORT}:5432"
     networks:
-      - app-network
+      - meuslares-network
     
 networks:
-  app-network:
+  meuslares-network:
     driver: bridge
 
 volumes:

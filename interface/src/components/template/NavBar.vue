@@ -2,7 +2,7 @@
     <aside class="bg-dark text-white py-3 fixed-left vh-100">
         <div class="container d-flex flex-column align-items-start">
             <nav>
-                <router-link class="mb-3 text-white text-decoration-none d-block" to="/">Home</router-link>
+                <router-link class="mb-3 text-white text-decoration-none d-block" to="/">Página inicial</router-link>
                 <router-link v-if="!username" class="mb-3 text-white text-decoration-none d-block" to="/login">Login</router-link>
                 <router-link v-if="!username" class="mb-3 text-white text-decoration-none d-block" to="/usuario/cadastro/">Registrar</router-link>
                 
