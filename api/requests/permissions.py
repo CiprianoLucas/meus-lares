@@ -6,5 +6,4 @@ class IsRequester(BasePermission):
     
 class IsPendent(BasePermission):
     def has_object_permission(self, request, view, obj):
-        print(obj.place.unions)
         return request.user in obj.place.unions.all() or request.user == obj.place.representative

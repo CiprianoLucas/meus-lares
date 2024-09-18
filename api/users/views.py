@@ -27,7 +27,6 @@ def get_info(request):
             'isResident' : is_resident,
             'isUnion' : is_union,
         }
-    print(response)
     
     return JsonResponse(response)
 

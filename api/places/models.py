@@ -13,6 +13,7 @@ class Places(models.Model):
     state = models.CharField(max_length=2)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    profile_photo = models.ImageField(upload_to='places/profile-photo/', blank=True)
 
     def __str__(self):
         return self.name
@@ -20,3 +21,9 @@ class Places(models.Model):
     class Meta:
         verbose_name = "Local"
         verbose_name_plural = "Locais"
+    
+    def delete(self, *args, **kwargs):
+        if self.profile_photo:
+            self.profile_photo.delete(save=False)
+
+        super().delete(*args, **kwargs)

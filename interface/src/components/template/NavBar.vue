@@ -14,7 +14,7 @@
         <router-link
           v-if="!username"
           class="mb-3 text-white text-decoration-none d-block"
-          to="/usuario/cadastro/"
+          to="/usuario/cadastro"
           >Registrar</router-link
         >
 
@@ -47,6 +47,12 @@
             >Configurações</router-link
           >
         </div>
+        <router-link
+          v-if="!!username"
+          class="my-5 text-white text-decoration-none d-block"
+          to="/ai/"
+          >Inteligência artificial</router-link
+        >
         <router-link
           v-if="!!username"
           class="my-5 text-white text-decoration-none d-block"

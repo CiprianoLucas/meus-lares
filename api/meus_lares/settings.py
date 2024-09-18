@@ -26,6 +26,7 @@ SECRET_KEY = (env("SECRET_KEY"),)
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 INSTALLED_APPS = [
+    'storages',
     'corsheaders',
     'rest_framework',
     'django.contrib.admin',
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     'users.apps.UserConfig',
     'places.apps.PlacesConfig',
     'requests.apps.RequestsConfig',
+    'ai.apps.AiConfig',
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -103,8 +105,6 @@ if env("ENV") == "production":
 
     DEBUG = False
 
-    ALLOWED_HOSTS = ["*"]
-
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -127,7 +127,7 @@ if env("ENV") == "production":
     }
     AWS_STATIC_LOCATION = "static"
     AWS_MEDIA_LOCATION = "media"
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, "base", "static")]
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
     STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_STATIC_LOCATION}/"
     STATIC_ROOT = os.path.join(BASE_DIR, "static")
@@ -150,22 +150,23 @@ else:
             "PORT": env("DB_PORT_DEV"),
         }
     }
+    interface_port = env("INTERFACE_PORT")
     
     CSRF_TRUSTED_ORIGINS = [
-        'http://localhost:9001',
-        'http://127.0.0.1:9001',
+        f'http://localhost:{interface_port}',
+        f'http://127.0.0.1:{interface_port}',
     ]      
 
     MEDIA_URL = "/media/"
     
-    SITE = "localhost:8000"
+    SITE = f"localhost:{interface_port}"
 
     STATIC_URL = "statics/"
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
     
     CORS_ALLOWED_ORIGINS = [
-        "http://localhost:9001",
-        "http://127.0.0.1:9001",
+        f"http://localhost:{interface_port}",
+        f"http://127.0.0.1:{interface_port}",
     ]
 
     CORS_ALLOW_CREDENTIALS = True 
