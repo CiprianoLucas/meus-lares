@@ -1,7 +1,7 @@
 from django.db import models
 from users.models import User
 import uuid
-class Places(models.Model):
+class Place(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     representative = models.ForeignKey(User, on_delete=models.CASCADE, related_name='place_representative')
     residents = models.ManyToManyField(User, related_name='place_residents', blank=True)
@@ -27,3 +27,4 @@ class Places(models.Model):
             self.profile_photo.delete(save=False)
 
         super().delete(*args, **kwargs)
+        

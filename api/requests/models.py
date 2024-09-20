@@ -1,7 +1,7 @@
 from django.db import models
 import uuid
 from users.models import User
-from places.models import Places
+from places.models import Place
 
 class Request(models.Model):
     TYPE_CHOICES = [
@@ -17,7 +17,7 @@ class Request(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     requester = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank = True ,related_name='request_requester')
     guardian = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank = True, related_name='request_guardian')
-    place = models.ForeignKey(Places, on_delete=models.CASCADE, related_name='request_place')
+    place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name='request_place')
     title = models.CharField(max_length=50)
     description = models.TextField(max_length=3000)
     type = models.CharField(max_length=1, choices=TYPE_CHOICES, default='O')

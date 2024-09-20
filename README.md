@@ -21,8 +21,13 @@ O objetivo deste projeto é facilitar a comunicação entre os residentes de um 
     - PostgreSQL
 
 ## Instalação
-### Pré-requisitos
-- Docker
+### Pré-requisitos obrigatórios
+- Docker ^25.0.3
+
+### Pré-requisitos recomendados
+- Node ^18
+- Python ^3.12
+- Poetry ^1.8.3
 
 ### Clonando o Repositório
 
@@ -46,7 +51,7 @@ docker compose up -d --build
 Na primeira vez será necessário efetuar as migrações.
 ```bash
 docker exec -it meuslares-api /bin/bash
-python manage.py migrate
+poetry run python manage.py migrate
 exit
 ```
 
@@ -54,8 +59,8 @@ Se mexer em algum model, será necessário efetuar as configurações dos migrat
 
 ```bash
 docker exec -it meuslares-api /bin/bash
-python manage.py makemigrations
-python manage.py migrate
+poetry run python manage.py makemigrations
+poetry run python manage.py migrate
 exit
 ```
 

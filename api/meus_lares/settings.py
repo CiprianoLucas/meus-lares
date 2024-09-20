@@ -19,7 +19,7 @@ from corsheaders.defaults import default_headers
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
-environ.Env.read_env()
+environ.Env.read_env(os.path.join(BASE_DIR.parent, '.env'))
 
 SECRET_KEY = (env("SECRET_KEY"),)
 
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'users.apps.UserConfig',
     'places.apps.PlacesConfig',
     'requests.apps.RequestsConfig',
+    'invoices.apps.InvoicesConfig',
     'ai.apps.AiConfig',
 ]
 
@@ -147,7 +148,7 @@ else:
             "USER": env("DB_USER"),
             "PASSWORD": env("DB_PASSWORD"),
             "HOST": env("DB_HOST"),
-            "PORT": env("DB_PORT_DEV"),
+            "PORT": env("DB_PORT"),
         }
     }
     interface_port = env("INTERFACE_PORT")
@@ -172,3 +173,8 @@ else:
     CORS_ALLOW_CREDENTIALS = True 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_PORT = env("EMAIL_PORT")
+EMAIL_USE_TLS = env("EMAIL_USE_TLS")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
