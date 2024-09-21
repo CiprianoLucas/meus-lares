@@ -5,6 +5,7 @@ import {routes as example} from '@/modules/example'
 import {routes as user} from '@/modules/user'
 import {routes as places} from '@/modules/places'
 import {routes as requests} from '@/modules/requests'
+import {routes as invoices} from '@/modules/invoices'
 import {routes as ai} from '@/modules/ai'
 
 const routes: Array<RouteRecordRaw> = [
@@ -15,6 +16,7 @@ const routes: Array<RouteRecordRaw> = [
     ...user,
     ...places,
     ...requests,
+    ...invoices,
     ...ai,
 ]
 export {routes}

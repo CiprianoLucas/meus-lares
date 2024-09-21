@@ -29,6 +29,11 @@
             to="/requisicao/minhas-requisicoes"
             >Visualizar solicitações</router-link
           >
+          <router-link
+            class="mb-3 text-white text-decoration-none d-block"
+            to="/fatura/lista"
+            >Faturas</router-link
+          >
         </div>
         <div class="dropdown my-5" v-if="isUnion">
           <router-link
@@ -40,6 +45,11 @@
             class="mb-3 text-white text-decoration-none d-block"
             to="/requisicao/capturados"
             >Solicitações capturadas</router-link
+          >
+          <router-link
+            class="mb-3 text-white text-decoration-none d-block"
+            to="/fatura/relacao-lista"
+            >Relacionamento das faturas</router-link
           >
           <router-link
             class="mb-3 text-white text-decoration-none d-block"

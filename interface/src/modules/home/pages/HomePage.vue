@@ -23,6 +23,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Faturas</h5>
+                            <p class="card-text">Visualize todas as suas faturas.</p>
+                            <router-link to="/fatura/lista" class="btn btn-primary">Visualizar</router-link>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div v-if="isUnion" class="row mt-5">
                 <h2 class="text-center">Para você síndico ou representante</h2>
