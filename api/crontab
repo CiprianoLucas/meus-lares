@@ -1,0 +1,1 @@
+0 2 * * * root poetry run python /app/meus_lares/daily_tasks.py >> /var/log/cron.log 2>&1

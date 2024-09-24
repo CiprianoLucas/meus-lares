@@ -92,18 +92,15 @@ class CelescInvoices:
     
     def _extract_value_celesc(self, html_content):
         soup = BeautifulSoup(html_content, "html.parser")
-        tr_tag = soup.find("tr", text=lambda t: "Valor da fatura:" in t if t else "")
+        tag = soup.find('strong', text="Valor da fatura:")
 
-        if tr_tag:
-            td_tags = tr_tag.find_all("td")
-            
-            if len(td_tags) >= 2:
-                value_str = td_tags[1].text.strip()
-                value_str = value_str.replace("R$", "").replace(".", "").replace(",", ".").strip()
-                try:
-                    return float(value_str)
-                except ValueError:
-                    return None
+        if tag:
+            value_str = tag.find_next('td').get_text(strip=True)
+            value_str = value_str.replace("R$", "").replace(".", "").replace(",", ".").strip()
+            try:
+                return float(value_str)
+            except ValueError:
+                return None
 
         return None
     
