@@ -20,8 +20,9 @@ yarn-error.log
 *.pyo
 *.pyd
 *.db
-*.log
-*.pid
+/logs/*
+!/logs/
+
 
 
 
