@@ -7,7 +7,7 @@ class RelationInvoice(models.Model):
     STATUS_CHOICES = {'CELESC': 'CELESC'}
     
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    resident = models.ForeignKey(User, on_delete=models.CASCADE)
+    resident = models.ForeignKey(User, on_delete=models.CASCADE, related_name='relation_invoices')
     place = models.ForeignKey(Place, on_delete=models.CASCADE)
     company = models.CharField(max_length=50, choices=STATUS_CHOICES)
     unit_number = models.CharField(max_length=255)

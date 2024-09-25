@@ -2,8 +2,8 @@ tools = [
     {
       "type": "function",
       "function": {
-        "name": "get_requests_by_requester",
-        "description": "Coleta todas as requisições solicitadas por um usuário",
+        "name": "get_invoices_by_requester",
+        "description": "Coleta todas as faturas solicitadas por um usuário",
         "parameters": {
           "type": "object",
           "properties": {

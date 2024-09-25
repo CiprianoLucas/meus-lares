@@ -1,7 +1,7 @@
 <template>
     <div class="container mt-5">
         <h1 class="text-center">Relacionamento das faturas</h1>
-        <a href="/fatura/relacao/cadastro" class="btn btn-primary mx-3">Cadastrar</a>
+        <a href="/fatura/relacao/cadastro" class="btn btn-primary mx-3 m-3">Cadastrar</a>
         
         <div v-if="invoicesRelations.length === 0" class="alert alert-info text-center">
             Nenhum local disponível no momento.
