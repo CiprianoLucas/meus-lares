@@ -21,6 +21,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR.parent, '.env'))
 
+try:
+    DB_HOST = env('DB_HOST')
+    DB_PORT = env('DB_PORT')
+except:
+    environ.Env.read_env(os.path.join(BASE_DIR, 'venv', '.env'))
+    DB_HOST = env('DB_HOST_DOCKER')
+    DB_PORT = env('DB_PORT_DOCKER')
+
 SECRET_KEY = (env("SECRET_KEY"),)
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
@@ -112,8 +120,8 @@ if env("ENV") == "production":
             "NAME": env("DB_NAME"),
             "USER": env("DB_USER"),
             "PASSWORD": env("DB_PASSWORD"),
-            "HOST": env("DB_HOST"),
-            "PORT": env("DB_PORT"),
+            "HOST": DB_HOST,
+            "PORT": DB_PORT,
         }
     }
     
@@ -147,8 +155,8 @@ else:
             "NAME": env("DB_NAME"),
             "USER": env("DB_USER"),
             "PASSWORD": env("DB_PASSWORD"),
-            "HOST": env("DB_HOST"),
-            "PORT": env("DB_PORT"),
+            "HOST": DB_HOST,
+            "PORT": DB_PORT,
         }
     }
     interface_port = env("INTERFACE_PORT")

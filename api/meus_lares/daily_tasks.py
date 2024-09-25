@@ -9,7 +9,7 @@ def run_django_command(command):
 
 def main():
     commands = [
-        'py api/manage.py getcelescinvoices',
+        '/usr/local/bin/poetry run python manage.py getcelescinvoices',
     ]
 
     for command in commands:

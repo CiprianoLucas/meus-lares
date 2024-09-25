@@ -8,8 +8,8 @@ class Command(BaseCommand):
         self.stdout.write("Buscando emails de fatura@celesc.com.br...")
         celesc_invoices = CelescInvoices()
         try:
-            celesc_invoices.post_celesc_invoices()
-            self.stdout.write(self.style.SUCCESS("Faturas inseridas com sucesso!"))
+            response = celesc_invoices.post_celesc_invoices()
+            self.stdout.write(self.style.SUCCESS(response))
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"Ocorreu um erro: {e}"))
         

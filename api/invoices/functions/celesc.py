@@ -7,19 +7,18 @@ from email.header import decode_header
 from django.db import transaction
 from invoices.models import Invoice, RelationInvoice
 
-# Inicializar environ
 env = environ.Env()
 environ.Env.read_env(os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env'))
 
 class CelescInvoices:
     EMAIL_HOST = env("EMAIL_HOST")
-    EMAIL_HOST_USER = env("EMAIL_HOST_USER")
-    EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+    EMAIL_CELESC_USER = env("EMAIL_CELESC_USER")
+    EMAIL_CELESC_PASSWORD = env("EMAIL_CELESC_PASSWORD")
     
     def __init__(self):
         pass
     
-    def post_celesc_invoices(self):
+    def post_celesc_invoices(self) -> str:
         email_bodies = self._get_celesc_emails()
         invoices_to_create = []
 
@@ -44,14 +43,16 @@ class CelescInvoices:
         if invoices_to_create:
             with transaction.atomic():
                 Invoice.objects.bulk_create(invoices_to_create)
+                
+        return f'Inseridas {len(invoices_to_create)} faturas.'
     
     def _get_celesc_emails(self):
         imap = imaplib.IMAP4_SSL(self.EMAIL_HOST)
-        imap.login(self.EMAIL_HOST_USER, self.EMAIL_HOST_PASSWORD)
+        imap.login(self.EMAIL_CELESC_USER, self.EMAIL_CELESC_PASSWORD)
         imap.select("inbox")
-        _, messages = imap.search(None, 'FROM', '"lucashcipriano14@gmail.com"')
+        _, messages = imap.search(None, '(UNSEEN FROM "lucashcipriano14@gmail.com")')
         email_bodies = []
-        messages = messages[0].split(b' ')
+        messages = messages[0].split(b' ') if messages[0] else []
         
         for mail_id in messages:
             _, msg_data = imap.fetch(mail_id, "(RFC822)")
@@ -72,7 +73,9 @@ class CelescInvoices:
                     else:
                         body = msg.get_payload(decode=True).decode("utf-8")
                         email_bodies.append(body)
-         
+                        
+            imap.store(mail_id, '+FLAGS', '\\Seen')
+                
         imap.close()
         imap.logout()
         

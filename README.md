@@ -67,3 +67,5 @@ exit
 ## Como Executar
 Após realizar a instalação e configuração, execute o servidor backend e frontend como descrito acima. Acesse a aplicação em http://localhost:{INTERFACE_PORT} para utilizar o frontend e http://localhost:{API_PORT}/admin para gerenciar o backend.
 
+#### Observações
+- api/crontab deve ser LF

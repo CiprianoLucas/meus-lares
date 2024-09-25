@@ -5,10 +5,12 @@ services:
     platform: linux/amd64
     container_name: meuslares-api
     build:
-      context: ./api
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./api/Dockerfile
     volumes:
       - ./api:/app
+      - ./api/logs:/var/log
+      - ./api/logs:/var/mail
     mem_limit: 512m
     memswap_limit: 1g
     env_file: ./.env
