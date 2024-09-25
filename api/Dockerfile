@@ -2,7 +2,7 @@ FROM python:3.12-slim
 WORKDIR /app
 
 COPY ./api /app
-COPY . .
+COPY ./.env /app/venv/
 COPY ./api/crontab /etc/cron.d/tasks-cron
 COPY ./api/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
