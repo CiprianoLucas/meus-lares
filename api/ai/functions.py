@@ -1,6 +1,7 @@
 from django.core import serializers
 from users.models import User
 from requests.models import Request
+from invoices.models import Invoice
 import json
 
 class AiFunctions:
@@ -19,11 +20,11 @@ class AiFunctions:
         try:
             username = args['username']
             user = User.objects.get(username=username)
-            requests = user.request_requester.all()
-            requests_json = serializers.serialize('json', requests, fields=('title', 'status', 'created_at'))
-            requests_data = json.loads(requests_json)
+            invoices = Invoice.objects.filter(relation__resident=user)
+            invoices_json = serializers.serialize('json', invoices, fields=('title', 'status', 'created_at'))
+            invoices_data = json.loads(invoices_json)
             
-            content = json.dumps({"requests": requests_data})
+            content = json.dumps({"invoices": invoices_data})
             content += 'A: ANDAMENTO, C: CONCLUIDO, P: PENDENTE'
             return content
         except:
