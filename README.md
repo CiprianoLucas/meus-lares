@@ -1,24 +1,43 @@
-# Centro de Chamados para Condomínios
-A aplicação tem como objetivo criar um centro de chamados de manutenção e reclamação para condomínios, utilizando Django Rest Framework para o backend e Vue 3 para o frontend.
+# Centro de Gestão para Condomínios
+Centro facilitador para condomínios, utilizando de diversas tecnologias para as mais diversas necessidades do mercado.
 
 ## Propósito
-O objetivo deste projeto é facilitar a comunicação entre os residentes de um condomínio e os responsáveis pela gestão, permitindo a criação e acompanhamento de chamados de manutenção e reclamação. A aplicação busca agilizar a resolução de problemas, melhorar a organização interna e proporcionar maior transparência no gerenciamento das demandas dos residentes.
+O objetivo deste projeto é facilitar o dia a dia dos residentes de um condomínio e dos responsáveis pela gestão, permitindo a criação e acompanhamento de chamados de manutenção e reclamação, integrações com sistemas públicos, interatividade com as informações disponibilizadas e demais funcionalidades. A aplicação busca agilizar a resolução de problemas, melhorar a organização interna e proporcionar maior transparência no gerenciamento das demandas dos residentes.
 
-## Funcionalidades
+## Funcionalidades aplicadas
 - Cadastro e Login de Usuários: Os usuários podem se registrar e fazer login para acessar o sistema.
+
 - Criação de Chamados: Os residentes podem criar chamados de manutenção e reclamação.
+
 - Acompanhamento de Chamados: Os usuários podem visualizar e acompanhar o status de seus chamados.
+
 - Gestão de Chamados: Os gestores do condomínio podem gerenciar e responder aos chamados.
+
+- Chat com Inteligência artificial para solicitar informações de dentro da aplicação.
+
+- Integração com a CELESC para recebimento simplificado das faturas
+
 ## Tecnologias Utilizadas
 - Backend:
-    - Django Rest Framework
+    - **Django Rest Framework**
+    - imap
+    - boto3
+    - gunicorn
+    - poetry
+
 - Frontend:
-    - Vue 3
+    - **Vue 3**
     - Bootstrap
     - Axios
+    - Vite
+    - Pinea
+    - Typescript
+    
 - Infraestrutura:
-    - Docker
-    - PostgreSQL
+    - **Docker**
+    - **PostgreSQL**
+    - cron
+    - supervisor
 
 ## Instalação
 ### Pré-requisitos obrigatórios
@@ -40,10 +59,9 @@ cd meus-lares
 ## Configuração obrigatória
 - Configure as variáveis de ambiente necessárias, como credenciais do banco de dados e chaves secretas, utilize os arquivos.exaple_env para criar um .env
 
-- Se você está usando Windows, provavelmente precisará ir ao arquivo /api/crontab e mudar de CRLF para LF
-
 - Certifique-se de que o backend e o frontend estejam apontando para os respectivos servidores e endpoints.
 
+- Se você está usando Windows, provavelmente precisará ir ao arquivo /api/crontab e mudar de CRLF para LF
 
 ### Configurando o ambiente
 Com docker em funcionamento, execute o comando para criar o container
@@ -58,17 +76,17 @@ poetry run python manage.py migrate
 exit
 ```
 ### Como demonstrar
-Após realizar a instalação e configuração, execute o servidor backend e frontend como descrito acima. Acesse a aplicação em http://localhost:{INTERFACE_PORT} para utilizar o frontend e http://localhost:{API_PORT}/admin para gerenciar o backend.
+Após realizar a instalação e configuração. Acesse a aplicação em http://localhost:{INTERFACE_PORT} para utilizar o frontend e http://localhost:{API_PORT} para visualizar os endpoints do backend.
 
 ## Configuração desenvolvimento
-#### Efetue a configuração obrigatória
+**Efetue a configuração obrigatória**
 
 O projeto é separado em duas aplicações, API (backend) e INTERFACE (frontend)
 
 ### Desenvolvimento Frontend
 Recomendo utilizar o endpoint do docker para fazer as requisições para o backend em vez do repositório principal.
 
-Acesse o repositório:
+A partir do diretório raiz do projeto, acesse o diretório de frontend:
 ```bash
 cd ./interface
 ```
@@ -86,15 +104,35 @@ Ao fazer esse comando ele retornará o endereço para visualizar a página. A te
 
 ### Desenvolvimento Backend
 
-Com o CMD na raiz do projeto, execute:
+A partir do diretório raiz do projeto, acesse o diretório de backend:
 ```bash
-poetry run python api/manage.py runserver
+cd ./api
+```
+
+Inicialmente precisamos criar um ambiente virtual e carrega-lo, execute:
+
+- _Windows_
+```bash
+python -m venv venv
+venv ./venv/Scripts/activate
+poetry install --with dev
+```
+
+- _Linux e Mac_
+```bash
+python -m venv venv
+venv ./venv/bin/activate
+poetry install --with dev
+```
+
+Para iniciar o servidor localmente execute:
+```bash
+python manage.py runserver
 ```
 Ao fazer esse comando ele retornará o endereço para visualizar a página. A API será atualizada sempre que modificar o diretório
 
 Se modificar algum model, será necessário efetuar as migrações, então execute:
-
 ```bash
-poetry run python api/manage.py makemigrations
-poetry run python api/manage.py migrate
+python manage.py makemigrations
+python manage.py migrate
 ```
