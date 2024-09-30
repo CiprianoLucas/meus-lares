@@ -164,9 +164,7 @@ else:
     CSRF_TRUSTED_ORIGINS = [
         f'http://localhost:{interface_port}',
         f'http://127.0.0.1:{interface_port}',
-        f'http://127.0.0.1:5500',
-        f'http://127.0.0.1:5500',
-    ]      
+    ]
 
     MEDIA_URL = "/media/"
     
@@ -183,6 +181,19 @@ else:
     ]
 
     CORS_ALLOW_CREDENTIALS = True 
+    
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': 'redis://127.0.0.1:6379/1',  # Endereço do Redis
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+                # Opcional: compactação dos dados
+                'COMPRESSOR': 'django_redis.compressors.zlib.ZlibCompressor',
+            },
+            'TIMEOUT': 60 * 15,  # Tempo de expiração do cache (15 minutos)
+        }
+    }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_HOST = env("EMAIL_HOST")

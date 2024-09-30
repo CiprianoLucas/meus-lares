@@ -38,8 +38,8 @@ typing-extensions = "4.12.2"
 tzdata = "2024.1"
 urllib3 = "2.2.2"
 celery = "^5.4.0"
-redis = "^5.0.8"
 beautifulsoup4 = "^4.12.3"
+django-redis = "^5.4.0"
 
 [tool.poetry.group.dev]
 optional = true

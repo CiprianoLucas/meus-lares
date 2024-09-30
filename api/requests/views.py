@@ -1,4 +1,5 @@
 from rest_framework import generics
+from django.core.cache import cache
 from rest_framework.permissions import IsAuthenticated
 from .models import Request
 from .serializers import RequestSerializer,RequestStatusSerializer
@@ -12,7 +13,10 @@ class RequestCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(requester=self.request.user)
+        request_instance = serializer.save(requester=self.request.user)
+        
+        cache_key = f'requests_{request_instance.requester.id}_data'
+        cache.delete(cache_key)
         
 class RequestListView(generics.ListAPIView):
     queryset = Request.objects.all()
@@ -21,11 +25,21 @@ class RequestListView(generics.ListAPIView):
     
     def get_queryset(self):
         user = self.request.user
-        return Request.objects.filter(
-            Q(is_active=True) & ( 
+        cache_key = f'requests_{user.id}_data'
+        cached_data = cache.get(cache_key)
+        
+        if cached_data:
+            return cached_data
+        
+        queryset = Request.objects.filter(
+            Q(is_active=True) & (
             Q(place__unions=user) | 
             Q(place__representative=user))
             ).distinct()
+        
+        cache.set(cache_key, queryset, timeout=60*60*24)
+        
+        return queryset
 
 
 class RequestDetailView(generics.RetrieveUpdateAPIView):
