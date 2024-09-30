@@ -3,6 +3,7 @@ media
 /api/static
 
 # Environments
+*.env.*
 *.env
 env/
 venv/
@@ -15,6 +16,7 @@ __pycache__
 node_modules/
 npm-debug.log
 yarn-error.log
+dist
 
 #Poetry
 *.pyc
