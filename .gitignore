@@ -16,7 +16,6 @@ __pycache__
 node_modules/
 npm-debug.log
 yarn-error.log
-dist
 /interface/dist
 
 #Poetry

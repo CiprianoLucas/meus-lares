@@ -176,8 +176,6 @@ else:
     CORS_ALLOWED_ORIGINS = [
         f"http://localhost:{interface_port}",
         f"http://127.0.0.1:{interface_port}",
-        f"http://127.0.0.1:5500",
-        f"http://127.0.0.1:5500",
     ]
 
     CORS_ALLOW_CREDENTIALS = True 
