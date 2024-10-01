@@ -1,6 +1,5 @@
 import axios from 'axios';
 import type { CustomAxiosInstance} from './interfaces'
-import Cookies from 'js-cookie';
 
 const api: CustomAxiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -27,7 +26,7 @@ api.interceptors.response.use(
 
 function getUserAndCsrf(){
     api.get('/user/info/').then(({data})=>{
-        api.defaults.headers.common['X-CSRFToken'] = Cookies.get('csrftoken');
+        api.defaults.headers.common['X-CSRFToken'] = data.csrftoken;
         if(data.username != "Anonimous"){
             localStorage.setItem("username", data.username)
             if (data.isResident){

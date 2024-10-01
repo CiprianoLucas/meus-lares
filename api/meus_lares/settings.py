@@ -164,6 +164,7 @@ else:
     CSRF_TRUSTED_ORIGINS = [
         f'http://localhost:{interface_port}',
         f'http://127.0.0.1:{interface_port}',
+        'https://meuslares.com.br',
     ]
 
     MEDIA_URL = "/media/"
@@ -176,9 +177,15 @@ else:
     CORS_ALLOWED_ORIGINS = [
         f"http://localhost:{interface_port}",
         f"http://127.0.0.1:{interface_port}",
+        'https://meuslares.com.br',
     ]
 
-    CORS_ALLOW_CREDENTIALS = True 
+    CORS_ALLOW_ALL_ORIGINS = True
+    CORS_ALLOW_CREDENTIALS = True
+    CSRF_COOKIE_SAMESITE = 'None'
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SAMESITE = 'None'
+    SESSION_COOKIE_SECURE = True
     
     CACHES = {
         'default': {

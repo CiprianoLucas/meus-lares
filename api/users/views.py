@@ -15,7 +15,7 @@ from django.db.models import Q
 
 @api_view(['GET'])
 def get_info(request):
-    get_token(request)
+    csrftoken = get_token(request)
     response = {'username': "Anonimous"}
     
     if request.user.is_authenticated:
@@ -28,6 +28,7 @@ def get_info(request):
             'username': user.username,
             'isResident' : is_resident,
             'isUnion' : is_union,
+            'csrftoken': csrftoken
         }
     
     return JsonResponse(response)
