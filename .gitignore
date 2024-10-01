@@ -3,6 +3,7 @@ media
 /api/static
 
 # Environments
+*.env.*
 *.env
 env/
 venv/
