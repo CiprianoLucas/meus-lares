@@ -31,7 +31,7 @@ except:
 
 SECRET_KEY = (env("SECRET_KEY"),)
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "54.233.1.189"]
 
 INSTALLED_APPS = [
     'storages',
