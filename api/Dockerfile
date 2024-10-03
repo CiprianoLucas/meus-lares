@@ -3,6 +3,7 @@ WORKDIR /app
 
 COPY ./api /app
 COPY ./.env /app/venv/
+COPY ./.env /app/interface/
 COPY ./api/crontab /etc/cron.d/tasks-cron
 COPY ./api/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
