@@ -24,17 +24,6 @@ services:
     networks:
       - meuslares-network
 
-  interface:
-    platform: linux/amd64
-    container_name: meuslares-interface
-    build: 
-      context: ./interface
-      dockerfile: Dockerfile.prod
-    volumes:
-      - ./api/static:/dest
-    env_file: ./.env
-    restart: "no"
-
   db:
     image: postgres:15
     container_name: meuslares-db
