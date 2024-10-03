@@ -2,7 +2,6 @@
 media
 private
 static_root
-static
 
 # Environments
 *.env.*
