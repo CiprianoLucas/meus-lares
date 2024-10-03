@@ -149,7 +149,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 if env("ENV") == "production":
     DEBUG = False
     
-    ALLOWED_HOSTS = ["meuslares.com.br", "api.meuslares.com.br"]
+    ALLOWED_HOSTS = ["meuslares.com.br", "api.meuslares.com.br", "localhost"]
 
     SITE = "api.meuslares.com.br"
     
