@@ -19,8 +19,18 @@ services:
       - "${API_PORT}:8000"
     depends_on:
       - db
+      - interface
+      - redis
     networks:
       - meuslares-network
+
+  interface:
+    platform: linux/amd64
+    container_name: meuslares-interface
+    build: 
+      context: ./interface
+      dockerfile: Dockerfile.prod
+    env_file: ./.env
 
   db:
     image: postgres:15
