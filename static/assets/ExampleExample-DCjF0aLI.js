@@ -1,1 +1,0 @@
-import{d as t,r as s,f as o,c,a as n,t as r,e as l,o as p}from"./index-CEv88vVO.js";const m={class:"container"},x=t({__name:"ExampleExample",setup(u){const e=s(""),a=()=>{l.get("/example/").then(()=>{e.value="Example: Success"}).catch(()=>{e.value="Example: Error"})};return o(()=>{a()}),(_,i)=>(p(),c("div",m,[n("p",null,r(e.value),1)]))}});export{x as default};
