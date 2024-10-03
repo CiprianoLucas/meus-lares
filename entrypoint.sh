@@ -1,5 +1,6 @@
 #!/bin/bash
 cd "$(dirname "$0")"
+source /.env
 git pull
 cd interface
 npm i
