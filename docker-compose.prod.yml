@@ -19,7 +19,6 @@ services:
       - "${API_PORT}:8000"
     depends_on:
       - db
-      - interface
       - redis
     networks:
       - meuslares-network
