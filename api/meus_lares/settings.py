@@ -216,7 +216,6 @@ if env("ENV") == "production":
                 "access_key": AWS_ACCESS_KEY_ID,
                 "secret_key": AWS_SECRET_ACCESS_KEY,
                 "bucket_name": AWS_STORAGE_BUCKET_NAME,
-                "location": AWS_STATIC_LOCATION,
                 "default_acl": AWS_DEFAULT_ACL,
                 "object_parameters": AWS_S3_OBJECT_PARAMETERS,
             },

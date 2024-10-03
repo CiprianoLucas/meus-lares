@@ -10,12 +10,11 @@ services:
     volumes:
       - ./api/logs:/var/log
       - ./api/logs:/var/mail
-    mem_limit: 512m
-    memswap_limit: 1g
     env_file: ./.env
     environment:
       - DB_PORT=${DB_PORT_DOCKER}
       - DB_HOST=${DB_HOST_DOCKER}
+      - IS_DOCKER=True
     ports:
       - "${API_PORT}:8000"
     depends_on:
