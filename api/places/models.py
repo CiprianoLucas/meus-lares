@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import User
+from meus_lares.storages import PrivateMediaStorage, PublicMediaStorage
 import uuid
 class Place(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -13,7 +14,7 @@ class Place(models.Model):
     state = models.CharField(max_length=2)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    profile_photo = models.ImageField(upload_to='places/profile-photo/', blank=True)
+    profile_photo = models.ImageField(upload_to='places/profile-photo/', blank=True, storage=PrivateMediaStorage())
 
     def __str__(self):
         return self.name

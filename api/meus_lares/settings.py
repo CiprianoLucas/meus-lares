@@ -35,7 +35,6 @@ else:
 SECRET_KEY = (env("SECRET_KEY"),)
 
 INSTALLED_APPS = [
-    'storages',
     'corsheaders',
     'rest_framework',
     'django.contrib.admin',
@@ -49,6 +48,7 @@ INSTALLED_APPS = [
     'requests.apps.RequestsConfig',
     'invoices.apps.InvoicesConfig',
     'ai.apps.AiConfig',
+    'storages',
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -144,44 +144,84 @@ EMAIL_USE_TLS = env("EMAIL_USE_TLS")
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 
-if env("ENV") == "production":
-    
-    ALLOWED_HOSTS = ["meuslares.com.br"]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
+if env("ENV") == "production":
     DEBUG = False
+    
+    ALLOWED_HOSTS = ["meuslares.com.br", "api.meuslares.com.br", "localhost"]
+
     SITE = "api.meuslares.com.br"
     
     CSRF_TRUSTED_ORIGINS = [
         'https://meuslares.com.br',
+        'https://api.meuslares.com.br',
     ]
     
     CORS_ALLOWED_ORIGINS = [
-        'https://meuslares.com.br'
+        'https://meuslares.com.br',
+        'https://api.meuslares.com.br'
     ]
     
     AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
     AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
-    AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN")
     AWS_S3_OBJECT_PARAMETERS = {
         "CacheControl": "max-age=86400",
     }
     AWS_S3_SIGNATURE_VERSION = 's3v4'
     AWS_S3_FILE_OVERWRITE = False
-    AWS_DEFAULT_ACL = "public-read"
-    AWS_STATIC_LOCATION = "static"
-    AWS_MEDIA_LOCATION = "media"
-    
-    AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN")
+    AWS_DEFAULT_ACL = 'public-read'
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}'
 
-    MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_MEDIA_LOCATION}/"
+    AWS_STATIC_LOCATION = "static"
     STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_STATIC_LOCATION}/"
     
-    STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+    AWS_MEDIA_LOCATION = "media"
+    MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_MEDIA_LOCATION}/"
     
-    STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-    DEFAULT_FILE_STORAGE = "meus_lares.storage_backends.MediaStorage"
+    AWS_PRIVATE_MEDIA_LOCATION = "private"
+    PRIVATE_MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_PRIVATE_MEDIA_LOCATION}/"
+    
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+            "OPTIONS": {
+                "access_key": AWS_ACCESS_KEY_ID,
+                "secret_key": AWS_SECRET_ACCESS_KEY,
+                "bucket_name": AWS_STORAGE_BUCKET_NAME,
+                "custom_domain": AWS_S3_CUSTOM_DOMAIN,
+                "default_acl": AWS_DEFAULT_ACL,
+                "object_parameters": AWS_S3_OBJECT_PARAMETERS,
+                "location": AWS_MEDIA_LOCATION,
+            },
+        },
+        "private": {
+            "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+            "OPTIONS": {
+                "access_key": AWS_ACCESS_KEY_ID,
+                "secret_key": AWS_SECRET_ACCESS_KEY,
+                "bucket_name": AWS_STORAGE_BUCKET_NAME,
+                "custom_domain": AWS_S3_CUSTOM_DOMAIN,
+                "default_acl": "private",
+                "location": PRIVATE_MEDIA_URL,
+                "object_parameters": {
+                    "CacheControl": "max-age=86400",
+                },
+            },
+        },
+        "staticfiles": {
+            "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+            "OPTIONS": {
+                "access_key": AWS_ACCESS_KEY_ID,
+                "secret_key": AWS_SECRET_ACCESS_KEY,
+                "bucket_name": AWS_STORAGE_BUCKET_NAME,
+                "location": AWS_STATIC_LOCATION,
+                "default_acl": AWS_DEFAULT_ACL,
+                "object_parameters": AWS_S3_OBJECT_PARAMETERS,
+            },
+        },
+    }
     
     # SECURE_SSL_REDIRECT = True
     # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -208,11 +248,10 @@ else:
     MEDIA_URL = "/media/"
     STATIC_URL = "static/"
     
-    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
     STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-    
     STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+    
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
     DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
     
     SECURE_SSL_REDIRECT = False
