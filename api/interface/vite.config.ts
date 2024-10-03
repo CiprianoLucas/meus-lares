@@ -15,7 +15,7 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
-    outDir: '../api/static',
+    outDir: '../static',
   },
   server: {
     watch: {

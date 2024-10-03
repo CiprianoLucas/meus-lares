@@ -21,23 +21,6 @@ services:
       - db
     networks:
       - meuslares-network
-    
-  interface:
-    platform: linux/amd64
-    container_name: meuslares-interface
-    build: 
-      context: ./interface
-      dockerfile: Dockerfile
-    volumes:
-      - ./interface/src:/app/src
-      - ./interface/public:/app/public
-    mem_limit: 512m
-    memswap_limit: 1g
-    env_file: ./.env
-    ports:
-      - "${INTERFACE_PORT}:9001"
-    networks:
-      - meuslares-network
 
   db:
     image: postgres:15
