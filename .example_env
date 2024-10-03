@@ -27,3 +27,7 @@ EMAIL_HOST_USER=email@gmail.com
 EMAIL_HOST_PASSWORD=your_password
 EMAIL_CELESC_USER=email@gmail.com
 EMAIL_CELESC_PASSWORD=your_password
+# Redis
+REDIS_PORT=6379
+REDIS_IP=127.0.0.1
+IS_DOCKER=False

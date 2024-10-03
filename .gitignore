@@ -1,6 +1,6 @@
 # Django
 media
-/api/static
+/api/static_root
 
 # Environments
 *.env.*

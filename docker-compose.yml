@@ -16,6 +16,7 @@ services:
     environment:
       - DB_PORT=${DB_PORT_DOCKER}
       - DB_HOST=${DB_HOST_DOCKER}
+      - IS_DOCKER=True
     ports:
       - "${API_PORT}:8000"
     depends_on:
@@ -58,7 +59,9 @@ services:
   redis:
     image: "redis:latest"
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:6379"
+    networks:
+      - meuslares-network
     
 networks:
   meuslares-network:

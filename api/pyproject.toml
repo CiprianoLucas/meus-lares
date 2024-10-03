@@ -17,7 +17,7 @@ dj-rest-auth = "6.0.0"
 django = "5.1"
 django-cors-headers = "4.4.0"
 django-environ = "0.11.2"
-django-storages = "1.14.4"
+django-storages = {extras = ["boto3"], version = "^1.14.4"}
 djangorestframework = "3.15.2"
 h11 = "0.14.0"
 httpcore = "1.0.5"
@@ -40,6 +40,10 @@ urllib3 = "2.2.2"
 celery = "^5.4.0"
 beautifulsoup4 = "^4.12.3"
 django-redis = "^5.4.0"
+gunicorn = "^23.0.0"
+s3transfer = "0.10.2"
+boto3 = "1.35.14"
+botocore = "1.35.14"
 
 [tool.poetry.group.dev]
 optional = true
@@ -52,10 +56,6 @@ optional = true
 
 [tool.poetry.group.prod.dependencies]
 psycopg2-binary = "2.9.9"
-gunicorn = "^23.0.0"
-s3transfer = "0.10.2"
-boto3 = "1.35.14"
-botocore = "1.35.14"
 
 [build-system]
 requires = ["poetry-core"]

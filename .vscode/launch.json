@@ -9,7 +9,7 @@
             "type": "debugpy",
             "request": "launch",
             "args": [
-                "runserver"
+                "collectstatic"
             ],
             "django": true,
             "autoStartBrowser": false,

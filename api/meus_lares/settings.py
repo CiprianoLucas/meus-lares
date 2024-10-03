@@ -21,17 +21,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR.parent, '.env'))
 
-try:
-    DB_HOST = env('DB_HOST')
-    DB_PORT = env('DB_PORT')
-except:
+IS_DOCKER = env("IS_DOCKER") == "True"
+
+if IS_DOCKER:
     environ.Env.read_env(os.path.join(BASE_DIR, 'venv', '.env'))
     DB_HOST = env('DB_HOST_DOCKER')
     DB_PORT = env('DB_PORT_DOCKER')
+else:
+    DB_HOST = env('DB_HOST')
+    DB_PORT = env('DB_PORT')
+    
 
 SECRET_KEY = (env("SECRET_KEY"),)
-
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "54.233.1.189"]
 
 INSTALLED_APPS = [
     'storages',
@@ -110,11 +111,10 @@ USE_I18N = True
 
 USE_TZ = True
 
-if env("ENV") == "production":
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
-    DEBUG = False
-
-    DATABASES = {
+DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
             "NAME": env("DB_NAME"),
@@ -124,69 +124,11 @@ if env("ENV") == "production":
             "PORT": DB_PORT,
         }
     }
-    
-    SITE = "meuslares.com.br"
 
-    AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
-    AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
-    AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
-    AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
-    AWS_S3_OBJECT_PARAMETERS = {
-        "CacheControl": "max-age=86400",
-    }
-    AWS_STATIC_LOCATION = "static"
-    AWS_MEDIA_LOCATION = "media"
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-
-    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_STATIC_LOCATION}/"
-    STATIC_ROOT = os.path.join(BASE_DIR, "static")
-
-    STATICFILES_STORAGE = "null"
-    MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_MEDIA_LOCATION}/"
-    DEFAULT_FILE_STORAGE = "null"
-    
-else:
-
-    DEBUG = True
-
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": env("DB_NAME"),
-            "USER": env("DB_USER"),
-            "PASSWORD": env("DB_PASSWORD"),
-            "HOST": DB_HOST,
-            "PORT": DB_PORT,
-        }
-    }
-    interface_port = env("INTERFACE_PORT")
-    
-    CSRF_TRUSTED_ORIGINS = [
-        f'http://localhost:{interface_port}',
-        f'http://127.0.0.1:{interface_port}',
-        'https://meuslares.com.br',
-    ]
-
-    MEDIA_URL = "/media/"
-    
-    SITE = f"localhost:{interface_port}"
-
-    STATIC_URL = "statics/"
-    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-    
-    CORS_ALLOWED_ORIGINS = [
-        f"http://localhost:{interface_port}",
-        f"http://127.0.0.1:{interface_port}",
-        'https://meuslares.com.br',
-    ]
-
-    CORS_ALLOW_ALL_ORIGINS = True
-    CORS_ALLOW_CREDENTIALS = True
-    
-    CACHES = {
+CACHES = {
         'default': {
             'BACKEND': 'django_redis.cache.RedisCache',
-            'LOCATION': 'redis://127.0.0.1:6379/1',
+            'LOCATION': f'redis://{"redis" if IS_DOCKER else env("REDIS_IP")}:{env("REDIS_PORT")}/1',
             'OPTIONS': {
                 'CLIENT_CLASS': 'django_redis.client.DefaultClient',
                 'COMPRESSOR': 'django_redis.compressors.zlib.ZlibCompressor',
@@ -201,3 +143,80 @@ EMAIL_PORT = env("EMAIL_PORT")
 EMAIL_USE_TLS = env("EMAIL_USE_TLS")
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+
+if env("ENV") == "production":
+    
+    ALLOWED_HOSTS = ["meuslares.com.br"]
+
+    DEBUG = False
+    SITE = "api.meuslares.com.br"
+    
+    CSRF_TRUSTED_ORIGINS = [
+        'https://meuslares.com.br',
+    ]
+    
+    CORS_ALLOWED_ORIGINS = [
+        'https://meuslares.com.br'
+    ]
+    
+    AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+    AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN")
+    AWS_S3_OBJECT_PARAMETERS = {
+        "CacheControl": "max-age=86400",
+    }
+    AWS_S3_SIGNATURE_VERSION = 's3v4'
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_DEFAULT_ACL = "public-read"
+    AWS_STATIC_LOCATION = "static"
+    AWS_MEDIA_LOCATION = "media"
+    
+    AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN")
+
+    MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_MEDIA_LOCATION}/"
+    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_STATIC_LOCATION}/"
+    
+    STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+    
+    STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+    DEFAULT_FILE_STORAGE = "meus_lares.storage_backends.MediaStorage"
+    
+    # SECURE_SSL_REDIRECT = True
+    # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+    
+else:
+
+    interface_port = env("INTERFACE_PORT")
+    
+    ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+    
+    DEBUG = True
+    SITE = f"localhost:{interface_port}"
+    CSRF_TRUSTED_ORIGINS = [
+        f'http://localhost:{interface_port}',
+        f'http://127.0.0.1:{interface_port}',
+    ]
+
+    CORS_ALLOWED_ORIGINS = [
+        f"http://localhost:{interface_port}",
+        f"http://127.0.0.1:{interface_port}",
+    ]
+    
+    MEDIA_URL = "/media/"
+    STATIC_URL = "static/"
+    
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+    STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+    
+    STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+    
+    SECURE_SSL_REDIRECT = False
+
+    
+
+
