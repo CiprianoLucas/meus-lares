@@ -19,6 +19,7 @@ services:
       - "${API_PORT}:8000"
     depends_on:
       - db
+      - redis
     networks:
       - meuslares-network
 
@@ -40,7 +41,7 @@ services:
   redis:
     image: "redis:latest"
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:6379"
     networks:
       - meuslares-network
     
