@@ -30,7 +30,10 @@ services:
     build: 
       context: ./interface
       dockerfile: Dockerfile.prod
+    volumes:
+      - ./api/static:/dest
     env_file: ./.env
+    restart: "no"
 
   db:
     image: postgres:15
