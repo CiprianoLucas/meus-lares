@@ -1,5 +1,5 @@
 #!/bin/bash
-cd "$(dirname "$0")"
+cd /home/ubuntu/meus-lares/
 . .env
-sudo docker-compose -f docker-compose.prod.yml up -d
+docker-compose -f docker-compose.prod.yml up
 exit 0
