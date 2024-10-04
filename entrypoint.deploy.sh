@@ -2,8 +2,8 @@
 cd "$(dirname "$0")"
 . .env
 cd interface
-npm i
-npm run build
+sudo npm i
+sudo npm run build
 cd ..
-docker-compose -f docker-compose.prod.yml up -d --build
+sudo docker-compose -f docker-compose.prod.yml up -d --build
 exit 0
