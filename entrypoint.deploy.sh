@@ -1,9 +1,9 @@
 #!/bin/bash
-cd "$(dirname "$0")"
+cd /home/ubuntu/meus-lares/
 . .env
 cd interface
 npm i
-sudo npm run build
+npm run build
 cd ..
-sudo docker-compose -f docker-compose.prod.yml up -d --build
+docker-compose -f docker-compose.prod.yml up -d --build
 exit 0
