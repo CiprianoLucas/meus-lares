@@ -145,11 +145,31 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+
+AWS_S3_OBJECT_PARAMETERS = {
+    "CacheControl": "max-age=86400",
+}
+AWS_S3_SIGNATURE_VERSION = 's3v4'
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = 'public-read'
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}'
+
+AWS_STATIC_LOCATION = "static"
+STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_STATIC_LOCATION}/"
+
+AWS_MEDIA_LOCATION = "media"
+MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_MEDIA_LOCATION}/"
+
+AWS_PRIVATE_MEDIA_LOCATION = "private"
+PRIVATE_MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_PRIVATE_MEDIA_LOCATION}/"
 
 if env("ENV") == "production":
     DEBUG = False
     
-    ALLOWED_HOSTS = ["meuslares.com.br", "api.meuslares.com.br", "localhost"]
+    ALLOWED_HOSTS = ["meuslares.com.br", "api.meuslares.com.br"]
 
     SITE = "api.meuslares.com.br"
     
@@ -162,26 +182,6 @@ if env("ENV") == "production":
         'https://meuslares.com.br',
         'https://api.meuslares.com.br'
     ]
-    
-    AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
-    AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
-    AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
-    AWS_S3_OBJECT_PARAMETERS = {
-        "CacheControl": "max-age=86400",
-    }
-    AWS_S3_SIGNATURE_VERSION = 's3v4'
-    AWS_S3_FILE_OVERWRITE = False
-    AWS_DEFAULT_ACL = 'public-read'
-    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}'
-
-    AWS_STATIC_LOCATION = "static"
-    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_STATIC_LOCATION}/"
-    
-    AWS_MEDIA_LOCATION = "media"
-    MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_MEDIA_LOCATION}/"
-    
-    AWS_PRIVATE_MEDIA_LOCATION = "private"
-    PRIVATE_MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_PRIVATE_MEDIA_LOCATION}/"
     
     STORAGES = {
         "default": {
@@ -248,13 +248,7 @@ else:
     STATIC_URL = "static/"
     
     STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
-    STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
-    
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
-    
-    SECURE_SSL_REDIRECT = False
 
     
-
 
