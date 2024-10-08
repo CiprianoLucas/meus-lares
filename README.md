@@ -69,12 +69,6 @@ Com docker em funcionamento, execute o comando para criar o container
 docker compose up -d --build
 ```
 
-Na primeira vez será necessário efetuar as migrações.
-```bash
-docker exec -it meuslares-api /bin/bash
-poetry run python manage.py migrate
-exit
-```
 ### Como demonstrar
 Após realizar a instalação e configuração. Acesse a aplicação em http://localhost:{INTERFACE_PORT} para utilizar o frontend e http://localhost:{API_PORT} para visualizar os endpoints do backend.
 
