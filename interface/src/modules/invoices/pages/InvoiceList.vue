@@ -28,13 +28,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { api } from '@/http'
+import app from '@/app'
 import { type Invoice } from '../interfaces'
-const invoices = ref<Invoice[]>([]);
+const invoices = app.ref<Invoice[]>([]);
 
-onMounted(() => {
-    api.get('/invoice/invoices/')
+app.onMounted(() => {
+    app.api.get('/invoice/invoices/')
     .then(response => {
         invoices.value = response.data;
     })

@@ -57,24 +57,21 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
-import { api } from "@/http";
-import { useRoute } from "vue-router";
+import app from '@/app'
 import { type User } from "../../user/interfaces"
 
-const unions = ref<User[]>([]);
-const newUnionEmail = ref("");
-const errorMessage = ref("");
-const route = useRoute();
-const placeId = ref(route.params.id)
+const unions = app.ref<User[]>([]);
+const newUnionEmail = app.ref("");
+const errorMessage = app.ref("");
+const route = app.useRoute();
+const placeId = app.ref(route.params.id)
 
-onMounted(() => {
+app.onMounted(() => {
   fetchUnions();
 });
 
 function fetchUnions() {
-  api
-    .get(`/place/${placeId.value}/unions/`)
+  app.api.get(`/place/${placeId.value}/unions/`)
     .then((response) => {
       unions.value = response.data;
     })
@@ -84,30 +81,28 @@ function fetchUnions() {
 }
 
 function deleteUnion(userId: string) {
-  api
-    .delete(`/place/${placeId.value}/unions/${userId}`)
-    .then(() => {
-      unions.value = unions.value.filter((resident) => resident.id !== userId);
-    })
-    .catch((error) => {
-      console.error("Erro ao deletar o síndico:", error);
-    });
+	app.api.delete(`/place/${placeId.value}/unions/${userId}`)
+		.then(() => {
+			unions.value = unions.value.filter((resident) => resident.id !== userId);
+		})
+		.catch((error) => {
+			console.error("Erro ao deletar o síndico:", error);
+		});
 }
 
 function addUnion() {
 
-  api
-    .post(`/place/${placeId.value}/unions/`, { email: newUnionEmail.value })
-    .then((response) => {
-      unions.value.push(response.data)
-      newUnionEmail.value = ""
-      errorMessage.value = ""
-    })
-    .catch((error) => {
-      console.error("Erro ao adicionar o síndico:", error);
-      errorMessage.value =
-        "Não foi possível adicionar o síndico. Verifique o email e tente novamente."
-    });
+  app.api.post(`/place/${placeId.value}/unions/`, { email: newUnionEmail.value })
+		.then((response) => {
+			unions.value.push(response.data)
+			newUnionEmail.value = ""
+			errorMessage.value = ""
+		})
+		.catch((error) => {
+			console.error("Erro ao adicionar o síndico:", error);
+			errorMessage.value =
+			"Não foi possível adicionar o síndico. Verifique o email e tente novamente."
+		});
 }
 </script>
 

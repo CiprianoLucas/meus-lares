@@ -39,17 +39,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { api } from '@/http'
+import app from '@/app'
 import { type Request, typeMap, statusMap } from '../interfaces'
 
-const requestList = ref<Request[]>([]);
+const requestList = app.ref<Request[]>([]);
 
-const carregando = ref(true)
+const carregando = app.ref(true)
 
 function capture(id: string) {
-    api
-    .put(`/request/pendents/${id}/`, { status: 'A' })
+    app.api.put(`/request/pendents/${id}/`, { status: 'A' })
     .then(() => {
         let obj = requestList.value.find(item => item.id === id)
         if (obj) obj.status = 'A';
@@ -59,14 +57,14 @@ function capture(id: string) {
     });
 }
 
-onMounted(() => {
-    api.get('/request/pendents')
+app.onMounted(() => {
+    app.api.get('/request/pendents')
     .then(response => {
         requestList.value = response.data;
         carregando.value = false
     })
-    .catch(error => {
-        console.error("Erro ao obter a lista de chamados pendentes:", error);
+    .catch(() => {
+        app.popup('Erro!', 'Falha ao obter a lista de chamados', 'warning')
     });
 });
 </script>

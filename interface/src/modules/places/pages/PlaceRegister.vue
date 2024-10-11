@@ -66,15 +66,13 @@
 </template>
   
 <script lang="ts" setup>
-    import { ref, onMounted } from 'vue'
-	import { useRoute, useRouter } from 'vue-router'
-    import { api } from '@/http'
+    import app from '@/app'
     
-	const route = useRoute();
-	const router = useRouter();
-	const placeId = ref(route.params.id);
+	const route = app.useRoute();
+	const router = app.useRouter();
+	const placeId = app.ref(route.params.id);
 
-    const placeForm = ref({
+    const placeForm = app.ref({
         name: '',
         number: '',
         street: '',
@@ -83,7 +81,7 @@
     });
 
     function registerPlace() {
-        api.post('/place/', placeForm.value)
+        app.api.post('/place/', placeForm.value)
 		.then(({data})=>{
 			placeId.value = data.id
 			router.push({ name: 'condominio_editar', params: { id: data.id } })
@@ -91,12 +89,12 @@
     };
 
 	function updatePlace() {
-        api.put(`/place/${placeId.value}/`, placeForm.value)
+        app.api.put(`/place/${placeId.value}/`, placeForm.value)
     };
 
-	onMounted(() => {
+	app.onMounted(() => {
 		if (placeId.value){
-			api.get(`/place/${placeId.value}/`)
+			app.api.get(`/place/${placeId.value}/`)
 			.then(response => {
 				placeForm.value = response.data;
 			})

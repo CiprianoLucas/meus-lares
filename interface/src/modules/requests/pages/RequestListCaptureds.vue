@@ -36,16 +36,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { api } from '@/http'
+import app from '@/app'
 import { type Request, typeMap, statusMap } from '../interfaces'
 
 // Armazena a lista de chamados pendentes
-const requestList = ref<Request[]>([]);
+const requestList = app.ref<Request[]>([]);
 
 function updateRequest(id: string, status: 'P' | 'A' | 'C') {
-    api
-    .put(`/request/pendents/${id}/`, { status: status })
+    app.api.put(`/request/pendents/${id}/`, { status: status })
     .then(() => {
         let obj = requestList.value.find(item => item.id === id)
         if (obj) obj.status = status;
@@ -55,8 +53,8 @@ function updateRequest(id: string, status: 'P' | 'A' | 'C') {
     });
 }
 
-onMounted(() => {
-    api.get('/request/guardians/')
+app.onMounted(() => {
+    app.api.get('/request/guardians/')
     .then(response => {
         requestList.value = response.data;
     })

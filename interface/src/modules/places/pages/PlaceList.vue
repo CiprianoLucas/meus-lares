@@ -34,13 +34,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { api } from '@/http'
+import app from '@/app'
 import { type Place } from '../../places/interfaces'
-const places = ref<Place[]>([]);
+const places = app.ref<Place[]>([]);
 
-onMounted(() => {
-    api.get('/place/unions/')
+app.onMounted(() => {
+    app.api.get('/place/unions/')
     .then(response => {
         places.value = response.data;
     })

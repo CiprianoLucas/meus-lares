@@ -60,20 +60,18 @@
 </template>
   
 <script lang="ts" setup>
-    import { ref, onMounted } from 'vue'
-	import { useRoute, useRouter } from 'vue-router'
+    import app from '@/app'
     import { type Place } from '../../places/interfaces'
     import { type User } from '../../user/interfaces'
-    import { api } from '@/http'
     import { companyMap } from '../interfaces'
     
-	const route = useRoute();
-	const router = useRouter();
-	const invoiceRelationId = ref(route.params.id);
-    const places = ref<Place[]>([]);
-    const residents = ref<User[]>([]);
+	const route = app.useRoute();
+	const router = app.useRouter();
+	const invoiceRelationId = app.ref(route.params.id);
+    const places = app.ref<Place[]>([]);
+    const residents = app.ref<User[]>([]);
 
-    const invoiceRelationForm = ref({
+    const invoiceRelationForm = app.ref({
         company: '',
         unit_number: '',
         resident: '',
@@ -81,7 +79,7 @@
     });
 
     function updateSelectRedidents() {
-        api.get(`/place/${invoiceRelationForm.value.place}/residents/`)
+        app.api.get(`/place/${invoiceRelationForm.value.place}/residents/`)
 		.then(response => {
             residents.value = response.data;
         })
@@ -91,7 +89,7 @@
     }
 
     function registerInvoiceRelation() {
-        api.post('/invoice/relation-invoices/', invoiceRelationForm.value)
+        app.api.post('/invoice/relation-invoices/', invoiceRelationForm.value)
 		.then(({data})=>{
 			invoiceRelationId.value = data.id
 			router.push({ name: 'relacao-fatura-lista', params: { id: data.id } })
@@ -99,11 +97,11 @@
     };
 
 	function updateInvoiceRelation() {
-        api.put(`/invoice/relation-invoices/${invoiceRelationId.value}/`, invoiceRelationForm.value)
+        app.api.put(`/invoice/relation-invoices/${invoiceRelationId.value}/`, invoiceRelationForm.value)
     };
 
-	onMounted(() => {
-        api.get('/place/unions/')
+	app.onMounted(() => {
+        app.api.get('/place/unions/')
         .then(response => {
             places.value = response.data;
         })
@@ -111,7 +109,7 @@
             console.error("Erro ao obter a lista de locais:", error);
         });
 		if (invoiceRelationId.value){
-			api.get(`/invoice/relation-invoices/${invoiceRelationId.value}/`)
+			app.api.get(`/invoice/relation-invoices/${invoiceRelationId.value}/`)
 			.then(response => {
 				invoiceRelationForm.value = response.data;
                 updateSelectRedidents()

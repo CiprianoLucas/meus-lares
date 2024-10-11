@@ -35,13 +35,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { api } from '@/http'
+import app from '@/app'
 import { type InvoiceRelation } from '../interfaces'
-const invoicesRelations = ref<InvoiceRelation[]>([]);
+const invoicesRelations = app.ref<InvoiceRelation[]>([]);
 
 function exclude(id: string) {
-    api.delete(`/invoice/relation-invoices/${id}/`)
+    app.api.delete(`/invoice/relation-invoices/${id}/`)
     .then(() => {
         invoicesRelations.value = invoicesRelations.value.filter(invoice => invoice.id !== id);
     })
@@ -50,8 +49,8 @@ function exclude(id: string) {
     });
 }
 
-onMounted(() => {
-    api.get('/invoice/relation-invoices/')
+app.onMounted(() => {
+    app.api.get('/invoice/relation-invoices/')
     .then(response => {
         invoicesRelations.value = response.data;
     })
