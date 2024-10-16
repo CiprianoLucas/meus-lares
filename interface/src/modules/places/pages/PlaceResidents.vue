@@ -65,42 +65,49 @@ const newResidentEmail = app.ref("");
 const errorMessage = app.ref("");
 const route = app.useRoute();
 const placeId = app.ref(route.params.id)
+const url = `/place/${placeId.value}/residents/`
+
+const inputs = {
+    email: "E-mail",
+}
 
 app.onMounted(() => {
   fetchResidents();
 });
 
 function fetchResidents() {
-  app.api.get(`/place/${placeId.value}/residents/`)
-    .then(({data}) => {
+  app.api.getCashed<User[]>(url)
+    .then((data) => {
      	residents.value = data;
     })
-    .catch((error) => {
-      	console.error("Erro ao obter a lista de residentes:", error);
+    .catch(() => {
+      app.popup("Erro!", "Falha ao listar os residentes.", "warning")
     });
 }
 
 function deleteResident(userId: string) {
-  app.api.delete(`/place/${placeId.value}/residents/${userId}`)
+  app.api.delete(url + userId)
 		.then(() => {
 			residents.value = residents.value.filter((resident) => resident.id !== userId);
+      sessionStorage.removeItem(url)
+      app.popup("Sucesso!", "Residente excluido com sucesso.", "success")
 		})
-		.catch((error) => {
-			console.error("Erro ao deletar o residente:", error);
+		.catch(() => {
+			app.popup("Erro!", "Falha ao excluir um residente.", "warning")
 		});
 }
 
 function addResident() {
-    app.api.post(`/place/${placeId.value}/residents/`, { email: newResidentEmail.value })
+    app.api.post(url, { email: newResidentEmail.value })
 		.then((response) => {
 			residents.value.push(response.data);
 			newResidentEmail.value = "";
 			errorMessage.value = "";
+      sessionStorage.removeItem(url)
+      app.popup("Sucesso!", "Residente cadastrado com sucesso.", "success")
 		})
 		.catch((error) => {
-			console.error("Erro ao adicionar o residente:", error);
-			errorMessage.value =
-			"Não foi possível adicionar o residente. Verifique o email e tente novamente.";
+      app.popup("Erro!", app.resumeErrors(error, inputs), "warning")
 		});
 }
 </script>

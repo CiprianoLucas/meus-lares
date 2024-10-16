@@ -2,7 +2,7 @@
     <transition>
         <div v-if="visible" class="popup">
             <div :class="`alert alert-${type} alert-dismissible`" role="alert">
-                <strong>{{ title }}</strong> {{ message }}
+                <strong >{{ title }}</strong><br><p v-html="message"></p>
                 <button type="button" class="btn-close" aria-label="Fechar" @click="forceRemovePopup"></button>
             </div>
         </div>

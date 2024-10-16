@@ -39,14 +39,15 @@ import { type Place } from '../../places/interfaces'
 const places = app.ref<Place[]>([]);
 
 app.onMounted(() => {
-    app.api.get('/place/unions/')
-    .then(response => {
-        places.value = response.data;
-    })
-    .catch(error => {
-        console.error("Erro ao obter a lista de locais:", error);
-    });
+    app.api.getCashed<Place[]>('/place/unions/')
+        .then((response) => {
+            places.value = response;
+        })
+        .catch(()=>{
+            app.popup('Erro!', 'Falha ao listar os condomínios', 'warning')
+        })
 });
+
 </script>
 
 <style scoped>

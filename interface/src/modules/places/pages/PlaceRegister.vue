@@ -83,13 +83,22 @@
     function registerPlace() {
         app.api.post('/place/', placeForm.value)
 		.then(({data})=>{
-			placeId.value = data.id
-			router.push({ name: 'condominio_editar', params: { id: data.id } })
+			app.popup('Sucesso!', 'Informações do condomínio salvas', 'success')
+			sessionStorage.removeItem('/place/unions/')
+			router.push('/condominio/lista')
 		})
     };
 
 	function updatePlace() {
         app.api.put(`/place/${placeId.value}/`, placeForm.value)
+		.then(()=>{
+			app.popup('Sucesso!', 'Informações do condomínio salvas', 'success')
+			sessionStorage.removeItem('/place/unions/')
+			router.push('/condominio/lista')
+		})
+		.catch(()=>{
+			app.popup('Erro!', 'Falha ao salvar informações do condomínio', 'warning')
+		})
     };
 
 	app.onMounted(() => {
@@ -98,8 +107,8 @@
 			.then(response => {
 				placeForm.value = response.data;
 			})
-			.catch(error => {
-				console.error("Erro ao obter os detalhes do local:", error);
+			.catch(() => {
+				app.popup('Erro!', 'Falha ao obter informações do condomínio', 'warning')
 			});
 		}
 	});

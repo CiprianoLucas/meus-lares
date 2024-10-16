@@ -2,7 +2,7 @@ import type { LoginResponse, LoginRequest} from './interfaces'
 import { type AxiosResponse } from 'axios'
 import api from './setup'
 
-api.login = async function(form: LoginRequest): Promise<LoginResponse> {
+api.login = async function(form){
     try {
 		if(localStorage.getItem('username')){
 			await api.logout()
@@ -27,20 +27,49 @@ api.login = async function(form: LoginRequest): Promise<LoginResponse> {
 		window.location.href = '/';
       	return response.data
     } catch (error) {
-		console.error('Login failed:', error)
 		throw error
     }
 }
 
 api.logout = async function() {
+	localStorage.clear()
+	sessionStorage.clear()
     try {
 		await this.get('/user/logout/', {withCredentials: true})
-		localStorage.clear()
-		sessionStorage.clear()
     } catch (error) {
-		localStorage.clear()
-		sessionStorage.clear()
-		console.error('Logout failed:', error)
+		throw error
+    }
+}
+
+api.getCashed = async function(path, force?, time?){
+	try {
+		const actualForce = force !== undefined ? force : false;
+    	const actualTime = time !== undefined ? time : 600;
+		const timestampAtual = Date.now();
+		const sessionCash = sessionStorage.getItem(path)
+
+		if (sessionCash){
+			const obj = JSON.parse(sessionCash)
+
+			if(		( obj.createAt + 30000 > timestampAtual) 
+				|| 	( obj.createAt + 30000 < timestampAtual && !actualForce)
+				|| 	( obj.createAt + obj.expirate > timestampAtual)){
+				return obj.response
+			}
+
+		}
+		const response = (await this.get(path)).data
+		const session = {
+			response: response,
+			createAt: timestampAtual,
+			expirate: (actualTime * 1000)
+		}
+
+		sessionStorage.setItem(path, JSON.stringify(session));
+
+		return response
+
+    } catch (error) {
 		throw error
     }
 }

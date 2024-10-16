@@ -48,8 +48,13 @@
 		.then(()=>{
 			router.push('/');
 		})
-		.catch(()=>{
-			app.popup('Falha ao entrar!', 'usuário ou senha incorretos', 'danger')
+		.catch((error)=>{
+			if (error.status == 401){
+				app.popup('Falha ao entrar!', 'Usuário ou senha incorretos.', 'warning')
+			} else {
+				app.popup('Falha ao entrar!', 'Algo não saiu como esperado.', 'warning')
+			}
+
 			buttonDisabled.value = false
 		})
 	}

@@ -23,11 +23,6 @@
       </button>
     </div>
 
-    <!-- Mensagem de erro ao adicionar -->
-    <div v-if="errorMessage" class="alert alert-danger text-center">
-      {{ errorMessage }}
-    </div>
-
     <!-- Tabela de síndicos -->
     <div v-if="unions.length === 0" class="alert alert-info text-center">
       Nenhum síndico encontrado.
@@ -65,6 +60,9 @@ const newUnionEmail = app.ref("");
 const errorMessage = app.ref("");
 const route = app.useRoute();
 const placeId = app.ref(route.params.id)
+const inputs = {
+  email: "Email"
+}
 
 app.onMounted(() => {
   fetchUnions();
@@ -76,7 +74,7 @@ function fetchUnions() {
       unions.value = response.data;
     })
     .catch((error) => {
-      console.error("Erro ao obter a lista de síndicos:", error);
+      app.popup("Erro!", "Erro ao obter a lista de síndicos.", "warning")
     });
 }
 
@@ -84,9 +82,10 @@ function deleteUnion(userId: string) {
 	app.api.delete(`/place/${placeId.value}/unions/${userId}`)
 		.then(() => {
 			unions.value = unions.value.filter((resident) => resident.id !== userId);
+      app.popup("Sucesso!", "Síndico deletado", "success")
 		})
 		.catch((error) => {
-			console.error("Erro ao deletar o síndico:", error);
+      app.popup("Erro!", "Erro ao deletar o síndico.", "warning")
 		});
 }
 
@@ -97,11 +96,10 @@ function addUnion() {
 			unions.value.push(response.data)
 			newUnionEmail.value = ""
 			errorMessage.value = ""
+      app.popup("Sucesso!", "Síndico cadastrado", "success")
 		})
 		.catch((error) => {
-			console.error("Erro ao adicionar o síndico:", error);
-			errorMessage.value =
-			"Não foi possível adicionar o síndico. Verifique o email e tente novamente."
+			app.popup("Erro!", app.resumeErrors(error, inputs), "warning")
 		});
 }
 </script>

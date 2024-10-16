@@ -37,8 +37,8 @@ app.onMounted(() => {
     .then(response => {
         invoices.value = response.data;
     })
-    .catch(error => {
-        console.error("Erro ao obter a lista de locais:", error);
+    .catch(() => {
+        app.popup("Erro!", "Falha ao listar as faturas", "warning")
     });
 });
 </script>

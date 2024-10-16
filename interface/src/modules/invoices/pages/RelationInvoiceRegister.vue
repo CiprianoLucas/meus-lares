@@ -70,6 +70,12 @@
 	const invoiceRelationId = app.ref(route.params.id);
     const places = app.ref<Place[]>([]);
     const residents = app.ref<User[]>([]);
+    const inputs = {
+        company: 'Empresa emissora da fatura',
+        unit_number: 'Unidade condumidora',
+        resident: 'Morador',
+        place: 'Lugar',
+    }
 
     const invoiceRelationForm = app.ref({
         company: '',
@@ -84,7 +90,7 @@
             residents.value = response.data;
         })
         .catch(error => {
-            console.error("Erro ao obter a lista de moradores:", error);
+            app.popup("Erro!", "Falha ao listar os moradores", "warning")
         });
     }
 
@@ -92,8 +98,12 @@
         app.api.post('/invoice/relation-invoices/', invoiceRelationForm.value)
 		.then(({data})=>{
 			invoiceRelationId.value = data.id
-			router.push({ name: 'relacao-fatura-lista', params: { id: data.id } })
+            app.popup("Sucesso!", "Relação de fatura salvo", "success")
+			router.push('/fatura/relacao-lista')
 		})
+        .catch(error=> {
+            app.popup("Erro!", app.resumeErrors(error, inputs), "warning")
+        })
     };
 
 	function updateInvoiceRelation() {
@@ -106,7 +116,7 @@
             places.value = response.data;
         })
         .catch(error => {
-            console.error("Erro ao obter a lista de locais:", error);
+            app.popup("Erro!", "Falha ao buscar lista de locais", "warning")
         });
 		if (invoiceRelationId.value){
 			app.api.get(`/invoice/relation-invoices/${invoiceRelationId.value}/`)
@@ -114,8 +124,8 @@
 				invoiceRelationForm.value = response.data;
                 updateSelectRedidents()
 			})
-			.catch(error => {
-				console.error("Erro ao obter os detalhes do local:", error);
+			.catch(() => {
+				app.popup("Erro!", "Falha ao buscar informações dessa relação de faturas", "warning")
 			});
 		}
 	});

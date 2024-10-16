@@ -83,23 +83,14 @@ function registerRequest() {
 	})
     .catch((error)=>{
 
-        const inputs:  { [key: string]: string } = {
+        const inputs = {
             place: "Local",
             title: "Título",
             description: "Descrição",
             type: "Tipo",
         }
-        let errorMessage = ''
-        Object.keys(inputs).forEach(key => {
-            if(error.response.data[key]){
-                errorMessage += `\n${inputs[key]}: ${error.response.data[key]}`
-            }
-        })
 
-        if (error.response.data.place){
-            errorMessage += 'Local: ' + error.response.data.place
-        }
-        app.popup('Erro!', errorMessage, 'warning')
+        app.popup('Erro!', app.resumeErrors(error, inputs), 'warning', 10000)
     })
 }
 
@@ -122,7 +113,7 @@ app.onMounted(() => {
             requestForm.value = response.data;
         })
         .catch(() => {
-            app.popup('Erro!', 'Falha ao obter o chamados', 'warning')
+            app.popup('Erro!', 'Falha ao obter o chamado', 'warning')
         });
     }
 });

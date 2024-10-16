@@ -41,15 +41,19 @@ import { type Request, typeMap, statusMap } from '../interfaces'
 
 // Armazena a lista de chamados pendentes
 const requestList = app.ref<Request[]>([]);
+const url = '/request/pendents/'
 
 function updateRequest(id: string, status: 'P' | 'A' | 'C') {
-    app.api.put(`/request/pendents/${id}/`, { status: status })
+    app.api.put(url + id, { status: status })
     .then(() => {
         let obj = requestList.value.find(item => item.id === id)
         if (obj) obj.status = status;
+        app.popup('Sucesso!', 'Chamado atualizado', 'success')
+        sessionStorage.removeItem(url)
+        sessionStorage.removeItem('/request/guardians/')
     })
-    .catch((error) => {
-        console.error("Erro ao adicionar o residente:", error);
+    .catch(() => {
+        app.popup('Erro!', 'Falha ao atualizar o chamado', 'warning')
     });
 }
 
@@ -58,8 +62,8 @@ app.onMounted(() => {
     .then(response => {
         requestList.value = response.data;
     })
-    .catch(error => {
-        console.error("Erro ao obter a lista de chamados pendentes:", error);
+    .catch(() => {
+        app.popup('Erro!', 'Falha ao obter a lista de chamados', 'warning')
     });
 });
 </script>

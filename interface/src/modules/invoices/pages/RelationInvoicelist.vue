@@ -43,9 +43,10 @@ function exclude(id: string) {
     app.api.delete(`/invoice/relation-invoices/${id}/`)
     .then(() => {
         invoicesRelations.value = invoicesRelations.value.filter(invoice => invoice.id !== id);
+        app.popup("Sucesso!", "Relação de faturas excluido.", "warning")
     })
     .catch(error => {
-        console.error("Erro ao excluir a relação de fatura:", error);
+        app.popup("Erro!", "Falha ao excluir relação de faturas", "warning")
     });
 }
 
@@ -55,7 +56,7 @@ app.onMounted(() => {
         invoicesRelations.value = response.data;
     })
     .catch(error => {
-        console.error("Erro ao obter a lista de locais:", error);
+        app.popup("Erro!", "Falha ao listar relações de faturas", "warning")
     });
 });
 </script>

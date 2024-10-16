@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {popup} from '@/components/PopUps'
 import type { CustomAxiosInstance} from './interfaces'
 
 const api: CustomAxiosInstance = axios.create({
@@ -20,6 +21,8 @@ api.interceptors.response.use(
                 return Promise.reject(err);
             }
         }
+        if (error.code == "ERR_NETWORK")
+			popup('Erro!', 'Não foi possível se conectar ao servidor', 'warning')
         return Promise.reject(error);
     }
   );

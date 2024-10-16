@@ -1,5 +1,5 @@
 import { useRouter, useRoute } from 'vue-router';
-import { popup } from '@/components/PopUps';
+import { popup, resumeErrors } from '@/components/PopUps';
 import { api } from '@/http'
 import { ref, onMounted } from 'vue'
 
@@ -10,5 +10,6 @@ const app = {
     useRouter: useRouter,
     onMounted: onMounted,
     popup: popup,
+    resumeErrors: resumeErrors,
 };
 export default app
