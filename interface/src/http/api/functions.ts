@@ -43,8 +43,9 @@ api.logout = async function() {
 
 api.getCashed = async function(path, force?, time?){
 	try {
+		debugger
 		const actualForce = force !== undefined ? force : false;
-    	const actualTime = time !== undefined ? time : 600;
+    	const actualTime = time !== undefined ? time : 300;
 		const timestampAtual = Date.now();
 		const sessionCash = sessionStorage.getItem(path)
 
@@ -53,7 +54,7 @@ api.getCashed = async function(path, force?, time?){
 
 			if(		( obj.createAt + 30000 > timestampAtual) 
 				|| 	( obj.createAt + 30000 < timestampAtual && !actualForce)
-				|| 	( obj.createAt + obj.expirate > timestampAtual)){
+				|| 	( obj.createAt + obj.expirate > timestampAtual && actualForce)){
 				return obj.response
 			}
 

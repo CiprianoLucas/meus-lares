@@ -33,9 +33,9 @@ import { type Invoice } from '../interfaces'
 const invoices = app.ref<Invoice[]>([]);
 
 app.onMounted(() => {
-    app.api.get('/invoice/invoices/')
+    app.api.getCashed<Invoice[]>('/invoice/invoices/')
     .then(response => {
-        invoices.value = response.data;
+        invoices.value = response;
     })
     .catch(() => {
         app.popup("Erro!", "Falha ao listar as faturas", "warning")

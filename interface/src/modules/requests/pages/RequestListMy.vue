@@ -42,9 +42,9 @@ const requestList = app.ref<Request[]>([]);
 
 app.onMounted(() => {
     // Obtém a lista de chamados pendentes ao montar o componente
-    app.api.get('/request/residents/')
+    app.api.getCashed<Request[]>('/request/residents/')
     .then(response => {
-        requestList.value = response.data;
+        requestList.value = response;
     })
     .catch(() => {
         app.popup('Erro!', 'Falha ao obter a lista de chamados', 'warning')

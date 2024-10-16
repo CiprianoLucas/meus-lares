@@ -60,6 +60,7 @@ const newUnionEmail = app.ref("");
 const errorMessage = app.ref("");
 const route = app.useRoute();
 const placeId = app.ref(route.params.id)
+const url = `/place/${placeId.value}/unions/`
 const inputs = {
   email: "Email"
 }
@@ -69,9 +70,9 @@ app.onMounted(() => {
 });
 
 function fetchUnions() {
-  app.api.get(`/place/${placeId.value}/unions/`)
+  app.api.getCashed<User[]>(url)
     .then((response) => {
-      unions.value = response.data;
+      unions.value = response;
     })
     .catch((error) => {
       app.popup("Erro!", "Erro ao obter a lista de síndicos.", "warning")
@@ -82,6 +83,7 @@ function deleteUnion(userId: string) {
 	app.api.delete(`/place/${placeId.value}/unions/${userId}`)
 		.then(() => {
 			unions.value = unions.value.filter((resident) => resident.id !== userId);
+      sessionStorage.removeItem(url)
       app.popup("Sucesso!", "Síndico deletado", "success")
 		})
 		.catch((error) => {
@@ -96,6 +98,7 @@ function addUnion() {
 			unions.value.push(response.data)
 			newUnionEmail.value = ""
 			errorMessage.value = ""
+      sessionStorage.removeItem(url)
       app.popup("Sucesso!", "Síndico cadastrado", "success")
 		})
 		.catch((error) => {

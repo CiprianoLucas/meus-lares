@@ -58,9 +58,9 @@ function updateRequest(id: string, status: 'P' | 'A' | 'C') {
 }
 
 app.onMounted(() => {
-    app.api.get('/request/guardians/')
+    app.api.getCashed<Request[]>('/request/guardians/')
     .then(response => {
-        requestList.value = response.data;
+        requestList.value = response;
     })
     .catch(() => {
         app.popup('Erro!', 'Falha ao obter a lista de chamados', 'warning')

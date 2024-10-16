@@ -75,33 +75,39 @@ const requestForm = app.ref({
     type: null
 });
 
-function registerRequest() {
-    app.api.post('/request/', requestForm.value)
-    .then(({data})=>{
-        requestId.value = data.id
-		router.push({ name: 'requisicao_editar', params: { id: data.id } })
-	})
-    .catch((error)=>{
-
-        const inputs = {
+const inputs = {
             place: "Local",
             title: "Título",
             description: "Descrição",
             type: "Tipo",
         }
 
+function registerRequest() {
+    app.api.post('/request/', requestForm.value)
+    .then(({data})=>{
+        sessionStorage.removeItem('/request/residents/')
+		router.push('/requisicao/minhas-requisicoes')
+	})
+    .catch((error)=>{
         app.popup('Erro!', app.resumeErrors(error, inputs), 'warning', 10000)
     })
 }
 
 function updatePlace() {
         app.api.put(`/request/${requestId.value}/`, requestForm.value)
+        .then(()=> {
+            sessionStorage.removeItem('/request/residents/')
+		    router.push('/requisicao/minhas-requisicoes')
+        })
+        .catch(error =>{
+            app.popup('Erro!', app.resumeErrors(error, inputs), 'warning', 10000)
+        })
     };
 
 app.onMounted(() => {
-    app.api.get('/place/residents/')
+    app.api.getCashed<Place[]>('/place/residents/')
     .then(response => {
-        places.value = response.data;
+        places.value = response;
     })
     .catch(() => {
         app.popup('Erro!', 'Falha ao obter o locais', 'warning')

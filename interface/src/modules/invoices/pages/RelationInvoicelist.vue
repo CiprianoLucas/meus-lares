@@ -38,12 +38,14 @@
 import app from '@/app'
 import { type InvoiceRelation } from '../interfaces'
 const invoicesRelations = app.ref<InvoiceRelation[]>([]);
+const url = "/invoice/relation-invoices/"
 
 function exclude(id: string) {
-    app.api.delete(`/invoice/relation-invoices/${id}/`)
+    app.api.delete(url + id)
     .then(() => {
         invoicesRelations.value = invoicesRelations.value.filter(invoice => invoice.id !== id);
         app.popup("Sucesso!", "Relação de faturas excluido.", "warning")
+        sessionStorage.removeItem(url)
     })
     .catch(error => {
         app.popup("Erro!", "Falha ao excluir relação de faturas", "warning")
@@ -51,9 +53,9 @@ function exclude(id: string) {
 }
 
 app.onMounted(() => {
-    app.api.get('/invoice/relation-invoices/')
+    app.api.getCashed<InvoiceRelation[]>(url)
     .then(response => {
-        invoicesRelations.value = response.data;
+        invoicesRelations.value = response;
     })
     .catch(error => {
         app.popup("Erro!", "Falha ao listar relações de faturas", "warning")

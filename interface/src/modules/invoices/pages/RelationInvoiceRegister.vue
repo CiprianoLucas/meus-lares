@@ -85,9 +85,9 @@
     });
 
     function updateSelectRedidents() {
-        app.api.get(`/place/${invoiceRelationForm.value.place}/residents/`)
+        app.api.getCashed<User[]>(`/place/${invoiceRelationForm.value.place}/residents/`)
 		.then(response => {
-            residents.value = response.data;
+            residents.value = response;
         })
         .catch(error => {
             app.popup("Erro!", "Falha ao listar os moradores", "warning")
@@ -97,7 +97,7 @@
     function registerInvoiceRelation() {
         app.api.post('/invoice/relation-invoices/', invoiceRelationForm.value)
 		.then(({data})=>{
-			invoiceRelationId.value = data.id
+            sessionStorage.removeItem("/invoice/relation-invoices/")
             app.popup("Sucesso!", "Relação de fatura salvo", "success")
 			router.push('/fatura/relacao-lista')
 		})
@@ -108,12 +108,20 @@
 
 	function updateInvoiceRelation() {
         app.api.put(`/invoice/relation-invoices/${invoiceRelationId.value}/`, invoiceRelationForm.value)
+        .then(response =>{
+            sessionStorage.removeItem("/invoice/relation-invoices/")
+            app.popup("Sucesso!", "Relação de fatura salvo", "success")
+			router.push('/fatura/relacao-lista')
+        })
+        .catch(error=>{
+            app.popup("Erro!", app.resumeErrors(error, inputs), "warning")
+        })
     };
 
 	app.onMounted(() => {
-        app.api.get('/place/unions/')
+        app.api.getCashed<Place[]>('/place/unions/')
         .then(response => {
-            places.value = response.data;
+            places.value = response;
         })
         .catch(error => {
             app.popup("Erro!", "Falha ao buscar lista de locais", "warning")
