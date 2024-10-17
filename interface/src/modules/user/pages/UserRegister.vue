@@ -87,14 +87,6 @@ import app from '@/app';
         password: ''
     });
 
-    const inputs = {
-        username: 'Nome de usuário',
-        email: 'Email',
-        cpf: 'CPF',
-        phone_number: 'Telefone',
-        full_name: 'Nome completo',
-        password: 'Senha'
-    }
     const router = app.useRouter()
 
     function RegisterUser() {
@@ -104,7 +96,7 @@ import app from '@/app';
           router.push('/login');
         })
         .catch((error)=>{
-          app.popup("Erro!", app.resumeErrors(error, inputs), 'warning')
+          app.popup("Erro!", app.resumeErrors(error), 'warning')
         })
     };
 

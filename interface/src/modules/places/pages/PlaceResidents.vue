@@ -67,10 +67,6 @@ const route = app.useRoute();
 const placeId = app.ref(route.params.id)
 const url = `/place/${placeId.value}/residents/`
 
-const inputs = {
-    email: "E-mail",
-}
-
 app.onMounted(() => {
   fetchResidents();
 });
@@ -107,7 +103,7 @@ function addResident() {
       app.popup("Sucesso!", "Residente cadastrado com sucesso.", "success")
 		})
 		.catch((error) => {
-      app.popup("Erro!", app.resumeErrors(error, inputs), "warning")
+      app.popup("Erro!", app.resumeErrors(error), "warning")
 		});
 }
 </script>

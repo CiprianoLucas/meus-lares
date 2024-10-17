@@ -87,6 +87,9 @@
 			sessionStorage.removeItem('/place/unions/')
 			router.push('/condominio/lista')
 		})
+		.catch(error=>{
+			app.popup("Erro!", app.resumeErrors(error), 'warning')
+		})
     };
 
 	function updatePlace() {

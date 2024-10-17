@@ -61,9 +61,6 @@ const errorMessage = app.ref("");
 const route = app.useRoute();
 const placeId = app.ref(route.params.id)
 const url = `/place/${placeId.value}/unions/`
-const inputs = {
-  email: "Email"
-}
 
 app.onMounted(() => {
   fetchUnions();
@@ -102,7 +99,7 @@ function addUnion() {
       app.popup("Sucesso!", "Síndico cadastrado", "success")
 		})
 		.catch((error) => {
-			app.popup("Erro!", app.resumeErrors(error, inputs), "warning")
+			app.popup("Erro!", app.resumeErrors(error), "warning")
 		});
 }
 </script>

@@ -43,7 +43,6 @@ api.logout = async function() {
 
 api.getCashed = async function(path, force?, time?){
 	try {
-		debugger
 		const actualForce = force !== undefined ? force : false;
     	const actualTime = time !== undefined ? time : 300;
 		const timestampAtual = Date.now();

@@ -75,13 +75,6 @@ const requestForm = app.ref({
     type: null
 });
 
-const inputs = {
-            place: "Local",
-            title: "Título",
-            description: "Descrição",
-            type: "Tipo",
-        }
-
 function registerRequest() {
     app.api.post('/request/', requestForm.value)
     .then(({data})=>{
@@ -89,7 +82,7 @@ function registerRequest() {
 		router.push('/requisicao/minhas-requisicoes')
 	})
     .catch((error)=>{
-        app.popup('Erro!', app.resumeErrors(error, inputs), 'warning', 10000)
+        app.popup('Erro!', app.resumeErrors(error), 'warning', 10000)
     })
 }
 
@@ -100,7 +93,7 @@ function updatePlace() {
 		    router.push('/requisicao/minhas-requisicoes')
         })
         .catch(error =>{
-            app.popup('Erro!', app.resumeErrors(error, inputs), 'warning', 10000)
+            app.popup('Erro!', app.resumeErrors(error), 'warning', 10000)
         })
     };
 

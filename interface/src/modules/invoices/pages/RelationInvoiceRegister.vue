@@ -70,12 +70,6 @@
 	const invoiceRelationId = app.ref(route.params.id);
     const places = app.ref<Place[]>([]);
     const residents = app.ref<User[]>([]);
-    const inputs = {
-        company: 'Empresa emissora da fatura',
-        unit_number: 'Unidade condumidora',
-        resident: 'Morador',
-        place: 'Lugar',
-    }
 
     const invoiceRelationForm = app.ref({
         company: '',
@@ -102,7 +96,7 @@
 			router.push('/fatura/relacao-lista')
 		})
         .catch(error=> {
-            app.popup("Erro!", app.resumeErrors(error, inputs), "warning")
+            app.popup("Erro!", app.resumeErrors(error), "warning")
         })
     };
 
@@ -114,7 +108,7 @@
 			router.push('/fatura/relacao-lista')
         })
         .catch(error=>{
-            app.popup("Erro!", app.resumeErrors(error, inputs), "warning")
+            app.popup("Erro!", app.resumeErrors(error), "warning")
         })
     };
 
