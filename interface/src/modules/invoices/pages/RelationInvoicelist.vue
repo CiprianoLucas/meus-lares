@@ -35,28 +35,30 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { api } from '@/http'
+import app from '@/app'
 import { type InvoiceRelation } from '../interfaces'
-const invoicesRelations = ref<InvoiceRelation[]>([]);
+const invoicesRelations = app.ref<InvoiceRelation[]>([]);
+const url = "/invoice/relation-invoices/"
 
 function exclude(id: string) {
-    api.delete(`/invoice/relation-invoices/${id}/`)
+    app.api.delete(url + id)
     .then(() => {
         invoicesRelations.value = invoicesRelations.value.filter(invoice => invoice.id !== id);
+        app.popup("Sucesso!", "Relação de faturas excluido.", "warning")
+        sessionStorage.removeItem(url)
     })
     .catch(error => {
-        console.error("Erro ao excluir a relação de fatura:", error);
+        app.popup("Erro!", "Falha ao excluir relação de faturas", "warning")
     });
 }
 
-onMounted(() => {
-    api.get('/invoice/relation-invoices/')
+app.onMounted(() => {
+    app.api.getCashed<InvoiceRelation[]>(url)
     .then(response => {
-        invoicesRelations.value = response.data;
+        invoicesRelations.value = response;
     })
     .catch(error => {
-        console.error("Erro ao obter a lista de locais:", error);
+        app.popup("Erro!", "Falha ao listar relações de faturas", "warning")
     });
 });
 </script>

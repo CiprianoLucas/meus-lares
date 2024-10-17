@@ -28,18 +28,17 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { api } from '@/http'
+import app from '@/app'
 import { type Invoice } from '../interfaces'
-const invoices = ref<Invoice[]>([]);
+const invoices = app.ref<Invoice[]>([]);
 
-onMounted(() => {
-    api.get('/invoice/invoices/')
+app.onMounted(() => {
+    app.api.getCashed<Invoice[]>('/invoice/invoices/')
     .then(response => {
-        invoices.value = response.data;
+        invoices.value = response;
     })
-    .catch(error => {
-        console.error("Erro ao obter a lista de locais:", error);
+    .catch(() => {
+        app.popup("Erro!", "Falha ao listar as faturas", "warning")
     });
 });
 </script>

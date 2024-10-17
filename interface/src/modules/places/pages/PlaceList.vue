@@ -34,20 +34,20 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { api } from '@/http'
+import app from '@/app'
 import { type Place } from '../../places/interfaces'
-const places = ref<Place[]>([]);
+const places = app.ref<Place[]>([]);
 
-onMounted(() => {
-    api.get('/place/unions/')
-    .then(response => {
-        places.value = response.data;
-    })
-    .catch(error => {
-        console.error("Erro ao obter a lista de locais:", error);
-    });
+app.onMounted(() => {
+    app.api.getCashed<Place[]>('/place/unions/')
+        .then((response) => {
+            places.value = response;
+        })
+        .catch(()=>{
+            app.popup('Erro!', 'Falha ao listar os condomínios', 'warning')
+        })
 });
+
 </script>
 
 <style scoped>

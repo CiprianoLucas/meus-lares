@@ -10,8 +10,8 @@ from .views import (
 
 urlpatterns = [
     path("", RequestCreateView.as_view(), name="request-create"),
-    path("pendents", RequestListView.as_view(), name="request-pendent"),
-    path("pendents/<uuid:pk>/", RequestStatusView.as_view(), name="request-pendent"),
+    path("pendents/", RequestListView.as_view(), name="request-pendent"),
+    path("pendents/<uuid:pk>", RequestStatusView.as_view(), name="request-pendent"),
     path("<uuid:pk>/", RequestDetailView.as_view(), name="request-detail"),
     path(
         "residents/",

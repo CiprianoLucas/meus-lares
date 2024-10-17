@@ -57,57 +57,54 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
-import { api } from "@/http";
-import { useRoute } from "vue-router";
+import app from '@/app'
 import { type User } from '../../user/interfaces'
 
-const residents = ref<User[]>([]);
-const newResidentEmail = ref("");
-const errorMessage = ref("");
-const route = useRoute();
-const placeId = ref(route.params.id)
+const residents = app.ref<User[]>([]);
+const newResidentEmail = app.ref("");
+const errorMessage = app.ref("");
+const route = app.useRoute();
+const placeId = app.ref(route.params.id)
+const url = `/place/${placeId.value}/residents/`
 
-onMounted(() => {
+app.onMounted(() => {
   fetchResidents();
 });
 
 function fetchResidents() {
-  api
-    .get(`/place/${placeId.value}/residents/`)
-    .then(({data}) => {
-      residents.value = data;
+  app.api.getCashed<User[]>(url)
+    .then((data) => {
+     	residents.value = data;
     })
-    .catch((error) => {
-      console.error("Erro ao obter a lista de residentes:", error);
+    .catch(() => {
+      app.popup("Erro!", "Falha ao listar os residentes.", "warning")
     });
 }
 
 function deleteResident(userId: string) {
-  api
-    .delete(`/place/${placeId.value}/residents/${userId}`)
-    .then(() => {
-      residents.value = residents.value.filter((resident) => resident.id !== userId);
-    })
-    .catch((error) => {
-      console.error("Erro ao deletar o residente:", error);
-    });
+  app.api.delete(url + userId)
+		.then(() => {
+			residents.value = residents.value.filter((resident) => resident.id !== userId);
+      sessionStorage.removeItem(url)
+      app.popup("Sucesso!", "Residente excluido com sucesso.", "success")
+		})
+		.catch(() => {
+			app.popup("Erro!", "Falha ao excluir um residente.", "warning")
+		});
 }
 
 function addResident() {
-
-  api
-    .post(`/place/${placeId.value}/residents/`, { email: newResidentEmail.value })
-    .then((response) => {
-      residents.value.push(response.data);
-      newResidentEmail.value = "";
-      errorMessage.value = "";
-    })
-    .catch((error) => {
-      console.error("Erro ao adicionar o residente:", error);
-      errorMessage.value =
-        "Não foi possível adicionar o residente. Verifique o email e tente novamente.";
-    });
+    app.api.post(url, { email: newResidentEmail.value })
+		.then((response) => {
+			residents.value.push(response.data);
+			newResidentEmail.value = "";
+			errorMessage.value = "";
+      sessionStorage.removeItem(url)
+      app.popup("Sucesso!", "Residente cadastrado com sucesso.", "success")
+		})
+		.catch((error) => {
+      app.popup("Erro!", app.resumeErrors(error), "warning")
+		});
 }
 </script>
 

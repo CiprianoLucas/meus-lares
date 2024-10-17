@@ -59,18 +59,16 @@
 
 <script lang="ts" setup>
 
-import { ref, onMounted  } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import app from '@/app'
 import { type Place } from '../../places/interfaces'
-import { api } from '@/http'
 
-const route = useRoute();
-const router = useRouter();
-const requestId = ref(route.params.id);
+const route = app.useRoute();
+const router = app.useRouter();
+const requestId = app.ref(route.params.id);
 
-const places = ref<Place[]>([]);
+const places = app.ref<Place[]>([]);
 
-const requestForm = ref({
+const requestForm = app.ref({
     place: null,
     title: '',
     description: '',
@@ -78,33 +76,43 @@ const requestForm = ref({
 });
 
 function registerRequest() {
-    api.post('/request/', requestForm.value)
+    app.api.post('/request/', requestForm.value)
     .then(({data})=>{
-        requestId.value = data.id
-		router.push({ name: 'requisicao_editar', params: { id: data.id } })
+        sessionStorage.removeItem('/request/residents/')
+		router.push('/requisicao/minhas-requisicoes')
 	})
+    .catch((error)=>{
+        app.popup('Erro!', app.resumeErrors(error), 'warning', 10000)
+    })
 }
 
 function updatePlace() {
-        api.put(`/request/${requestId.value}/`, requestForm.value)
+        app.api.put(`/request/${requestId.value}/`, requestForm.value)
+        .then(()=> {
+            sessionStorage.removeItem('/request/residents/')
+		    router.push('/requisicao/minhas-requisicoes')
+        })
+        .catch(error =>{
+            app.popup('Erro!', app.resumeErrors(error), 'warning', 10000)
+        })
     };
 
-onMounted(() => {
-    api.get('/place/residents/')
+app.onMounted(() => {
+    app.api.getCashed<Place[]>('/place/residents/')
     .then(response => {
-        places.value = response.data;
+        places.value = response;
     })
-    .catch(error => {
-        console.error("Erro ao obter a lista de locais:", error);
+    .catch(() => {
+        app.popup('Erro!', 'Falha ao obter o locais', 'warning')
     });
 
     if (requestId.value){
-        api.get(`/request/${requestId.value}/`)
+        app.api.get(`/request/${requestId.value}/`)
         .then(response => {
             requestForm.value = response.data;
         })
-        .catch(error => {
-            console.error("Erro ao obter o chamado:", error);
+        .catch(() => {
+            app.popup('Erro!', 'Falha ao obter o chamado', 'warning')
         });
     }
 });
