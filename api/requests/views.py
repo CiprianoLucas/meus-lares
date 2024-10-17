@@ -13,9 +13,9 @@ class RequestCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        request_instance = serializer.save(requester=self.request.user)
+        instance = serializer.save(requester=self.request.user)
         
-        cache_key = f'requests_{request_instance.requester.id}_data'
+        cache_key = f'requests_{instance.requester.id}_data'
         cache.delete(cache_key)
         
 class RequestListView(generics.ListAPIView):
@@ -52,6 +52,8 @@ class RequestDetailView(generics.RetrieveUpdateAPIView):
         if instance.status != 'P':
             raise ValidationError("Only requests with status 'PENDENTE' can be updated.")
 
+        cache_key = f'requests_{instance.requester.id}_data'
+        cache.delete(cache_key)
         return super().update(request, *args, **kwargs)
     
 class RequestStatusView(generics.RetrieveUpdateAPIView):
@@ -72,6 +74,8 @@ class RequestStatusView(generics.RetrieveUpdateAPIView):
             instance.guardian = self.request.user
             
         instance.save()
+        cache_key = f'requests_{instance.requester.id}_data'
+        cache.delete(cache_key)
         
         return super().update(request, *args, **kwargs)
         

@@ -23,11 +23,6 @@
       </button>
     </div>
 
-    <!-- Mensagem de erro ao adicionar -->
-    <div v-if="errorMessage" class="alert alert-danger text-center">
-      {{ errorMessage }}
-    </div>
-
     <!-- Tabela de síndicos -->
     <div v-if="unions.length === 0" class="alert alert-info text-center">
       Nenhum síndico encontrado.
@@ -57,57 +52,55 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
-import { api } from "@/http";
-import { useRoute } from "vue-router";
+import app from '@/app'
 import { type User } from "../../user/interfaces"
 
-const unions = ref<User[]>([]);
-const newUnionEmail = ref("");
-const errorMessage = ref("");
-const route = useRoute();
-const placeId = ref(route.params.id)
+const unions = app.ref<User[]>([]);
+const newUnionEmail = app.ref("");
+const errorMessage = app.ref("");
+const route = app.useRoute();
+const placeId = app.ref(route.params.id)
+const url = `/place/${placeId.value}/unions/`
 
-onMounted(() => {
+app.onMounted(() => {
   fetchUnions();
 });
 
 function fetchUnions() {
-  api
-    .get(`/place/${placeId.value}/unions/`)
+  app.api.getCashed<User[]>(url)
     .then((response) => {
-      unions.value = response.data;
+      unions.value = response;
     })
     .catch((error) => {
-      console.error("Erro ao obter a lista de síndicos:", error);
+      app.popup("Erro!", "Erro ao obter a lista de síndicos.", "warning")
     });
 }
 
 function deleteUnion(userId: string) {
-  api
-    .delete(`/place/${placeId.value}/unions/${userId}`)
-    .then(() => {
-      unions.value = unions.value.filter((resident) => resident.id !== userId);
-    })
-    .catch((error) => {
-      console.error("Erro ao deletar o síndico:", error);
-    });
+	app.api.delete(`/place/${placeId.value}/unions/${userId}`)
+		.then(() => {
+			unions.value = unions.value.filter((resident) => resident.id !== userId);
+      sessionStorage.removeItem(url)
+      app.popup("Sucesso!", "Síndico deletado", "success")
+		})
+		.catch((error) => {
+      app.popup("Erro!", "Erro ao deletar o síndico.", "warning")
+		});
 }
 
 function addUnion() {
 
-  api
-    .post(`/place/${placeId.value}/unions/`, { email: newUnionEmail.value })
-    .then((response) => {
-      unions.value.push(response.data)
-      newUnionEmail.value = ""
-      errorMessage.value = ""
-    })
-    .catch((error) => {
-      console.error("Erro ao adicionar o síndico:", error);
-      errorMessage.value =
-        "Não foi possível adicionar o síndico. Verifique o email e tente novamente."
-    });
+  app.api.post(`/place/${placeId.value}/unions/`, { email: newUnionEmail.value })
+		.then((response) => {
+			unions.value.push(response.data)
+			newUnionEmail.value = ""
+			errorMessage.value = ""
+      sessionStorage.removeItem(url)
+      app.popup("Sucesso!", "Síndico cadastrado", "success")
+		})
+		.catch((error) => {
+			app.popup("Erro!", app.resumeErrors(error), "warning")
+		});
 }
 </script>
 

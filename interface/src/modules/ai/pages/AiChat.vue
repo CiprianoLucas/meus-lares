@@ -19,11 +19,10 @@
 </template>
   
 <script lang="ts" setup>
-    import { ref } from 'vue';
-    import { api } from '@/http'; // Supondo que você tenha uma instância axios configurada
+    import app from '@/app'
 
-    const userMessage = ref('');
-    const messages = ref([
+    const userMessage = app.ref('');
+    const messages = app.ref([
         { role: 'assistant', content: 'Olá! Como posso te ajudar?' }
     ]);
 
@@ -37,7 +36,7 @@
     messages.value.push({ role: 'user', content: userMessage.value });
 
     try {
-        const response = await api.post('/ai/chat/', {
+        const response = await app.api.post('/ai/chat/', {
             message: userMessage.value
         });
 

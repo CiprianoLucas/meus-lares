@@ -76,6 +76,7 @@
     import NavBar from '@/components/template/NavBar.vue'
     import { ref } from 'vue'
     import { api } from '@/http'
+import app from '@/app';
     
     const form = ref({
         username: '',
@@ -85,20 +86,17 @@
         full_name: '',
         password: ''
     });
-    
-    const show = ref(false);
 
-    const showNotification = () => {
-        show.value = true;
-        setTimeout(() => {
-            show.value = false;
-        }, 5000);
-    };
+    const router = app.useRouter()
 
     function RegisterUser() {
-        showNotification()
         api.post('/user/register/', form.value)
         .then(()=>{
+          app.popup("Sucesso!", "Usuário cadastrado com sucesso.", 'success')
+          router.push('/login');
+        })
+        .catch((error)=>{
+          app.popup("Erro!", app.resumeErrors(error), 'warning')
         })
     };
 

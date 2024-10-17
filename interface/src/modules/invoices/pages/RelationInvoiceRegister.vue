@@ -60,20 +60,18 @@
 </template>
   
 <script lang="ts" setup>
-    import { ref, onMounted } from 'vue'
-	import { useRoute, useRouter } from 'vue-router'
+    import app from '@/app'
     import { type Place } from '../../places/interfaces'
     import { type User } from '../../user/interfaces'
-    import { api } from '@/http'
     import { companyMap } from '../interfaces'
     
-	const route = useRoute();
-	const router = useRouter();
-	const invoiceRelationId = ref(route.params.id);
-    const places = ref<Place[]>([]);
-    const residents = ref<User[]>([]);
+	const route = app.useRoute();
+	const router = app.useRouter();
+	const invoiceRelationId = app.ref(route.params.id);
+    const places = app.ref<Place[]>([]);
+    const residents = app.ref<User[]>([]);
 
-    const invoiceRelationForm = ref({
+    const invoiceRelationForm = app.ref({
         company: '',
         unit_number: '',
         resident: '',
@@ -81,43 +79,55 @@
     });
 
     function updateSelectRedidents() {
-        api.get(`/place/${invoiceRelationForm.value.place}/residents/`)
+        app.api.getCashed<User[]>(`/place/${invoiceRelationForm.value.place}/residents/`)
 		.then(response => {
-            residents.value = response.data;
+            residents.value = response;
         })
         .catch(error => {
-            console.error("Erro ao obter a lista de moradores:", error);
+            app.popup("Erro!", "Falha ao listar os moradores", "warning")
         });
     }
 
     function registerInvoiceRelation() {
-        api.post('/invoice/relation-invoices/', invoiceRelationForm.value)
+        app.api.post('/invoice/relation-invoices/', invoiceRelationForm.value)
 		.then(({data})=>{
-			invoiceRelationId.value = data.id
-			router.push({ name: 'relacao-fatura-lista', params: { id: data.id } })
+            sessionStorage.removeItem("/invoice/relation-invoices/")
+            app.popup("Sucesso!", "Relação de fatura salvo", "success")
+			router.push('/fatura/relacao-lista')
 		})
+        .catch(error=> {
+            app.popup("Erro!", app.resumeErrors(error), "warning")
+        })
     };
 
 	function updateInvoiceRelation() {
-        api.put(`/invoice/relation-invoices/${invoiceRelationId.value}/`, invoiceRelationForm.value)
+        app.api.put(`/invoice/relation-invoices/${invoiceRelationId.value}/`, invoiceRelationForm.value)
+        .then(response =>{
+            sessionStorage.removeItem("/invoice/relation-invoices/")
+            app.popup("Sucesso!", "Relação de fatura salvo", "success")
+			router.push('/fatura/relacao-lista')
+        })
+        .catch(error=>{
+            app.popup("Erro!", app.resumeErrors(error), "warning")
+        })
     };
 
-	onMounted(() => {
-        api.get('/place/unions/')
+	app.onMounted(() => {
+        app.api.getCashed<Place[]>('/place/unions/')
         .then(response => {
-            places.value = response.data;
+            places.value = response;
         })
         .catch(error => {
-            console.error("Erro ao obter a lista de locais:", error);
+            app.popup("Erro!", "Falha ao buscar lista de locais", "warning")
         });
 		if (invoiceRelationId.value){
-			api.get(`/invoice/relation-invoices/${invoiceRelationId.value}/`)
+			app.api.get(`/invoice/relation-invoices/${invoiceRelationId.value}/`)
 			.then(response => {
 				invoiceRelationForm.value = response.data;
                 updateSelectRedidents()
 			})
-			.catch(error => {
-				console.error("Erro ao obter os detalhes do local:", error);
+			.catch(() => {
+				app.popup("Erro!", "Falha ao buscar informações dessa relação de faturas", "warning")
 			});
 		}
 	});

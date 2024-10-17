@@ -68,13 +68,13 @@
 </template>
 
 <script lang="ts" setup>
-    import { ref, onMounted } from 'vue'
+    import app from '@/app'
 
-    const username = ref<string | null>(null);
-    const isResident = ref(false)
-    const isUnion = ref(false)
+    const username = app.ref<string | null>(null);
+    const isResident = app.ref(false)
+    const isUnion = app.ref(false)
 
-    onMounted(() => {
+    app.onMounted(() => {
         username.value = localStorage.getItem("username")
         isResident.value = !!localStorage.getItem("isResident")
         isUnion.value = !!localStorage.getItem("isUnion")

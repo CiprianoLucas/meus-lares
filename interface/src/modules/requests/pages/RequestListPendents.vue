@@ -1,6 +1,7 @@
 <template>
     <div class="container mt-5">
         <h1 class="text-center">Chamados Pendentes</h1>
+        <button @click="getList(true)" class="btn btn-primary mx-3 m-3">Atualizar</button>
         
         <div v-if="carregando" class="alert alert-info text-center">
             Carregando...
@@ -39,35 +40,39 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { api } from '@/http'
+import app from '@/app'
 import { type Request, typeMap, statusMap } from '../interfaces'
 
-const requestList = ref<Request[]>([]);
-
-const carregando = ref(true)
+const requestList = app.ref<Request[]>([]);
+const carregando = app.ref(true)
+const url = '/request/pendents/'
 
 function capture(id: string) {
-    api
-    .put(`/request/pendents/${id}/`, { status: 'A' })
+    app.api.put(url + id , { status: 'A' })
     .then(() => {
         let obj = requestList.value.find(item => item.id === id)
         if (obj) obj.status = 'A';
+        app.popup('Sucesso!', 'Chamado capturado', 'success')
+        sessionStorage.removeItem(url)
     })
-    .catch((error) => {
-        console.error("Erro ao adicionar o residente:", error);
+    .catch(() => {
+        app.popup('Erro!', 'Falha ao capturar o chamado', 'warning')
     });
 }
 
-onMounted(() => {
-    api.get('/request/pendents')
+function getList(force: boolean){
+    app.api.getCashed<Request[]>(url, force)
     .then(response => {
-        requestList.value = response.data;
+        requestList.value = response;
         carregando.value = false
     })
-    .catch(error => {
-        console.error("Erro ao obter a lista de chamados pendentes:", error);
+    .catch(() => {
+        app.popup('Erro!', 'Falha ao obter a lista de chamados', 'warning')
     });
+}
+
+app.onMounted(() => {
+    getList(false)
 });
 </script>
 

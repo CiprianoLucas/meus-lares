@@ -34,21 +34,20 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { api } from '@/http'
+import app from '@/app'
 import { type Request, typeMap, statusMap } from '../interfaces'
 
 // Armazena a lista de chamados pendentes
-const requestList = ref<Request[]>([]);
+const requestList = app.ref<Request[]>([]);
 
-onMounted(() => {
+app.onMounted(() => {
     // Obtém a lista de chamados pendentes ao montar o componente
-    api.get('/request/residents/')
+    app.api.getCashed<Request[]>('/request/residents/')
     .then(response => {
-        requestList.value = response.data;
+        requestList.value = response;
     })
-    .catch(error => {
-        console.error("Erro ao obter a lista de chamados pendentes:", error);
+    .catch(() => {
+        app.popup('Erro!', 'Falha ao obter a lista de chamados', 'warning')
     });
 });
 </script>
