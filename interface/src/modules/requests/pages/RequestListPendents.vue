@@ -43,7 +43,7 @@
 import app from '@/app'
 import { type Request, typeMap, statusMap } from '../interfaces'
 
-const requestList = app.ref<Request[]>([]);
+const requestList = app.ref<Request[]>([])
 const carregando = app.ref(true)
 const url = '/request/pendents/'
 
@@ -51,29 +51,29 @@ function capture(id: string) {
     app.api.put(url + id , { status: 'A' })
     .then(() => {
         let obj = requestList.value.find(item => item.id === id)
-        if (obj) obj.status = 'A';
+        if (obj) obj.status = 'A'
         app.popup('Sucesso!', 'Chamado capturado', 'success')
         sessionStorage.removeItem(url)
     })
     .catch(() => {
         app.popup('Erro!', 'Falha ao capturar o chamado', 'warning')
-    });
+    })
 }
 
 function getList(force: boolean){
     app.api.getCashed<Request[]>(url, force)
     .then(response => {
-        requestList.value = response;
+        requestList.value = response
         carregando.value = false
     })
     .catch(() => {
         app.popup('Erro!', 'Falha ao obter a lista de chamados', 'warning')
-    });
+    })
 }
 
 app.onMounted(() => {
     getList(false)
-});
+})
 </script>
 
 <style scoped>

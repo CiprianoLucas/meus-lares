@@ -81,29 +81,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { api } from "@/http";
+import { ref, onMounted } from "vue"
+import { api } from "@/http"
 
-const username = ref<string | null>(null);
-const isResident = ref(false);
-const isUnion = ref(false);
+const username = ref<string | null>(null)
+const isResident = ref(false)
+const isUnion = ref(false)
 
 async function logout() {
-  await api.logout();
-  window.location.reload();
+  await api.logout()
+  window.location.reload()
 }
 
 onMounted(() => {
-  username.value = localStorage.getItem("username");
-  isResident.value = !!localStorage.getItem("isResident");
-  isUnion.value = !!localStorage.getItem("isUnion");
-});
+  username.value = localStorage.getItem("username")
+  isResident.value = !!localStorage.getItem("isResident")
+  isUnion.value = !!localStorage.getItem("isUnion")
+})
 </script>
 
 <script lang="ts">
 export default {
   name: "NavBar",
-};
+}
 </script>
 
 <style>

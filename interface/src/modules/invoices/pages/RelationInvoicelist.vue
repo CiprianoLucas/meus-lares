@@ -37,30 +37,30 @@
 <script lang="ts" setup>
 import app from '@/app'
 import { type InvoiceRelation } from '../interfaces'
-const invoicesRelations = app.ref<InvoiceRelation[]>([]);
+const invoicesRelations = app.ref<InvoiceRelation[]>([])
 const url = "/invoice/relation-invoices/"
 
 function exclude(id: string) {
     app.api.delete(url + id)
     .then(() => {
-        invoicesRelations.value = invoicesRelations.value.filter(invoice => invoice.id !== id);
+        invoicesRelations.value = invoicesRelations.value.filter(invoice => invoice.id !== id)
         app.popup("Sucesso!", "Relação de faturas excluido.", "warning")
         sessionStorage.removeItem(url)
     })
     .catch(error => {
         app.popup("Erro!", "Falha ao excluir relação de faturas", "warning")
-    });
+    })
 }
 
 app.onMounted(() => {
     app.api.getCashed<InvoiceRelation[]>(url)
     .then(response => {
-        invoicesRelations.value = response;
+        invoicesRelations.value = response
     })
     .catch(error => {
         app.popup("Erro!", "Falha ao listar relações de faturas", "warning")
-    });
-});
+    })
+})
 </script>
 
 <style scoped>

@@ -68,9 +68,7 @@
 <script lang="ts" setup>
     import app from '@/app'
     
-	const route = app.useRoute();
-	const router = app.useRouter();
-	const placeId = app.ref(route.params.id);
+	const placeId = app.ref(app.routeParam('id'))
 
     const placeForm = app.ref({
         name: '',
@@ -78,42 +76,43 @@
         street: '',
         city: '',
         state: ''
-    });
+    })
 
     function registerPlace() {
         app.api.post('/place/', placeForm.value)
 		.then(({data})=>{
 			app.popup('Sucesso!', 'Informações do condomínio salvas', 'success')
+			debugger
 			sessionStorage.removeItem('/place/unions/')
-			router.push('/condominio/lista')
+			app.redirect('/condominio/lista')
 		})
 		.catch(error=>{
 			app.popup("Erro!", app.resumeErrors(error), 'warning')
 		})
-    };
+    }
 
 	function updatePlace() {
         app.api.put(`/place/${placeId.value}/`, placeForm.value)
 		.then(()=>{
 			app.popup('Sucesso!', 'Informações do condomínio salvas', 'success')
 			sessionStorage.removeItem('/place/unions/')
-			router.push('/condominio/lista')
+			app.redirect('/condominio/lista')
 		})
-		.catch(()=>{
-			app.popup('Erro!', 'Falha ao salvar informações do condomínio', 'warning')
+		.catch(error=>{
+			app.popup("Erro!", app.resumeErrors(error), 'warning')
 		})
-    };
+    }
 
 	app.onMounted(() => {
 		if (placeId.value){
 			app.api.get(`/place/${placeId.value}/`)
 			.then(response => {
-				placeForm.value = response.data;
+				placeForm.value = response.data
 			})
 			.catch(() => {
 				app.popup('Erro!', 'Falha ao obter informações do condomínio', 'warning')
-			});
+			})
 		}
-	});
+	})
 
 </script>

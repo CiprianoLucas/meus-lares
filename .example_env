@@ -1,6 +1,6 @@
 # Django
 ENV=develop
-SECRET_KEY=uVG3ULJRPbh$my_secret_key&zFtQ3ZrKXVViF
+SECRET_KEY=uVG3ULJRPbh_my_secret_key_&zFtQ3ZrKXVViF
 API_PORT=9000
 # Database
 DB_NAME=meus-lares

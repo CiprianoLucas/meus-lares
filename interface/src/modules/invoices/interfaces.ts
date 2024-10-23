@@ -1,5 +1,5 @@
 interface InvoiceRelation {
-    id: string;
+    id: string
     company: 'CELESC',
     unit_number: string,
     resident: string,
@@ -17,6 +17,6 @@ interface Invoice {
 
 const companyMap = {
     'CELESC': 'CELESC'
-};
+}
 
 export {type InvoiceRelation,type Invoice, companyMap}

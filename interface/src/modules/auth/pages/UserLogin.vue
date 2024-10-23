@@ -41,12 +41,11 @@
 
 	const buttonDisabled = app.ref(false)
 	
-	const router = app.useRouter();
 	const login = () => {
 		buttonDisabled.value = true
 		app.api.login(form.value)
 		.then(()=>{
-			router.push('/');
+			app.redirect('/')
 		})
 		.catch((error)=>{
 			if (error.status == 401){

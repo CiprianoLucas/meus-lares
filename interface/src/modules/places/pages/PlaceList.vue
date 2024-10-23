@@ -36,17 +36,17 @@
 <script lang="ts" setup>
 import app from '@/app'
 import { type Place } from '../../places/interfaces'
-const places = app.ref<Place[]>([]);
+const places = app.ref<Place[]>([])
 
 app.onMounted(() => {
     app.api.getCashed<Place[]>('/place/unions/')
         .then((response) => {
-            places.value = response;
+            places.value = response
         })
         .catch(()=>{
             app.popup('Erro!', 'Falha ao listar os condomínios', 'warning')
         })
-});
+})
 
 </script>
 

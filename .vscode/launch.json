@@ -14,7 +14,7 @@
             ],
             "django": true,
             "autoStartBrowser": false,
-            "program": "${workspaceFolder}\\api\\manage.py"
+            "program": "${workspaceFolder}/api/manage.py"
         }
     ]
 }

@@ -38,18 +38,18 @@ import app from '@/app'
 import { type Request, typeMap, statusMap } from '../interfaces'
 
 // Armazena a lista de chamados pendentes
-const requestList = app.ref<Request[]>([]);
+const requestList = app.ref<Request[]>([])
 
 app.onMounted(() => {
     // Obtém a lista de chamados pendentes ao montar o componente
     app.api.getCashed<Request[]>('/request/residents/')
     .then(response => {
-        requestList.value = response;
+        requestList.value = response
     })
     .catch(() => {
         app.popup('Erro!', 'Falha ao obter a lista de chamados', 'warning')
-    });
-});
+    })
+})
 </script>
 
 <style scoped>

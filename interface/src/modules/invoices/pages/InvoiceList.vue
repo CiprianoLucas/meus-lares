@@ -30,17 +30,17 @@
 <script lang="ts" setup>
 import app from '@/app'
 import { type Invoice } from '../interfaces'
-const invoices = app.ref<Invoice[]>([]);
+const invoices = app.ref<Invoice[]>([])
 
 app.onMounted(() => {
     app.api.getCashed<Invoice[]>('/invoice/invoices/')
     .then(response => {
-        invoices.value = response;
+        invoices.value = response
     })
     .catch(() => {
         app.popup("Erro!", "Falha ao listar as faturas", "warning")
-    });
-});
+    })
+})
 </script>
 
 <style scoped>

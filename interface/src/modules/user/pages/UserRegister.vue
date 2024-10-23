@@ -74,30 +74,26 @@
   
 <script lang="ts" setup>
     import NavBar from '@/components/template/NavBar.vue'
-    import { ref } from 'vue'
-    import { api } from '@/http'
-import app from '@/app';
+    import app from '@/app'
     
-    const form = ref({
+    const form = app.ref({
         username: '',
         email: '',
         cpf: '',
         phone_number: '',
         full_name: '',
         password: ''
-    });
-
-    const router = app.useRouter()
+    })
 
     function RegisterUser() {
-        api.post('/user/register/', form.value)
+        app.api.post('/user/register/', form.value)
         .then(()=>{
           app.popup("Sucesso!", "Usuário cadastrado com sucesso.", 'success')
-          router.push('/login');
+          app.redirect('/login')
         })
         .catch((error)=>{
           app.popup("Erro!", app.resumeErrors(error), 'warning')
         })
-    };
+    }
 
 </script>

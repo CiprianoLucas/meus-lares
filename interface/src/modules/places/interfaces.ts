@@ -1,10 +1,10 @@
 interface Place {
-    id: string;
+    id: string
     name: string,
     street: string,
     number: string,
     city: string,
-    state: string;
+    state: string
 }
 
 export type { Place }
