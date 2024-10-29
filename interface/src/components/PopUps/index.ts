@@ -2,7 +2,7 @@ import { createApp, h } from 'vue'
 import AlertPopup from './AlertPopup.vue'
 import type {typesBootstrap} from './interfaces'
 import { type AxiosError } from 'axios'
-import { inputsLabel } from '@/components/inputs'
+import { inputsLabel } from '@/components/forms'
 
 const popup = (title: string, message: string, type: typesBootstrap = 'success', time: number = 3000) => {
     const popupContainer = document.createElement('div')
