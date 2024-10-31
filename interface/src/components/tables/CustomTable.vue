@@ -1,128 +1,123 @@
 <template>
-    <div>
-        <!-- Campo de Pesquisa -->
-        <input v-model="searchQuery" placeholder="Pesquisar..." class="search-input" />
+    <div v-if="props.data.length === 0" class="alert alert-info text-center">
+        Nenhum disponível no momento.
+    </div>
 
-        <!-- Tabela -->
-        <table class="custom-table">
-            <thead>
-                <tr>
-                    <th v-for="(header, index) in headers" :key="index" @click="sortBy(header.key)"
-                        :class="getSortClass(header.key)">
-                        {{ header.label }}
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(item, index) in paginatedData" :key="index">
-                    <td v-for="(header, index) in headers" :key="index">
-                        {{ item[header.key] }}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div v-else>
+        <input v-model="searchQuery" placeholder="Pesquisar..." class="form-control mb-3" />
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th v-for="(v, k) in headers" :key="k" @click="sortBy(k as string)"
+                            :class="getThClass(k as string)">
+                            {{ v }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item, i) in paginatedData" :key="i">
+                        <td v-for="(v, k) in headers" :key="v" :class="getTdClass(k as string)">
+                            {{ item[k] }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-        <!-- Controle de Paginação -->
-        <div class="pagination-controls">
-            <label>
-                Itens por página:
-                <select v-model="itemsPerPage" @change="resetPage">
-                    <option :value="5">5</option>
-                    <option :value="10">10</option>
-                    <option :value="15">15</option>
-                </select>
-            </label>
-            <button @click="previousPage" :disabled="currentPage === 1">Anterior</button>
-            <span>Página {{ currentPage }} de {{ totalPages }}</span>
-            <button @click="nextPage" :disabled="currentPage === totalPages">Próxima</button>
+        <div class="row">
+            <div class="col-3">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text">Itens por página:</span>
+                    <select v-model="itemsPerPage" class="form-select" aria-label="Sizing example input"
+                        aria-describedby="inputGroup-sizing-sm">
+                        <option :value="20">20</option>
+                        <option :value="50">50</option>
+                        <option :value="100">100</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group ">
+                    <button class="btn btn-secondary" @click="previousPage"
+                        :disabled="currentPage === 1">Anterior</button>
+                    <span class="input-group-text">Página {{ currentPage }} de {{ totalPages }}</span>
+                    <button class="btn btn-secondary" @click="nextPage"
+                        :disabled="currentPage === totalPages">Próxima</button>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
+import { inputsLabel } from '../forms';
 
-// Definindo as tipagens das propriedades
-interface Header {
-    label: string
-    key: string
-}
+interface Item { [key: string]: any }
 
-interface DataItem {
-    [key: string]: any
-}
-
-// Recebendo as propriedades com tipagem
 const props = defineProps<{
-    data: DataItem[]
-    headers: Header[]
+    data: Item[]
+    headers?: { [key: string]: string }
 }>()
 
-// Variáveis reativas
+
+const headers = ref(props.headers || inputsLabel)
 const searchQuery = ref('')
 const sortKey = ref<string | null>(null)
 const sortOrder = ref(1)
 const currentPage = ref(1)
-const itemsPerPage = ref(5)
+const itemsPerPage = ref(20)
 
-// Computed para dados filtrados e ordenados
 const filteredAndSortedData = computed(() => {
     let result = props.data
-
-    // Filtragem
     if (searchQuery.value) {
         result = result.filter((item) =>
-            props.headers.some((header) =>
-                String(item[header.key])
+            Object.keys(headers.value).some((k) =>
+                String(item[k])
                     .toLowerCase()
                     .includes(searchQuery.value.toLowerCase())
             )
         )
     }
 
-    // Ordenação
     if (sortKey.value) {
-        result = result.slice().sort((a, b) => {
-            const aValue = a[sortKey.value as keyof DataItem]
-            const bValue = b[sortKey.value as keyof DataItem]
+        result = result.slice().sort((a: Item, b: Item) => {
+            const aValue = a[sortKey.value as keyof Item].toString().toLowerCase();
+            const bValue = b[sortKey.value as keyof Item].toString().toLowerCase();
 
-            if (aValue < bValue) return sortOrder.value === 1 ? -1 : 1
-            if (aValue > bValue) return sortOrder.value === 1 ? 1 : -1
-            return 0
-        })
+            if (aValue < bValue) return sortOrder.value === 1 ? -1 : 1;
+            if (aValue > bValue) return sortOrder.value === 1 ? 1 : -1;
+            return 0;
+        });
     }
 
     return result
 });
 
-// Computed para dados paginados
 const paginatedData = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage.value;
     const end = start + itemsPerPage.value;
     return filteredAndSortedData.value.slice(start, end);
 });
 
-// Total de páginas
 const totalPages = computed(() =>
     Math.ceil(filteredAndSortedData.value.length / itemsPerPage.value)
 );
 
-// Função para resetar a página
 const resetPage = () => {
     currentPage.value = 1;
 };
 
-// Função de ordenação ao clicar no cabeçalho
 const sortBy = (key: string) => {
     if (sortKey.value === key) {
-        sortOrder.value = -sortOrder.value; // Inverte a ordem se a coluna for a mesma
+        sortOrder.value = -sortOrder.value;
     } else {
         sortKey.value = key;
         sortOrder.value = 1;
     }
 };
 
-// Navegação entre páginas
 const nextPage = () => {
     if (currentPage.value < totalPages.value) {
         currentPage.value++;
@@ -135,59 +130,53 @@ const previousPage = () => {
     }
 };
 
-// Classe para indicar ordenação na coluna
-const getSortClass = (key: string) => {
-    if (sortKey.value === key) {
-        return sortOrder.value === 1 ? 'ascending' : 'descending';
+const getThClass = (key: string) => {
+    let thClass = ""
+    if (key ==="state"){
+        thClass += "sticky-last-column "
     }
-    return '';
+    if (sortKey.value === key) {
+        thClass += sortOrder.value === 1 ? 'ascending' : 'descending';
+    }
+    return thClass;
 };
 
-// Observa mudanças no query de busca para resetar a página
+const getTdClass = (key: string) => {
+    let tdClass = ""
+    if (key ==="state"){
+        tdClass += "sticky-last-column"
+    }
+    return tdClass;
+};
+
 watch(searchQuery, resetPage);
 </script>
 
 <style scoped>
-.custom-table {
-    width: 100%;
-    border-collapse: collapse;
+.table-responsive {
+  overflow-x: auto;
 }
 
-.custom-table th,
-.custom-table td {
+.sticky-last-column {
+  position: sticky;
+  right: 0;
+  z-index: 1;
+}
+
+.table th,
+.table td {
     border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
+}
+
+th {
     cursor: pointer;
 }
 
-.custom-table th.ascending::after {
+.table th.ascending::after {
     content: ' ▲';
 }
 
-.custom-table th.descending::after {
+.table th.descending::after {
     content: ' ▼';
-}
-
-.search-input {
-    margin-bottom: 10px;
-    padding: 8px;
-    width: 100%;
-}
-
-.pagination-controls {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 10px;
-}
-
-.pagination-controls select {
-    padding: 5px;
-}
-
-.pagination-controls button {
-    padding: 5px 10px;
-    cursor: pointer;
 }
 </style>

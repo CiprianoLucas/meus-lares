@@ -2,6 +2,21 @@ from django.db import models
 from users.models import User
 from meus_lares.storages import PrivateMediaStorage, PublicMediaStorage
 import uuid
+
+class State(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    acronym = models.CharField(max_length=2, unique=True)
+    
+    def __str__(self):
+        return f'{self.name} ({self.acronym})'
+    
+class City(models.Model):
+    name = models.CharField(max_length=50)
+    state = models.ForeignKey(State, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.name
+
 class Place(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     representative = models.ForeignKey(User, on_delete=models.CASCADE, related_name='place_representative')

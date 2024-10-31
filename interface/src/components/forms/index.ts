@@ -26,14 +26,21 @@ const inputsProps: Input[] = [
     reference: 'name',
     label: 'Nome',
     size: 'lg',
-    type: 'text'
+    type: 'textarea'
   },
   {
-    reference: 'number',
-    label: 'Número',
+    reference: 'state',
+    label: 'Estado',
     size: 'sm',
-    type: 'text',
-    mask: '########'
+    type: 'select',
+    options: []
+  },
+  {
+    reference: 'city',
+    label: 'Cidade',
+    size: 'md',
+    type: 'select',
+    options: []
   },
   {
     reference: 'street',
@@ -42,17 +49,11 @@ const inputsProps: Input[] = [
     type: 'text'
   },
   {
-    reference: 'city',
-    label: 'Cidade',
-    size: 'md',
-    type: 'select'
-  },
-  {
-    reference: 'state',
-    label: 'Estado',
+    reference: 'number',
+    label: 'Número',
     size: 'sm',
-    type: 'select'
-  }
+    type: 'check',
+  },
 ]
 
 export { inputsLabel, inputsProps }
