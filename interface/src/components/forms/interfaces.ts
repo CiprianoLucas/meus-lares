@@ -1,5 +1,5 @@
 interface Options {
-    value?: string
+    value?: string | number
     active?: boolean
     label: string
 }

@@ -8,6 +8,8 @@ from .views import (
     ResidentPlaceRemoveView,
     UnionPlaceCreateView,
     UnionPlaceRemoveRemoveView,
+    CitiesView,
+    FullAddressView
 )
 
 urlpatterns = [
@@ -35,4 +37,6 @@ urlpatterns = [
         UnionPlaceRemoveRemoveView.as_view(),
         name="union",
     ),
+    path("cities/<str:uf>", CitiesView.as_view(), name="cities"),
+    path("cep/<str:cep>", FullAddressView.as_view(), name="full-address-by-cep"),
 ]

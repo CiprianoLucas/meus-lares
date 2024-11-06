@@ -13,12 +13,16 @@
                             :class="getThClass(k as string)">
                             {{ v }}
                         </th>
+                        <th v-if="props.options">Opções</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(item, i) in paginatedData" :key="i">
                         <td v-for="(v, k) in headers" :key="v" :class="getTdClass(k as string)">
                             {{ item[k] }}
+                        </td>
+                        <td>
+                            <a v-if="props.options" href="">teste</a>
                         </td>
                     </tr>
                 </tbody>
@@ -51,7 +55,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { inputsLabel } from '../forms';
 
 interface Item { [key: string]: any }
@@ -59,8 +63,8 @@ interface Item { [key: string]: any }
 const props = defineProps<{
     data: Item[]
     headers?: { [key: string]: string }
+    options?: boolean
 }>()
-
 
 const headers = ref(props.headers || inputsLabel)
 const searchQuery = ref('')
@@ -68,6 +72,22 @@ const sortKey = ref<string | null>(null)
 const sortOrder = ref(1)
 const currentPage = ref(1)
 const itemsPerPage = ref(20)
+
+const processData = (data: Item[]) => {
+    debugger
+    const keys = Object.keys(headers.value);
+    if (props.data.length > 0) {
+        keys.forEach(element => {
+            if (!props.data[0]?.[element]) {
+                delete headers.value[element]
+            }
+        })
+    };
+};
+
+watch(() => props.data, (newData) => {
+    processData(newData);
+}, { immediate: true });
 
 const filteredAndSortedData = computed(() => {
     let result = props.data
@@ -132,7 +152,7 @@ const previousPage = () => {
 
 const getThClass = (key: string) => {
     let thClass = ""
-    if (key ==="state"){
+    if (key === "state") {
         thClass += "sticky-last-column "
     }
     if (sortKey.value === key) {
@@ -143,7 +163,7 @@ const getThClass = (key: string) => {
 
 const getTdClass = (key: string) => {
     let tdClass = ""
-    if (key ==="state"){
+    if (key === "state") {
         tdClass += "sticky-last-column"
     }
     return tdClass;
@@ -154,13 +174,13 @@ watch(searchQuery, resetPage);
 
 <style scoped>
 .table-responsive {
-  overflow-x: auto;
+    overflow-x: auto;
 }
 
 .sticky-last-column {
-  position: sticky;
-  right: 0;
-  z-index: 1;
+    position: sticky;
+    right: 0;
+    z-index: 1;
 }
 
 .table th,

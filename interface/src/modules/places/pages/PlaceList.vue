@@ -3,13 +3,7 @@
         <h1 class="text-center">Condomínios</h1>
         <custom-table
             :data="places"
-            :headers="  {
-                            name: 'Nome',
-                            street: 'Logradouro',
-                            number: 'Número',
-                            city: 'Cidade',
-                            state: 'Estado'
-                        }"
+            :options="true"
         />
     </div>
 </template>

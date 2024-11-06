@@ -1,7 +1,7 @@
 import { useRoute, type RouteLocationRaw } from 'vue-router'
 import { popup, resumeErrors } from '@/components/PopUps'
 import { api } from '@/http'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import router from '@/router'
 
 const app = {
@@ -9,10 +9,11 @@ const app = {
     ref: ref,
     routeParam: (param: string) => useRoute().params[param],
     redirect: (param: RouteLocationRaw) => {
-        router.push(param)
+        router.replace(param).then(()=>window.location.reload());
     },
     onMounted: onMounted,
     popup: popup,
     resumeErrors: resumeErrors,
+    watch: watch,
 }
 export default app

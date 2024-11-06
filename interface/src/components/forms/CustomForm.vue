@@ -63,13 +63,13 @@ import type { Input } from './interfaces'
 import applyMask from './mask'
 
 const props = defineProps<{
-    form: { [key: string]: string }
+    form: { [key: string ]: string | number}
     inputs?: Input[]
 }>()
 
-function verifyMask(mask: string | undefined, reference: string) {
+function verifyMask(mask: string | undefined, reference: string | number) {
     if (mask) {
-        props.form[reference] = applyMask(mask, props.form[reference])
+        props.form[reference] = applyMask(mask, String(props.form[reference]))
     }
 }
 

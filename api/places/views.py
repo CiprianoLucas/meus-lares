@@ -2,12 +2,13 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Place
-from .serializers import PlacesSerializer, UserPlaceSerializer
+from .models import Place, City
+from .serializers import PlacesSerializer, UserPlaceSerializer, CitySerializer, FullAddressSerializer
 from .permissions import IsRepresentative
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from users.models import User
+import httpx
 
 class PlaceCreateView(generics.CreateAPIView):
     queryset = Place.objects.filter(is_active=True)
@@ -119,3 +120,38 @@ class UnionPlaceRemoveRemoveView(APIView):
         user = get_object_or_404(User, pk=pk_user)
         place.unions.remove(user)
         return Response({'detail': 'Unions removed successfully'}, status=status.HTTP_200_OK)
+    
+
+class CitiesView(APIView):
+    serializer_class = CitySerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request, uf):
+        cities = City.objects.filter(state__acronym=uf)
+        serializer = self.serializer_class(cities, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class FullAddressView(APIView):
+    serializer_class = FullAddressSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request, cep):
+        url = f"https://viacep.com.br/ws/{cep}/json/"
+        http_response = httpx.request("GET", url)
+        result = http_response.json()
+        if 'erro' in result:
+            return Response({"cep": "Cep não encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+        city = City.objects.filter(Q(name=result['localidade']) & Q(state__acronym=result['uf'])).first()
+
+        response = {
+            "state": result['uf'],
+            "city": city.id if city else None,
+            "neighborhood": result['bairro'] if result['bairro'] else None,
+            "street": result['logradouro'] if result['logradouro'] else None,
+        }
+
+        serializer = FullAddressSerializer(data=response)
+
+        if serializer.is_valid():
+            return Response(serializer.data, status=status.HTTP_200_OK)
