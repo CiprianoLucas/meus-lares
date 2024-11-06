@@ -115,7 +115,7 @@ const inputsLabel: { [key: string]: string } = {
   name: 'Nome',
   number: 'Número',
   street: 'Logradouro',
-  city: 'Cidade',
+  city_name: 'Cidade',
   state: 'Estado',
   email: 'Email',
   company: 'Empresa',
