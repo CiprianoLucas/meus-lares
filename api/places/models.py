@@ -31,10 +31,13 @@ class Place(models.Model):
     complement = models.CharField(max_length=255, null=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    profile_photo = models.ImageField(upload_to='places/profile-photo/', blank=True, storage=PrivateMediaStorage())
+    profile_photo = models.ImageField(upload_to='places/profile-photo/', blank=True, storage=PublicMediaStorage())
 
     def __str__(self):
         return self.name
+    
+    def temporary_url(self):
+        return self.profile_photo.url if self.profile_photo else None
 
     class Meta:
         verbose_name = "Local"
