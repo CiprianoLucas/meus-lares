@@ -1,11 +1,11 @@
 import re
 from rest_framework import serializers
-from .models import Place, City
-class PlacesSerializer(serializers.ModelSerializer):
+from .models import Condominium, City
+class CondominiumsSerializer(serializers.ModelSerializer):
     city_name = serializers.SerializerMethodField()
     state = serializers.SerializerMethodField()
     class Meta:
-        model = Place
+        model = Condominium
         fields = ['id', 'name', 'number', 'complement', 'neighborhood', 'street', 'city', 'cep', 'city_name', 'state']
         extra_kwargs = {
             "id": {"read_only": True},
@@ -34,7 +34,7 @@ class PlacesSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
         
-class UserPlaceSerializer(serializers.Serializer):
+class UserCondominiumSerializer(serializers.Serializer):
     id = serializers.UUIDField(read_only=True)
     username = serializers.CharField(read_only=True)
     email = serializers.EmailField()

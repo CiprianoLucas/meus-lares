@@ -45,9 +45,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users.apps.UserConfig',
     'places.apps.PlacesConfig',
-    'requests.apps.RequestsConfig',
-    'invoices.apps.InvoicesConfig',
-    'ai.apps.AiConfig',
+    'relations.apps.RelationsConfig',
+    # 'requests.apps.RequestsConfig',
+    # 'invoices.apps.InvoicesConfig',
+    # 'ai.apps.AiConfig',
     'storages',
 ]
 
