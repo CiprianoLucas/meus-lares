@@ -1,38 +1,25 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from .models import Condominium, Apartment
-from relations.models import CondoManager, CondoOwner, CondoTenant
+from relations.models import CondoStaff, CondoTenant
+from meus_lares.mixin import SoftAdmin, SoftInline
 
-class CondoManagerInline(admin.TabularInline):
-    model = CondoManager
-    extra = 0
-    fields = ('user', 'start_day', 'end_day', 'is_active', 'notes')
-    readonly_fields = ('created_at', 'deleted_at')
-    can_delete = False
+class CondoStaffInline(SoftInline):
+    model = CondoStaff
 
-class CondoOwnerInline(admin.TabularInline):
-    model = CondoOwner
-    extra = 0
-    fields = ('user', 'start_day', 'end_day', 'is_active', 'notes')
-    readonly_fields = ('created_at', 'deleted_at')
-    can_delete = False
 
-class CondoTenantInline(admin.TabularInline):
+class CondoTenantInline(SoftInline):
     model = CondoTenant
-    extra = 0
-    fields = ('user', 'start_day', 'end_day', 'is_active', 'notes')
-    readonly_fields = ('created_at', 'deleted_at')
-    can_delete = False
 
-class CondominiumsAdmin(admin.ModelAdmin):
+class CondominiumsAdmin(SoftAdmin):
     list_display = ('id', 'name', 'number', 'street', 'city', 'city__state', 'is_active', 'created_at', 'profile_photo_url')
-    list_filter = ('id', 'is_active', 'city','city__state')
+    list_filter = ('is_active','city__state')
     search_fields = ('id', 'name', 'number', 'street', 'city')
-    fields = ('name', 'number', 'street', 'city', 'is_active', 'profile_photo')
-    inlines = [CondoManagerInline, CondoOwnerInline]
-    list_per_page = 20
-    verbose_name = "Condomínio"
-    verbose_name_plural = "Condomínios"
+    inlines = [CondoStaffInline]
+
+    class Meta:
+        verbose_name = "Condomínio"
+        verbose_name_plural = "Condomínios"
     
     def profile_photo_url(self, obj):
         if obj.temporary_url():
@@ -41,13 +28,11 @@ class CondominiumsAdmin(admin.ModelAdmin):
 
     profile_photo_url.short_description = 'Foto'
 
-class ApartmentsAdmin(admin.ModelAdmin):
+class ApartmentsAdmin(SoftAdmin):
     list_display = ('id', 'condominium', 'identifier', 'profile_photo_url', 'is_active')
     list_filter = ('id', 'condominium', 'identifier','is_active')
-    search_fields = ('id', 'condominium', 'identifier', 'is_active')
-    fields = ('condominium', 'identifier', 'profile_photo', 'is_active', 'complement')
+    search_fields = ('id', 'condominium__name', 'identifier', 'is_active')
     inlines = [CondoTenantInline]
-    list_per_page = 20
     verbose_name = "Apartamento"
     verbose_name_plural = "Apartamentos"
     

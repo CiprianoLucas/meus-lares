@@ -1,7 +1,6 @@
 from django.db import models
-from users.models import User
-from meus_lares.storages import PrivateMediaStorage, PublicMediaStorage
-import uuid
+from meus_lares.storages import PublicMediaStorage
+from meus_lares.mixin import SoftModel
 
 class State(models.Model):
     acronym = models.CharField(max_length=2, primary_key=True)
@@ -17,8 +16,7 @@ class City(models.Model):
     def __str__(self):
         return self.name
 
-class Condominium(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+class Condominium(SoftModel):
     name = models.CharField(max_length=255)
     cep = models.CharField(max_length=8)
     city = models.ForeignKey(City, on_delete=models.DO_NOTHING, related_name='place_city')
@@ -26,9 +24,6 @@ class Condominium(models.Model):
     street = models.CharField(max_length=255)
     number = models.CharField(max_length=20, null=True)
     complement = models.CharField(max_length=255, null=True)
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_deleted = models.BooleanField(default=False)
     profile_photo = models.ImageField(upload_to='places/profile-photo/', blank=True, storage=PublicMediaStorage())
 
     def __str__(self):
@@ -40,23 +35,18 @@ class Condominium(models.Model):
     class Meta:
         verbose_name = "Condomínio"
         verbose_name_plural = "Condomínios"
-    
-    def delete(self, *args, **kwargs):
-        if self.profile_photo:
-            self.profile_photo.delete(save=False)
-
-        super().delete(*args, **kwargs)
         
-
-class Apartment(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+class Apartment(SoftModel):
     condominium = models.ForeignKey(Condominium, on_delete=models.CASCADE)
     identifier = models.CharField(max_length=255, null=True)
-    is_active = models.BooleanField(default=True)
-    is_deleted = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
     profile_photo = models.ImageField(upload_to='places/profile-photo/', blank=True, storage=PublicMediaStorage())
-    complement = models.CharField(max_length=255, null=True)
+    complement = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return f'"{self.identifier}" in "{self.condominium}"'
+
+    def temporary_url(self):
+        return self.profile_photo.url if self.profile_photo else None
 
     class Meta:
         verbose_name = "Apartamento"

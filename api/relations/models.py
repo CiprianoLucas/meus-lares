@@ -1,43 +1,51 @@
 from django.db import models
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from places.models import Apartment, Condominium
+from meus_lares.mixin import SoftModel
 from users.models import User
-import uuid
 
-class CondoTenant(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+class CondoTenant(SoftModel):
     apartment = models.ForeignKey(Apartment, on_delete=models.DO_NOTHING)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    is_active = models.BooleanField(default=False)
-    is_deleted = models.BooleanField(default=False)
     is_renter = models.BooleanField(default=False)
     is_responsible = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    deleted_at = models.DateTimeField(blank=True, null=True)
-    start_day = models.DateField(blank=True, null=True)
-    end_day = models.DateField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
+    def __str__(self):
+        return f'tenant: "{self.user}" of {self.apartment}'
 
-class CondoManager(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    class Meta:
+        verbose_name = "Morador"
+        verbose_name_plural = "Moradores"
+
+class CondoStaff(SoftModel):
+    ROLE_CHOICES = [
+        ('owner', 'Owner'),
+        ('manager', 'Manager'),
+        ('vigilant', 'Vigilant'),
+        ('doorman', 'Doorman'),
+        ('caretaker', 'Caretaker'),
+        ('cleaner', 'Cleaner'),
+    ]
     condominium = models.ForeignKey(Condominium, on_delete=models.DO_NOTHING)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    is_active = models.BooleanField(default=False)
-    is_deleted = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    deleted_at = models.DateTimeField(blank=True, null=True)
-    start_day = models.DateField(blank=True, null=True)
-    end_day = models.DateField(blank=True, null=True)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
     notes = models.TextField(blank=True, null=True)
+    def __str__(self):
+        return f'{self.role}: "{self.user}" of "{self.condominium}"'
 
-class CondoOwner(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    condominium = models.ForeignKey(Condominium, on_delete=models.DO_NOTHING)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    is_active = models.BooleanField(default=False)
-    is_responsible = models.BooleanField(default=False)
-    is_deleted = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    deleted_at = models.DateTimeField(blank=True, null=True)
-    start_day = models.DateField(blank=True, null=True)
-    end_day = models.DateField(blank=True, null=True)
-    notes = models.TextField(blank=True, null=True)
+    class Meta:
+        verbose_name = "Colaborador do condomínio"
+        verbose_name_plural = "Colaboradores do condomínio"
+
+class Contract(SoftModel):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.UUIDField()
+    related_object = GenericForeignKey('content_type', 'object_id')
+    start_date = models.DateField()
+    end_date = models.DateField(blank=True, null=True)
+    terms = models.TextField()
+
+    class Meta:
+        verbose_name = "Contrato"
+        verbose_name_plural = "Contratos"
