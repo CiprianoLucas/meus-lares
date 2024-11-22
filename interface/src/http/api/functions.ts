@@ -11,7 +11,7 @@ api.login = async function(form){
 		const response: AxiosResponse<LoginResponse> = await this.post('/user/login/', {
 			username: form.username,
 			password: form.password,
-		});
+		})
 
 		localStorage.setItem('username', response.data.username)
 		if (response.data.isResident){
@@ -24,7 +24,7 @@ api.login = async function(form){
 		} else {
 			localStorage.removeItem('isUnion')
 		}
-		window.location.href = '/';
+		window.location.href = '/'
       	return response.data
     } catch (error) {
 		throw error
@@ -43,9 +43,9 @@ api.logout = async function() {
 
 api.getCashed = async function(path, force?, time?){
 	try {
-		const actualForce = force !== undefined ? force : false;
-    	const actualTime = time !== undefined ? time : 300;
-		const timestampAtual = Date.now();
+		const actualForce = force !== undefined ? force : false
+    	const actualTime = time !== undefined ? time : 300
+		const timestampAtual = Date.now()
 		const sessionCash = sessionStorage.getItem(path)
 
 		if (sessionCash){
@@ -65,7 +65,7 @@ api.getCashed = async function(path, force?, time?){
 			expirate: (actualTime * 1000)
 		}
 
-		sessionStorage.setItem(path, JSON.stringify(session));
+		sessionStorage.setItem(path, JSON.stringify(session))
 
 		return response
 

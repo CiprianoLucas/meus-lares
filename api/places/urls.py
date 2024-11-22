@@ -1,38 +1,42 @@
 from django.urls import path
 from .views import (
-    PlaceCreateView,
-    PlaceDetailView,
-    PlaceListForResidentsView,
-    PlaceListForUnionsAndRepresentativesView,
-    ResidentPlaceCreateView,
-    ResidentPlaceRemoveView,
-    UnionPlaceCreateView,
-    UnionPlaceRemoveRemoveView,
+    CondominiumCreateView,
+    CondominiumDetailView,
+    CondominiumListForResidentsView,
+    CondominiumListForUnionsAndRepresentativesView,
+    ResidentCondominiumCreateView,
+    ResidentCondominiumRemoveView,
+    UnionCondominiumCreateView,
+    UnionCondominiumRemoveRemoveView,
+    CitiesView,
+    FullAddressView
 )
 
 urlpatterns = [
-    path("", PlaceCreateView.as_view(), name="place-create"),
-    path("<uuid:pk>/", PlaceDetailView.as_view(), name="place-detail"),
+    path("", CondominiumCreateView.as_view(), name="condominium-create"),
+    path("<uuid:pk>/", CondominiumDetailView.as_view(), name="condominium-detail"),
     path(
-        "residents/", PlaceListForResidentsView.as_view(), name="place-list-residents"
+        "residents/", CondominiumListForResidentsView.as_view(), name="condominium-list-residents"
     ),
     path(
         "unions/",
-        PlaceListForUnionsAndRepresentativesView.as_view(),
-        name="place-list-unions",
+        CondominiumListForUnionsAndRepresentativesView.as_view(),
+        name="condominium-list-unions",
     ),
     path(
-        "<uuid:pk_place>/residents/", ResidentPlaceCreateView.as_view(), name="resident"
+        "<uuid:pk_condominium>/residents/", ResidentCondominiumCreateView.as_view(), name="resident"
     ),
     path(
-        "<uuid:pk_place>/residents/<uuid:pk_user>",
-        ResidentPlaceRemoveView.as_view(),
+        "<uuid:pk_condominium>/residents/<uuid:pk_user>",
+        ResidentCondominiumRemoveView.as_view(),
         name="resident",
     ),
-    path("<uuid:pk>/unions/", UnionPlaceCreateView.as_view(), name="union"),
+    path("<uuid:pk>/unions/", UnionCondominiumCreateView.as_view(), name="union"),
     path(
-        "<uuid:pk_place>/unions/<uuid:pk_user>",
-        UnionPlaceRemoveRemoveView.as_view(),
+        "<uuid:pk_condominium>/unions/<uuid:pk_user>",
+        UnionCondominiumRemoveRemoveView.as_view(),
         name="union",
     ),
+    path("cities/<str:uf>", CitiesView.as_view(), name="cities"),
+    path("cep/<str:cep>", FullAddressView.as_view(), name="full-address-by-cep"),
 ]

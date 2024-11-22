@@ -1,7 +1,7 @@
 from django.apps import AppConfig
 
 
-class RequestsConfig(AppConfig):
+class CondoRequestsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'requests'
+    name = 'condo_requests'
     verbose_name = "requisições"

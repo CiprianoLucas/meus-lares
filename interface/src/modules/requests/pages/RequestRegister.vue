@@ -62,24 +62,22 @@
 import app from '@/app'
 import { type Place } from '../../places/interfaces'
 
-const route = app.useRoute();
-const router = app.useRouter();
-const requestId = app.ref(route.params.id);
+const requestId = app.ref(app.routeParam('id'))
 
-const places = app.ref<Place[]>([]);
+const places = app.ref<Place[]>([])
 
 const requestForm = app.ref({
     place: null,
     title: '',
     description: '',
     type: null
-});
+})
 
 function registerRequest() {
     app.api.post('/request/', requestForm.value)
     .then(({data})=>{
         sessionStorage.removeItem('/request/residents/')
-		router.push('/requisicao/minhas-requisicoes')
+		app.redirect('/requisicao/minhas-requisicoes')
 	})
     .catch((error)=>{
         app.popup('Erro!', app.resumeErrors(error), 'warning', 10000)
@@ -90,31 +88,31 @@ function updatePlace() {
         app.api.put(`/request/${requestId.value}/`, requestForm.value)
         .then(()=> {
             sessionStorage.removeItem('/request/residents/')
-		    router.push('/requisicao/minhas-requisicoes')
+		    app.redirect('/requisicao/minhas-requisicoes')
         })
         .catch(error =>{
             app.popup('Erro!', app.resumeErrors(error), 'warning', 10000)
         })
-    };
+    }
 
 app.onMounted(() => {
     app.api.getCashed<Place[]>('/place/residents/')
     .then(response => {
-        places.value = response;
+        places.value = response
     })
     .catch(() => {
         app.popup('Erro!', 'Falha ao obter o locais', 'warning')
-    });
+    })
 
     if (requestId.value){
         app.api.get(`/request/${requestId.value}/`)
         .then(response => {
-            requestForm.value = response.data;
+            requestForm.value = response.data
         })
         .catch(() => {
             app.popup('Erro!', 'Falha ao obter o chamado', 'warning')
-        });
+        })
     }
-});
+})
 
 </script>

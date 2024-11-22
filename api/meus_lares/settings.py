@@ -43,11 +43,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
     'users.apps.UserConfig',
     'places.apps.PlacesConfig',
-    'requests.apps.RequestsConfig',
-    'invoices.apps.InvoicesConfig',
-    'ai.apps.AiConfig',
+    'relations.apps.RelationsConfig',
+    'condo_files.apps.CondoFilesConfig',
+    # 'condo_requests.apps.CondoRequestsConfig',
+    # 'invoices.apps.InvoicesConfig',
+    # 'ai.apps.AiConfig',
     'storages',
 ]
 
@@ -62,6 +67,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
+    
 ]
 
 
@@ -85,6 +92,11 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'meus_lares.wsgi.application'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -142,16 +154,32 @@ REST_FRAMEWORK = {
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = env("EMAIL_HOST")
 EMAIL_PORT = env("EMAIL_PORT")
 EMAIL_USE_TLS = env("EMAIL_USE_TLS")
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+ACCOUNT_LOGOUT_ON_GET = True
+
+GOOGLE_CLIENT_ID=env("VITE_CLIENT_ID")
+
+LOGIN_REDIRECT_URL = env('URL_FRONT')
+LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL + '/login'
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = LOGOUT_REDIRECT_URL
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME")
 
 AWS_S3_OBJECT_PARAMETERS = {
     "CacheControl": "max-age=86400",
@@ -164,10 +192,10 @@ AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}'
 AWS_STATIC_LOCATION = "static"
 STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_STATIC_LOCATION}/"
 
-AWS_MEDIA_LOCATION = "media"
+AWS_MEDIA_LOCATION = "media/public"
 MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_MEDIA_LOCATION}/"
 
-AWS_PRIVATE_MEDIA_LOCATION = "private"
+AWS_PRIVATE_MEDIA_LOCATION = "media/private"
 PRIVATE_MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_PRIVATE_MEDIA_LOCATION}/"
 
 if env("ENV") == "production":
@@ -176,6 +204,7 @@ if env("ENV") == "production":
     ALLOWED_HOSTS = ["meuslares.com.br", "api.meuslares.com.br"]
 
     SITE = "api.meuslares.com.br"
+    SITE_ID = 1
     
     CSRF_TRUSTED_ORIGINS = [
         'https://meuslares.com.br',

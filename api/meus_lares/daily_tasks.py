@@ -8,8 +8,9 @@ def run_django_command(command):
         print(f"Error executing command '{command}': {result.stderr}")
 
 def main():
+    base_command = '/usr/local/bin/poetry run python manage.py '
     commands = [
-        '/usr/local/bin/poetry run python manage.py getcelescinvoices',
+        base_command + 'getcelescinvoices',
     ]
 
     for command in commands:

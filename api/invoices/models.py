@@ -1,6 +1,6 @@
 from django.db import models
 from users.models import User
-from places.models import Place
+from places.models import Condominium
 import uuid
         
 class RelationInvoice(models.Model):
@@ -8,7 +8,7 @@ class RelationInvoice(models.Model):
     
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     resident = models.ForeignKey(User, on_delete=models.CASCADE, related_name='relation_invoices')
-    place = models.ForeignKey(Place, on_delete=models.CASCADE)
+    place = models.ForeignKey(Condominium, on_delete=models.CASCADE)
     company = models.CharField(max_length=50, choices=STATUS_CHOICES)
     unit_number = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)

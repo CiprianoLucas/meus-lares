@@ -1,10 +1,10 @@
 interface User {
-    id: string;
+    id: string
     username: string,
     email: string,
     number: string,
     city: string,
-    state: string;
+    state: string
 }
 
 export type { User }

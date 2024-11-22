@@ -65,27 +65,25 @@
     import { type User } from '../../user/interfaces'
     import { companyMap } from '../interfaces'
     
-	const route = app.useRoute();
-	const router = app.useRouter();
-	const invoiceRelationId = app.ref(route.params.id);
-    const places = app.ref<Place[]>([]);
-    const residents = app.ref<User[]>([]);
+	const invoiceRelationId = app.ref(app.routeParam('id'))
+    const places = app.ref<Place[]>([])
+    const residents = app.ref<User[]>([])
 
     const invoiceRelationForm = app.ref({
         company: '',
         unit_number: '',
         resident: '',
         place: '',
-    });
+    })
 
     function updateSelectRedidents() {
         app.api.getCashed<User[]>(`/place/${invoiceRelationForm.value.place}/residents/`)
 		.then(response => {
-            residents.value = response;
+            residents.value = response
         })
         .catch(error => {
             app.popup("Erro!", "Falha ao listar os moradores", "warning")
-        });
+        })
     }
 
     function registerInvoiceRelation() {
@@ -93,43 +91,43 @@
 		.then(({data})=>{
             sessionStorage.removeItem("/invoice/relation-invoices/")
             app.popup("Sucesso!", "Relação de fatura salvo", "success")
-			router.push('/fatura/relacao-lista')
+			app.redirect('/fatura/relacao-lista')
 		})
         .catch(error=> {
             app.popup("Erro!", app.resumeErrors(error), "warning")
         })
-    };
+    }
 
 	function updateInvoiceRelation() {
         app.api.put(`/invoice/relation-invoices/${invoiceRelationId.value}/`, invoiceRelationForm.value)
         .then(response =>{
             sessionStorage.removeItem("/invoice/relation-invoices/")
             app.popup("Sucesso!", "Relação de fatura salvo", "success")
-			router.push('/fatura/relacao-lista')
+			app.redirect('/fatura/relacao-lista')
         })
         .catch(error=>{
             app.popup("Erro!", app.resumeErrors(error), "warning")
         })
-    };
+    }
 
 	app.onMounted(() => {
         app.api.getCashed<Place[]>('/place/unions/')
         .then(response => {
-            places.value = response;
+            places.value = response
         })
         .catch(error => {
             app.popup("Erro!", "Falha ao buscar lista de locais", "warning")
-        });
+        })
 		if (invoiceRelationId.value){
 			app.api.get(`/invoice/relation-invoices/${invoiceRelationId.value}/`)
 			.then(response => {
-				invoiceRelationForm.value = response.data;
+				invoiceRelationForm.value = response.data
                 updateSelectRedidents()
 			})
 			.catch(() => {
 				app.popup("Erro!", "Falha ao buscar informações dessa relação de faturas", "warning")
-			});
+			})
 		}
-	});
+	})
 
 </script>

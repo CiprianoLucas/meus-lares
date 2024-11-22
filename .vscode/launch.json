@@ -9,12 +9,15 @@
             "type": "debugpy",
             "request": "launch",
             "args": [
-                "runserver",
-                "0.0.0.0:9000"
+                "runserver", "9000"
             ],
             "django": true,
             "autoStartBrowser": false,
-            "program": "${workspaceFolder}\\api\\manage.py"
+            "program": "${workspaceFolder}/api/manage.py",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/.env"
+            },
+            "python": "${workspaceFolder}/api/venv/bin/python"
         }
     ]
 }

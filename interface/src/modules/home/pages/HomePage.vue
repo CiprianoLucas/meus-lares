@@ -70,7 +70,7 @@
 <script lang="ts" setup>
     import app from '@/app'
 
-    const username = app.ref<string | null>(null);
+    const username = app.ref<string | null>(null)
     const isResident = app.ref(false)
     const isUnion = app.ref(false)
 

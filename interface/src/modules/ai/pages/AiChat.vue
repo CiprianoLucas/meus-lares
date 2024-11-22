@@ -21,33 +21,33 @@
 <script lang="ts" setup>
     import app from '@/app'
 
-    const userMessage = app.ref('');
+    const userMessage = app.ref('')
     const messages = app.ref([
         { role: 'assistant', content: 'Olá! Como posso te ajudar?' }
-    ]);
+    ])
 
     const formatMessage = (message: string) => {
-        return message.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-    };
+        return message.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+    }
 
     const sendMessage = async () => {
-    if (userMessage.value.trim() === '') return;
+    if (userMessage.value.trim() === '') return
 
-    messages.value.push({ role: 'user', content: userMessage.value });
+    messages.value.push({ role: 'user', content: userMessage.value })
 
     try {
         const response = await app.api.post('/ai/chat/', {
             message: userMessage.value
-        });
+        })
 
-        messages.value.push({ role: 'assistant', content: formatMessage(response.data.response) });
+        messages.value.push({ role: 'assistant', content: formatMessage(response.data.response) })
 
     } catch (error) {
-        messages.value.push({ role: 'system', content: 'Error: Unable to process the request.' });
+        messages.value.push({ role: 'system', content: 'Error: Unable to process the request.' })
     }
 
-    userMessage.value = '';
-    };
+    userMessage.value = ''
+    }
 </script>
 <style scoped>
     .chat-container {

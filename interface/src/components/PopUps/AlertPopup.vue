@@ -14,38 +14,38 @@
     import type {typesBootstrap} from './interfaces'
   
     const props = defineProps<{
-        title: string;
-        message: string;
-        type: typesBootstrap;
+        title: string
+        message: string
+        type: typesBootstrap
         time: number
-    }>();
+    }>()
     
-    const visible = ref(false);
-    const type = props.type;
-    const time = props.time;
-    const title = props.title;
-    const message = props.message;
+    const visible = ref(false)
+    const type = props.type
+    const time = props.time
+    const title = props.title
+    const message = props.message
 
 
     
     const removePopup = () => {
-        visible.value = false;
-    };
+        visible.value = false
+    }
 
     const forceRemovePopup = () => {
-        const popupElement = document.querySelector('.popup');
+        const popupElement = document.querySelector('.popup')
         if (popupElement) {
-            popupElement.remove();
+            popupElement.remove()
         }
     }
 
     setTimeout(() => {
-        visible.value = true;
-    }, 1);
+        visible.value = true
+    }, 1)
     
     setTimeout(() => {
-        removePopup();
-    }, time);
+        removePopup()
+    }, time)
 
 </script>
   

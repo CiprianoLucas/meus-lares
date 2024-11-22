@@ -60,51 +60,51 @@
 import app from '@/app'
 import { type User } from '../../user/interfaces'
 
-const residents = app.ref<User[]>([]);
-const newResidentEmail = app.ref("");
-const errorMessage = app.ref("");
-const route = app.useRoute();
-const placeId = app.ref(route.params.id)
+const residents = app.ref<User[]>([])
+const newResidentEmail = app.ref("")
+const errorMessage = app.ref("")
+
+const placeId = app.ref(app.routeParam('id'))
 const url = `/place/${placeId.value}/residents/`
 
 app.onMounted(() => {
-  fetchResidents();
-});
+  fetchResidents()
+})
 
 function fetchResidents() {
   app.api.getCashed<User[]>(url)
     .then((data) => {
-     	residents.value = data;
+     	residents.value = data
     })
     .catch(() => {
       app.popup("Erro!", "Falha ao listar os residentes.", "warning")
-    });
+    })
 }
 
 function deleteResident(userId: string) {
   app.api.delete(url + userId)
 		.then(() => {
-			residents.value = residents.value.filter((resident) => resident.id !== userId);
+			residents.value = residents.value.filter((resident) => resident.id !== userId)
       sessionStorage.removeItem(url)
       app.popup("Sucesso!", "Residente excluido com sucesso.", "success")
 		})
 		.catch(() => {
 			app.popup("Erro!", "Falha ao excluir um residente.", "warning")
-		});
+		})
 }
 
 function addResident() {
     app.api.post(url, { email: newResidentEmail.value })
 		.then((response) => {
-			residents.value.push(response.data);
-			newResidentEmail.value = "";
-			errorMessage.value = "";
+			residents.value.push(response.data)
+			newResidentEmail.value = ""
+			errorMessage.value = ""
       sessionStorage.removeItem(url)
       app.popup("Sucesso!", "Residente cadastrado com sucesso.", "success")
 		})
 		.catch((error) => {
       app.popup("Erro!", app.resumeErrors(error), "warning")
-		});
+		})
 }
 </script>
 

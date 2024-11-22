@@ -55,37 +55,37 @@
 import app from '@/app'
 import { type User } from "../../user/interfaces"
 
-const unions = app.ref<User[]>([]);
-const newUnionEmail = app.ref("");
-const errorMessage = app.ref("");
-const route = app.useRoute();
-const placeId = app.ref(route.params.id)
+const unions = app.ref<User[]>([])
+const newUnionEmail = app.ref("")
+const errorMessage = app.ref("")
+
+const placeId = app.ref(app.routeParam('id'))
 const url = `/place/${placeId.value}/unions/`
 
 app.onMounted(() => {
-  fetchUnions();
-});
+  fetchUnions()
+})
 
 function fetchUnions() {
   app.api.getCashed<User[]>(url)
     .then((response) => {
-      unions.value = response;
+      unions.value = response
     })
     .catch((error) => {
       app.popup("Erro!", "Erro ao obter a lista de síndicos.", "warning")
-    });
+    })
 }
 
 function deleteUnion(userId: string) {
 	app.api.delete(`/place/${placeId.value}/unions/${userId}`)
 		.then(() => {
-			unions.value = unions.value.filter((resident) => resident.id !== userId);
+			unions.value = unions.value.filter((resident) => resident.id !== userId)
       sessionStorage.removeItem(url)
       app.popup("Sucesso!", "Síndico deletado", "success")
 		})
 		.catch((error) => {
       app.popup("Erro!", "Erro ao deletar o síndico.", "warning")
-		});
+		})
 }
 
 function addUnion() {
@@ -100,7 +100,7 @@ function addUnion() {
 		})
 		.catch((error) => {
 			app.popup("Erro!", app.resumeErrors(error), "warning")
-		});
+		})
 }
 </script>
 

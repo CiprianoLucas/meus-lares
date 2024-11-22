@@ -68,36 +68,47 @@
         />
       </div>
 
+      <div class="mb-3">
+        <label for="text" class="form-label">Data de nascimento:</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          id="birth" 
+          v-model="form.birth" 
+          required 
+        />
+      </div>
+
       <button @click="RegisterUser" class="btn btn-primary">Cadastrar</button>
   </div>
 </template>
   
 <script lang="ts" setup>
     import NavBar from '@/components/template/NavBar.vue'
-    import { ref } from 'vue'
-    import { api } from '@/http'
-import app from '@/app';
+    import app from '@/app'
+
+    const fullName = app.routeQuery("full_name") || '';
+    const email = app.routeQuery("email") || '';
     
-    const form = ref({
+    const form = app.ref({
         username: '',
-        email: '',
+        email: email,
         cpf: '',
         phone_number: '',
-        full_name: '',
-        password: ''
-    });
-
-    const router = app.useRouter()
+        full_name: fullName,
+        password: '',
+        birth: ''
+    })
 
     function RegisterUser() {
-        api.post('/user/register/', form.value)
+        app.api.post('/user/register/', form.value)
         .then(()=>{
           app.popup("Sucesso!", "Usuário cadastrado com sucesso.", 'success')
-          router.push('/login');
+          app.redirect('/login')
         })
         .catch((error)=>{
           app.popup("Erro!", app.resumeErrors(error), 'warning')
         })
-    };
+    }
 
 </script>
