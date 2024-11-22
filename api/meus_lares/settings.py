@@ -43,11 +43,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
     'users.apps.UserConfig',
     'places.apps.PlacesConfig',
     'relations.apps.RelationsConfig',
     'condo_files.apps.CondoFilesConfig',
-    # 'requests.apps.RequestsConfig',
+    # 'condo_requests.apps.CondoRequestsConfig',
     # 'invoices.apps.InvoicesConfig',
     # 'ai.apps.AiConfig',
     'storages',
@@ -64,6 +67,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
+    
 ]
 
 
@@ -87,6 +92,11 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'meus_lares.wsgi.application'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -144,11 +154,26 @@ REST_FRAMEWORK = {
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = env("EMAIL_HOST")
 EMAIL_PORT = env("EMAIL_PORT")
 EMAIL_USE_TLS = env("EMAIL_USE_TLS")
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+ACCOUNT_LOGOUT_ON_GET = True
+
+GOOGLE_CLIENT_ID=env("VITE_CLIENT_ID")
+
+LOGIN_REDIRECT_URL = env('URL_FRONT')
+LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL + '/login'
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = LOGOUT_REDIRECT_URL
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
@@ -179,6 +204,7 @@ if env("ENV") == "production":
     ALLOWED_HOSTS = ["meuslares.com.br", "api.meuslares.com.br"]
 
     SITE = "api.meuslares.com.br"
+    SITE_ID = 1
     
     CSRF_TRUSTED_ORIGINS = [
         'https://meuslares.com.br',

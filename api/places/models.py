@@ -1,6 +1,6 @@
 from django.db import models
 from meus_lares.storages import PublicMediaStorage
-from meus_lares.mixin import SoftModel
+from soft_components import SoftModel
 
 class State(models.Model):
     acronym = models.CharField(max_length=2, primary_key=True)

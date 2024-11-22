@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from .models import Condominium, Apartment
 from relations.models import CondoStaff, CondoTenant
-from meus_lares.mixin import SoftAdmin, SoftInline
+from soft_components import SoftAdmin, SoftInline
 
 class CondoStaffInline(SoftInline):
     model = CondoStaff

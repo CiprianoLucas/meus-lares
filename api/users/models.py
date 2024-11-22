@@ -5,7 +5,6 @@ from meus_lares.storages import PrivateMediaStorage, PublicMediaStorage
 
 class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    email = models.EmailField(unique=True)
     cpf = models.CharField(max_length=11, unique=True)
     phone_number = models.CharField(max_length=15)
     full_name = models.CharField(max_length=255)
@@ -19,7 +18,4 @@ class User(AbstractUser):
         verbose_name_plural = "Usuarios"
         
     def delete(self, *args, **kwargs):
-        if self.profile_photo:
-            self.profile_photo.delete(save=False)
-
-        super().delete(*args, **kwargs)
+        return

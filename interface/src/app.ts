@@ -7,6 +7,7 @@ import router from '@/router'
 const app = {
     api: api,
     ref: ref,
+    routeQuery: (param: string) => useRoute().query[param],
     routeParam: (param: string) => useRoute().params[param],
     redirect: (param: RouteLocationRaw) => {
         router.replace(param).then(()=>window.location.reload());

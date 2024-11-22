@@ -1,6 +1,6 @@
 from django.contrib import admin
 from relations.models import CondoStaff, CondoTenant, Contract
-from meus_lares.mixin import SoftAdmin
+from soft_components import SoftAdmin
 from django.contrib.contenttypes.admin import GenericTabularInline
 from django.utils.html import format_html
 

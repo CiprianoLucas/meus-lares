@@ -11,5 +11,8 @@ class UserAdmin(UserAdmin):
     )
     list_display = ('id', 'username', 'email', 'cpf', 'full_name', 'phone_number', 'is_staff')
     search_fields = ('username', 'email', 'cpf', 'full_name', 'phone_number')
+    
+    def delete_queryset(self, request, queryset):
+        return
 
 admin.site.register(User, UserAdmin)

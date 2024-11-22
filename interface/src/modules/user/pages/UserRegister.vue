@@ -68,6 +68,17 @@
         />
       </div>
 
+      <div class="mb-3">
+        <label for="text" class="form-label">Data de nascimento:</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          id="birth" 
+          v-model="form.birth" 
+          required 
+        />
+      </div>
+
       <button @click="RegisterUser" class="btn btn-primary">Cadastrar</button>
   </div>
 </template>
@@ -75,14 +86,18 @@
 <script lang="ts" setup>
     import NavBar from '@/components/template/NavBar.vue'
     import app from '@/app'
+
+    const fullName = app.routeQuery("full_name") || '';
+    const email = app.routeQuery("email") || '';
     
     const form = app.ref({
         username: '',
-        email: '',
+        email: email,
         cpf: '',
         phone_number: '',
-        full_name: '',
-        password: ''
+        full_name: fullName,
+        password: '',
+        birth: ''
     })
 
     function RegisterUser() {

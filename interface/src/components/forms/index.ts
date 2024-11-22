@@ -129,7 +129,8 @@ const inputsLabel: { [key: string]: string } = {
   cpf: 'CPF',
   phone_number: 'Telefone',
   full_name: 'Nome completo',
-  password: 'Senha'
+  password: 'Senha',
+  error: 'Erro'
 }
 
 const inputsProps = <Input[]>([

@@ -18,7 +18,7 @@ def openai_chat(request):
         input_message = serializer.validated_data['message']
         username = request.user.username
         
-        messages = [{"role": "user", "content": f"{username}: {input_message}"}]
+        messages = [{"role": "user", "content": f"{input_message}"}]
         
         openai = OpenAI()
         

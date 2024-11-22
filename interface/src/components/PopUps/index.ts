@@ -27,6 +27,7 @@ const popup = (title: string, message: string, type: typesBootstrap = 'success',
 const resumeErrors = (error: AxiosError, defaultMessage: string = "Algo saiu errao") => {
 
     let errorMessage = ''
+    
     if(error.response && error.response.data){
       const data = error.response.data as { [key: string]: string }
       Object.keys(inputsLabel).forEach(key => {

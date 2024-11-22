@@ -1,6 +1,7 @@
 # Django
 ENV=develop
 SECRET_KEY=uVG3ULJRPbh_my_secret_key_&zFtQ3ZrKXVViF
+URL_FRONT=http://localhost:9001
 API_PORT=9000
 # Database
 DB_NAME=meus-lares
@@ -12,11 +13,13 @@ DB_PORT_DOCKER=5432
 DB_PORT=9002
 # Vue3
 VITE_API_URL=http://localhost:9000
+VITE_CLIENT_ID=718016304560-7bslr3ajvkgog4r4hv5gdol4j8fgcgcq.apps.googleusercontent.com
 INTERFACE_PORT=9001
 # AWS
 AWS_ACCESS_KEY_ID=123
 AWS_SECRET_ACCESS_KEY=123
 AWS_STORAGE_BUCKET_NAME=123
+AWS_S3_REGION_NAME=sa-east-1
 # OPENAI
 OPENAI_API_KEY=openaiapukey
 # Email

@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from places.models import Apartment, Condominium
-from meus_lares.mixin import SoftModel
+from soft_components import SoftModel
 from users.models import User
 
 class CondoTenant(SoftModel):
@@ -45,6 +45,9 @@ class Contract(SoftModel):
     start_date = models.DateField()
     end_date = models.DateField(blank=True, null=True)
     terms = models.TextField()
+    
+    def __str__(self):
+        return f'{self.content_type.model}-{self.related_object}'
 
     class Meta:
         verbose_name = "Contrato"

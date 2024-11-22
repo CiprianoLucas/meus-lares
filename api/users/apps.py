@@ -20,7 +20,7 @@ def create_super_user_if_not_exists(sender, **kwargs):
             email='admin@admin.com',
             password='admin',
             cpf='12345678900',
-            phone_number='55047987654321',
+            phone_number='47987654321',
             full_name='Admin Manager',
             birth = datetime.now()
         )
