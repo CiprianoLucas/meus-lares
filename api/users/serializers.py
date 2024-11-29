@@ -19,6 +19,11 @@ class CustomSignupSerializer(serializers.Serializer):
     birth = serializers.CharField(required=True)
     username = serializers.CharField(required=True)
     
+    def validate_full_name(self, full_name: str):
+        if len(full_name.strip().split(' ')) < 2:
+            raise serializers.ValidationError("Insira o nome completo.")
+        return full_name
+    
     def validate_email(self, email):
         if User.objects.filter(email=email).exists():
             raise serializers.ValidationError("Email já está em uso.")
