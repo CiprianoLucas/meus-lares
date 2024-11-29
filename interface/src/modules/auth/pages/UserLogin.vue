@@ -56,7 +56,7 @@ app.onMounted(() => {
 	googleScript.async = true
 	googleScript.onload = () => {
 		(window as any).google.accounts.id.initialize({
-			client_id: import.meta.env.VITE_CLIENT_ID,
+			client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
 			callback: (response: { credential: string }) => {
 				handleGoogleLogin(response.credential)
 			},

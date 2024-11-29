@@ -169,8 +169,8 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_LOGOUT_ON_GET = True
 
-GOOGLE_CLIENT_ID=env("VITE_CLIENT_ID")
-
+GOOGLE_CLIENT_ID=env("VITE_GOOGLE_CLIENT_ID")
+SITE_ID = 1
 LOGIN_REDIRECT_URL = env('URL_FRONT')
 LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL + '/login'
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = LOGOUT_REDIRECT_URL
@@ -204,7 +204,6 @@ if env("ENV") == "production":
     ALLOWED_HOSTS = ["meuslares.com.br", "api.meuslares.com.br"]
 
     SITE = "api.meuslares.com.br"
-    SITE_ID = 1
     
     CSRF_TRUSTED_ORIGINS = [
         'https://meuslares.com.br',
@@ -266,7 +265,7 @@ else:
     ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
     
     DEBUG = True
-    SITE = f"localhost:{interface_port}"
+    SITE = f"localhost:{env('API_PORT')}"
     CSRF_TRUSTED_ORIGINS = [
         f'http://localhost:{interface_port}',
         f'http://127.0.0.1:{interface_port}',
