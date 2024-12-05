@@ -1,1 +1,1 @@
-export { default as api} from './functions'
+export { default as api } from './functions'

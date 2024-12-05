@@ -1,11 +1,12 @@
 from django.urls import path
+
 from .views import (
     RequestCreateView,
     RequestDetailView,
     RequestListForResidentsView,
     RequestListForUnionsAndRepresentativesView,
     RequestListView,
-    RequestStatusView
+    RequestStatusView,
 )
 
 urlpatterns = [

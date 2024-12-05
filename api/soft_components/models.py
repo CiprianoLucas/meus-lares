@@ -1,8 +1,10 @@
-from django.db import models
-from django.db.models.fields.related import ForeignKey
-from django.db.models.fields.files import ImageField, FileField
 import uuid
+
+from django.db import models
+from django.db.models.fields.files import FileField, ImageField
+from django.db.models.fields.related import ForeignKey
 from django.utils.timezone import now
+
 from . import SoftManager
 
 
@@ -39,7 +41,6 @@ class SoftModel(models.Model):
                         old_value = old_value.url if old_value else None
                         new_value = new_value.url if new_value else None
 
-            
                     if old_value != new_value:
                         changes[field_name] = {
                             "old": old_value,
@@ -52,19 +53,23 @@ class SoftModel(models.Model):
                             super().save(*args, **kwargs)
                         return
 
-                    self.history.append({
-                        "timestamp": now().isoformat(),
-                        "user": user.username if user else "system",
-                        "changes": changes,
-                    })
+                    self.history.append(
+                        {
+                            "timestamp": now().isoformat(),
+                            "user": user.username if user else "system",
+                            "changes": changes,
+                        }
+                    )
             else:
                 created_at = self.created_at
                 super().save(*args, **kwargs)
                 if type(self).objects.filter(pk=self.pk) and created_at is not None:
-                    self.history.append({
-                        "timestamp": now().isoformat(),
-                        "user": user.username if user else "system",
-                        "changes": {"is_deleted": {"new": False, "old": True}},
-                    })
+                    self.history.append(
+                        {
+                            "timestamp": now().isoformat(),
+                            "user": user.username if user else "system",
+                            "changes": {"is_deleted": {"new": False, "old": True}},
+                        }
+                    )
 
         super().save(*args, **kwargs)

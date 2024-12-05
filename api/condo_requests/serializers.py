@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from .models import Request, RequestFiles
 
 
@@ -19,7 +20,16 @@ class RequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Request
-        fields = ["id", "place", "place_name", "title", "description", "type", "status", "files"]
+        fields = [
+            "id",
+            "place",
+            "place_name",
+            "title",
+            "description",
+            "type",
+            "status",
+            "files",
+        ]
         extra_kwargs = {
             "status": {"read_only": True},
             "place_name": {"read_only": True},

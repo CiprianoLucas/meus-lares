@@ -1,6 +1,6 @@
 import axios from 'axios'
-import {popup} from '@/components/PopUps'
-import type { CustomAxiosInstance} from './interfaces'
+import { popup } from '@/components/PopUps'
+import type { CustomAxiosInstance } from './interfaces'
 
 const api: CustomAxiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -8,11 +8,16 @@ const api: CustomAxiosInstance = axios.create({
 }) as CustomAxiosInstance
 
 api.interceptors.response.use(
-    response => response,
-    async error => {
+    (response) => response,
+    async (error) => {
         const originalRequest = error.config
-        
-        if (error.response && error.response.status === 403 && originalRequest && !originalRequest._retry) {
+
+        if (
+            error.response &&
+            error.response.status === 403 &&
+            originalRequest &&
+            !originalRequest._retry
+        ) {
             originalRequest._retry = true
             try {
                 getUserAndCsrf()
@@ -21,23 +26,23 @@ api.interceptors.response.use(
                 return Promise.reject(err)
             }
         }
-        if (error.code == "ERR_NETWORK")
-			popup('Erro!', 'Não foi possível se conectar ao servidor', 'warning')
+        if (error.code == 'ERR_NETWORK')
+            popup('Erro!', 'Não foi possível se conectar ao servidor', 'warning')
         return Promise.reject(error)
     }
-  )
+)
 
-function getUserAndCsrf(){
-    api.get('/user/info/').then(({data})=>{
+function getUserAndCsrf() {
+    api.get('/user/info/').then(({ data }) => {
         api.defaults.headers.common['X-CSRFToken'] = data.csrftoken
-        if(data.username != "Anonimous"){
-            localStorage.setItem("username", data.username)
-            if (data.isResident){
+        if (data.username != 'Anonimous') {
+            localStorage.setItem('username', data.username)
+            if (data.isResident) {
                 localStorage.setItem('isResident', 'true')
             } else {
                 localStorage.removeItem('isResident')
             }
-            if (data.isUnion){
+            if (data.isUnion) {
                 localStorage.setItem('isUnion', 'true')
             } else {
                 localStorage.removeItem('isUnion')

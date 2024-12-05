@@ -1,23 +1,26 @@
-from bs4 import BeautifulSoup
-import imaplib
 import email
-import environ
+import imaplib
 import os
 from email.header import decode_header
+
+import environ
+from bs4 import BeautifulSoup
 from django.db import transaction
+
 from invoices.models import Invoice, RelationInvoice
 
 env = environ.Env()
-environ.Env.read_env(os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env'))
+environ.Env.read_env(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"))
+
 
 class CelescInvoices:
     EMAIL_HOST = env("EMAIL_HOST")
     EMAIL_CELESC_USER = env("EMAIL_CELESC_USER")
     EMAIL_CELESC_PASSWORD = env("EMAIL_CELESC_PASSWORD")
-    
+
     def __init__(self):
         pass
-    
+
     def post_celesc_invoices(self) -> str:
         email_bodies = self._get_celesc_emails()
         invoices_to_create = []
@@ -28,32 +31,30 @@ class CelescInvoices:
             ticket_number = self._extract_ticket_celesc(body)
 
             relations = RelationInvoice.objects.filter(unit_number=unit).distinct()
-            
+
             if not (unit and value and ticket_number and relations):
                 continue
 
             for relation in relations:
                 invoice = Invoice(
-                    relation=relation,
-                    value=value,
-                    ticket_number=ticket_number
+                    relation=relation, value=value, ticket_number=ticket_number
                 )
                 invoices_to_create.append(invoice)
 
         if invoices_to_create:
             with transaction.atomic():
                 Invoice.objects.bulk_create(invoices_to_create)
-                
-        return f'Inseridas {len(invoices_to_create)} faturas.'
-    
+
+        return f"Inseridas {len(invoices_to_create)} faturas."
+
     def _get_celesc_emails(self):
         imap = imaplib.IMAP4_SSL(self.EMAIL_HOST)
         imap.login(self.EMAIL_CELESC_USER, self.EMAIL_CELESC_PASSWORD)
         imap.select("inbox")
         _, messages = imap.search(None, '(UNSEEN FROM "lucashcipriano14@gmail.com")')
         email_bodies = []
-        messages = messages[0].split(b' ') if messages[0] else []
-        
+        messages = messages[0].split(b" ") if messages[0] else []
+
         for mail_id in messages:
             _, msg_data = imap.fetch(mail_id, "(RFC822)")
 
@@ -73,18 +74,20 @@ class CelescInvoices:
                     else:
                         body = msg.get_payload(decode=True).decode("utf-8")
                         email_bodies.append(body)
-                        
-            imap.store(mail_id, '+FLAGS', '\\Seen')
-                
+
+            imap.store(mail_id, "+FLAGS", "\\Seen")
+
         imap.close()
         imap.logout()
-        
+
         return email_bodies
-        
+
     def _extract_unity_celesc(self, html_content):
         soup = BeautifulSoup(html_content, "html.parser")
 
-        strong_tags = soup.find_all("strong", text=lambda t: "Unidade Consumidora" in t if t else "")
+        strong_tags = soup.find_all(
+            "strong", text=lambda t: "Unidade Consumidora" in t if t else ""
+        )
 
         if strong_tags:
             unidade_consumidora_tag = strong_tags[0].find_next_sibling("strong")
@@ -92,24 +95,30 @@ class CelescInvoices:
                 return unidade_consumidora_tag.text.strip()
 
         return None
-    
+
     def _extract_value_celesc(self, html_content):
         soup = BeautifulSoup(html_content, "html.parser")
-        tag = soup.find('strong', text="Valor da fatura:")
+        tag = soup.find("strong", text="Valor da fatura:")
 
         if tag:
-            value_str = tag.find_next('td').get_text(strip=True)
-            value_str = value_str.replace("R$", "").replace(".", "").replace(",", ".").strip()
+            value_str = tag.find_next("td").get_text(strip=True)
+            value_str = (
+                value_str.replace("R$", "").replace(".", "").replace(",", ".").strip()
+            )
             try:
                 return float(value_str)
             except ValueError:
                 return None
 
         return None
-    
+
     def _extract_ticket_celesc(self, html_content):
         soup = BeautifulSoup(html_content, "html.parser")
-        div = soup.find("div", style="width:600px;text-align:justify;font-family:Verdana,Arial!important;font-size:16px")
+        div = soup.find(
+            "div",
+            style="""width:600px;text-align:justify;
+            font-family:Verdana,Arial!important;font-size:16px""",
+        )
         if div:
             h4_tags = div.find_all("h4")
 

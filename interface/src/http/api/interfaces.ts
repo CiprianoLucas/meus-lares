@@ -12,13 +12,9 @@ interface LoginRequest {
 }
 
 interface CustomAxiosInstance extends AxiosInstance {
-    login(form: LoginRequest): Promise<LoginResponse>,
-    logout() : Promise<void>
-    getCashed<T>(
-        path: string, 
-        force?: boolean, 
-        time?: number
-    ) : Promise<T>
+    login(form: LoginRequest): Promise<LoginResponse>
+    logout(): Promise<void>
+    getCashed<T>(path: string, force?: boolean, time?: number): Promise<T>
 }
 
-export type { LoginResponse, LoginRequest, CustomAxiosInstance}
+export type { LoginResponse, LoginRequest, CustomAxiosInstance }
