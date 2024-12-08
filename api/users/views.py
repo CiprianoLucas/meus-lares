@@ -19,7 +19,6 @@ from .serializers import CustomSignupSerializer
 @api_view(["GET"])
 def get_info(request):
     csrftoken = get_token(request)
-    response = {"username": "Anonimous"}
     user = request.user
 
     response = {"username": user.username, "csrftoken": csrftoken}

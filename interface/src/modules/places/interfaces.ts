@@ -9,6 +9,7 @@ interface Place {
     city?: number
     city_name?: string
     state?: string
+    profile_photo?: string
 }
 
 export type { Place }

@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.db.models.fields import UUIDField
 from django.db.models.fields.files import FileField, ImageField
 from django.db.models.fields.related import ForeignKey
 from django.utils.timezone import now
@@ -23,7 +24,7 @@ class SoftModel(models.Model):
         self.is_deleted = True
         self.save(user=user)
 
-    def save(self, *args, user=None, **kwargs):
+    def save(self, *args, user=None, query_delete=False, **kwargs):
         if self.pk:
             old_instance = type(self).objects.filter(pk=self.pk).first()
             if old_instance:
@@ -34,8 +35,12 @@ class SoftModel(models.Model):
                     new_value = getattr(self, field_name)
 
                     if isinstance(field, ForeignKey):
-                        old_value = old_value.pk if old_value else None
-                        new_value = new_value.pk if new_value else None
+                        old_value = str(old_value.pk) if old_value else None
+                        new_value = str(new_value.pk) if new_value else None
+
+                    if isinstance(field, UUIDField):
+                        old_value = str(old_value) if old_value else None
+                        new_value = str(new_value) if new_value else None
 
                     if isinstance(field, (ImageField, FileField)):
                         old_value = old_value.url if old_value else None
@@ -49,7 +54,7 @@ class SoftModel(models.Model):
 
                 if changes:
                     if "history" in changes:
-                        if user.is_superuser:
+                        if user.is_superuser or query_delete:
                             super().save(*args, **kwargs)
                         return
 

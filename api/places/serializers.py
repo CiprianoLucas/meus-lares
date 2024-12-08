@@ -2,10 +2,13 @@ import re
 
 from rest_framework import serializers
 
-from .models import City, Condominium
+from relations.models import CondoStaff
+from soft_components.serializers import softModelSerializer
+
+from .models import Apartment, City, Condominium
 
 
-class CondominiumsSerializer(serializers.ModelSerializer):
+class CondominiumsSerializer(softModelSerializer):
     city_name = serializers.SerializerMethodField()
     state = serializers.SerializerMethodField()
 
@@ -22,6 +25,7 @@ class CondominiumsSerializer(serializers.ModelSerializer):
             "cep",
             "city_name",
             "state",
+            "profile_photo",
         ]
         extra_kwargs = {
             "id": {"read_only": True},
@@ -39,16 +43,24 @@ class CondominiumsSerializer(serializers.ModelSerializer):
             return obj.city.name
         return None
 
-    def to_internal_value(self, data):
-        data = data.copy()
-        if "cep" in data:
-            data["cep"] = re.sub(r"\D", "", data["cep"])
+    def to_internal_value(self, initial_data):
+        data = initial_data.copy()
+        data["cep"] = re.sub(r"\D", "", data["cep"]).zfill(8)
         return super().to_internal_value(data)
 
-    def delete(self, instance, validated_data=None):
-        instance.is_active = False
-        instance.save()
-        return instance
+    def create(self, data):
+        user = self.context["request"].user
+        condominium = super().create(data)
+        condo_staff = CondoStaff(condominium=condominium, user=user, role="owner")
+        condo_staff.save(user=user)
+        return condominium
+
+
+class ApartmentSerializer(softModelSerializer):
+    class Meta:
+        model = Apartment
+        fields = ["id", "condominium", "identifier", "complement", "profile_photo"]
+        extra_kwargs = {"id": {"read_only": True}}
 
 
 class UserCondominiumSerializer(serializers.Serializer):

@@ -13,7 +13,7 @@ class SoftDeleteQuerySet(models.QuerySet):
                         "changes": {"is_deleted": {"old": False, "new": True}},
                     }
                 )
-                obj.save(update_fields=["history"])
+                obj.save(update_fields=["history"], user=user, query_delete=True)
 
         return self.update(is_deleted=True)
 

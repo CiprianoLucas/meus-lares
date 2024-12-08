@@ -7,21 +7,6 @@ from rest_framework import serializers
 from .models import User
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = [
-            "id",
-            "username",
-            "email",
-            "cpf",
-            "phone_number",
-            "full_name",
-            "password",
-        ]
-        extra_kwargs = {"password": {"write_only": True}}
-
-
 class CustomSignupSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     full_name = serializers.CharField(required=True)
@@ -82,7 +67,7 @@ class CustomSignupSerializer(serializers.Serializer):
         adapter = get_adapter()
         request = self.context.get("request")
         user = adapter.new_user(request=request)
-        self._set_user_fields(user, validated_data)
+        self._set_fields(user, validated_data)
 
         user.save()
         email_address = EmailAddress.objects.create(
@@ -91,7 +76,7 @@ class CustomSignupSerializer(serializers.Serializer):
         email_address.send_confirmation(request)
         return user
 
-    def _set_user_fields(self, user, data):
+    def _set_fields(self, user, data):
         user.set_password(data.get("password"))
         user.email = data.get("email")
         user.full_name = data.get("full_name")

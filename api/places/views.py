@@ -1,16 +1,18 @@
 import httpx
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, status
+from rest_framework import generics, status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from soft_components.views import SoftPagination
 from users.models import User
 
-from .models import City, Condominium
-from .permissions import IsRepresentative
+from .models import Apartment, City, Condominium
+from .permissions import CondominiumOwner
 from .serializers import (
+    ApartmentSerializer,
     CitySerializer,
     CondominiumsSerializer,
     FullAddressSerializer,
@@ -18,28 +20,42 @@ from .serializers import (
 )
 
 
-class CondominiumCreateView(generics.CreateAPIView):
-    queryset = Condominium.objects.filter(is_active=True)
+class CondominiumView(viewsets.ModelViewSet):
+    queryset = Condominium.objects.all()
     serializer_class = CondominiumsSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, CondominiumOwner]
+    pagination_class = SoftPagination
 
-    def perform_create(self, serializer):
-        serializer.save(representative=self.request.user)
+    def get_queryset(self):
+        user = self.request.user
+        condominiums = Condominium.objects.filter(
+            condostaff__user=user, condostaff__role="owner"
+        ).distinct()
 
-
-class CondominiumDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Condominium.objects.filter(is_active=True)
-    serializer_class = CondominiumsSerializer
-    permission_classes = [IsAuthenticated, IsRepresentative]
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.is_active = False
-        instance.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return condominiums
 
 
-class CondominiumListForResidentsView(generics.ListAPIView):
+class ApartmentView(viewsets.ModelViewSet):
+    queryset = Apartment.objects.all()
+    serializer_class = ApartmentSerializer
+    permission_classes = [IsAuthenticated, CondominiumOwner]
+    pagination_class = SoftPagination
+
+    def get_queryset(self):
+        user = self.request.user
+
+        apartments = Apartment.objects.filter(
+            condominium__condostaff__user=user, condominium__condostaff__role="owner"
+        ).distinct()
+
+        condominium_id = self.request.query_params.get("condominium", None)
+        if condominium_id:
+            apartments = apartments.filter(condominium__id=condominium_id)
+
+        return apartments
+
+
+class CondominiumListForResidentsView(viewsets.GenericViewSet):
     serializer_class = CondominiumsSerializer
     permission_classes = [IsAuthenticated]
 

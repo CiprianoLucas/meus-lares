@@ -2,6 +2,16 @@
     <div class="container mt-5">
         <h1 class="text-center">Registrar condomínio</h1>
         <custom-form :form="placeForm" :inputs="inputs" />
+        <div class="mb-3">
+            <label for="user-image-input" class="form-label">Foto de perfil do condomínio:</label>
+            <input
+                type="file"
+                class="form-control"
+                id="user-image-input"
+                @change="photoChange"
+                required
+            />
+        </div>
         <button v-if="!placeId" @click="registerPlace" class="btn btn-primary">Cadastrar</button>
         <div v-else>
             <button @click="updatePlace" class="btn btn-primary mx-3">Atualizar</button>
@@ -35,6 +45,14 @@ const placeForm = app.ref<Place>({
     city: 0,
     state: ''
 })
+
+const userImageInput = app.ref<File|null>(null)
+
+async function photoChange(event: Event){
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0] || null;
+    userImageInput.value = file;
+};
 
 app.watch(
     () => placeForm.value.cep,
@@ -73,7 +91,7 @@ async function verifyCep(cep: string = '') {
 
 function registerPlace() {
     app.api
-        .post('/place/', placeForm.value)
+        .post('/place/condominium/', placeForm.value)
         .then(({ data }) => {
             app.popup('Sucesso!', 'Informações do condomínio salvas', 'success')
             sessionStorage.removeItem('/place/unions/')

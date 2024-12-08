@@ -147,10 +147,6 @@ CACHES = {
     }
 }
 
-REST_FRAMEWORK = {
-    "EXCEPTION_HANDLER": "meus_lares.exceptions.custom_exception_handler",
-}
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = env("EMAIL_HOST")
