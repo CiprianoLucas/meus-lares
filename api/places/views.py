@@ -1,29 +1,25 @@
 import httpx
 from django.db.models import Q
-from django.shortcuts import get_object_or_404
-from rest_framework import generics, status, viewsets
+from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from soft_components.views import SoftPagination
-from users.models import User
 
 from .models import Apartment, City, Condominium
-from .permissions import CondominiumOwner
+from .permissions import CondominiumOwnerPermission
 from .serializers import (
     ApartmentSerializer,
     CitySerializer,
     CondominiumsSerializer,
     FullAddressSerializer,
-    UserCondominiumSerializer,
 )
 
 
-class CondominiumView(viewsets.ModelViewSet):
-    queryset = Condominium.objects.all()
+class CondominiumOwnerView(viewsets.ModelViewSet):
     serializer_class = CondominiumsSerializer
-    permission_classes = [IsAuthenticated, CondominiumOwner]
+    permission_classes = [IsAuthenticated, CondominiumOwnerPermission]
     pagination_class = SoftPagination
 
     def get_queryset(self):
@@ -35,10 +31,9 @@ class CondominiumView(viewsets.ModelViewSet):
         return condominiums
 
 
-class ApartmentView(viewsets.ModelViewSet):
-    queryset = Apartment.objects.all()
+class ApartmentOwnerView(viewsets.ModelViewSet):
     serializer_class = ApartmentSerializer
-    permission_classes = [IsAuthenticated, CondominiumOwner]
+    permission_classes = [IsAuthenticated, CondominiumOwnerPermission]
     pagination_class = SoftPagination
 
     def get_queryset(self):
@@ -53,107 +48,6 @@ class ApartmentView(viewsets.ModelViewSet):
             apartments = apartments.filter(condominium__id=condominium_id)
 
         return apartments
-
-
-class CondominiumListForResidentsView(viewsets.GenericViewSet):
-    serializer_class = CondominiumsSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        return Condominium.objects.filter(
-            Q(is_active=True) & Q(residents=user)
-        ).distinct()
-
-
-class CondominiumListForUnionsAndRepresentativesView(generics.ListAPIView):
-    serializer_class = CondominiumsSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-
-        return Condominium.objects.filter(
-            Q(is_active=True) & (Q(representative=user) | Q(unions=user))
-        ).distinct()
-
-
-class ResidentCondominiumCreateView(APIView):
-    serializer_class = UserCondominiumSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, pk_Condominium):
-        condominium = get_object_or_404(Condominium, pk=pk_Condominium)
-        residents = condominium.residents.all()
-        serializer = self.serializer_class(residents, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def post(self, request, pk_Condominium):
-        condominium = get_object_or_404(Condominium, pk=pk_Condominium)
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            user_email = serializer.validated_data.get("email")
-            user = get_object_or_404(User, email=user_email)
-            condominium.residents.add(user)
-            response = {
-                "id": user.id,
-                "username": user.username,
-                "email": user.email,
-            }
-            return Response(response, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ResidentCondominiumRemoveView(APIView):
-    serializer_class = UserCondominiumSerializer
-    permission_classes = [IsAuthenticated]
-
-    def delete(self, request, pk_Condominium, pk_user):
-        condominium = get_object_or_404(Condominium, pk=pk_Condominium)
-        user = get_object_or_404(User, pk=pk_user)
-        condominium.residents.remove(user)
-        return Response(
-            {"detail": "Resident removed successfully"}, status=status.HTTP_200_OK
-        )
-
-
-class UnionCondominiumCreateView(APIView):
-    serializer_class = UserCondominiumSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, pk):
-        condominium = get_object_or_404(Condominium, pk=pk)
-        unions = condominium.unions.all()
-        serializer = self.serializer_class(unions, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def post(self, request, pk):
-        condominium = get_object_or_404(Condominium, pk=pk)
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            user_email = serializer.validated_data.get("email")
-            user = get_object_or_404(User, email=user_email)
-            condominium.unions.add(user)
-            response = {
-                "id": user.id,
-                "username": user.username,
-                "email": user.email,
-            }
-            return Response(response, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class UnionCondominiumRemoveRemoveView(APIView):
-    serializer_class = UserCondominiumSerializer
-    permission_classes = [IsAuthenticated]
-
-    def delete(self, request, pk_Condominium, pk_user):
-        condominium = get_object_or_404(Condominium, pk=pk_Condominium)
-        user = get_object_or_404(User, pk=pk_user)
-        condominium.unions.remove(user)
-        return Response(
-            {"detail": "Unions removed successfully"}, status=status.HTTP_200_OK
-        )
 
 
 class CitiesView(APIView):

@@ -63,12 +63,6 @@ class ApartmentSerializer(softModelSerializer):
         extra_kwargs = {"id": {"read_only": True}}
 
 
-class UserCondominiumSerializer(serializers.Serializer):
-    id = serializers.UUIDField(read_only=True)
-    username = serializers.CharField(read_only=True)
-    email = serializers.EmailField()
-
-
 class CitySerializer(serializers.ModelSerializer):
     state = serializers.SerializerMethodField()
 
