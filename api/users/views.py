@@ -5,11 +5,13 @@ from allauth.account.utils import perform_login
 from django.conf import settings
 from django.contrib.auth import authenticate, logout
 from django.http import HttpResponse, JsonResponse
+from django.http.request import HttpRequest
 from django.middleware.csrf import get_token
 from google.auth.transport import requests
 from google.oauth2 import id_token
 from rest_framework import generics, status
 from rest_framework.decorators import api_view
+from rest_framework.request import Request
 from rest_framework.views import APIView
 
 from .models import User
@@ -17,7 +19,7 @@ from .serializers import CustomSignupSerializer
 
 
 @api_view(["GET"])
-def get_info(request):
+def get_info(request: HttpRequest):
     csrftoken = get_token(request)
     user = request.user
 
@@ -29,7 +31,7 @@ def get_info(request):
 class UserCreateView(generics.CreateAPIView):
     serializer_class = CustomSignupSerializer
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -40,7 +42,7 @@ class UserCreateView(generics.CreateAPIView):
 
 
 class LoginView(APIView):
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request, *args, **kwargs):
         username = request.data.get("username")
         password = request.data.get("password")
 
@@ -84,7 +86,7 @@ class LoginView(APIView):
 
 class GoogleLogin(APIView):
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request, *args, **kwargs):
         token = request.data.get("access_token")
 
         if not token:
@@ -141,7 +143,7 @@ class GoogleLogin(APIView):
             )
 
 
-def logout_view(request):
+def logout_view(request: HttpRequest):
     if request.user.is_authenticated:
         logout(request)
 

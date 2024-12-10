@@ -1,9 +1,12 @@
 from django.db import models
 from django.utils.timezone import now
 
+from users.models import User
+
 
 class SoftDeleteQuerySet(models.QuerySet):
-    def delete(self, user=None):
+
+    def delete(self, user: User = None):
         for obj in self:
             if hasattr(obj, "history") and isinstance(obj.history, list):
                 obj.history.append(

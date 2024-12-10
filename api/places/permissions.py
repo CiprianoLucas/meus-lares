@@ -1,12 +1,14 @@
 from rest_framework.permissions import BasePermission
+from rest_framework.request import Request
 
 from relations.models import CondoTenant
+from soft_components.views import SoftModelsViewSet
 
 from .models import Apartment, Condominium
 
 
 class CondominiumOwnerPermission(BasePermission):
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request: Request, view: SoftModelsViewSet, obj):
         if isinstance(obj, Condominium):
             return obj.condostaff_set.filter(user=request.user, role="owner").exists()
         elif isinstance(obj, Apartment):
@@ -20,7 +22,7 @@ class CondominiumOwnerPermission(BasePermission):
 
         return False
 
-    def has_permission(self, request, view):
+    def has_permission(self, request: Request, view: SoftModelsViewSet):
 
         if view.basename == "condominium":
             return True

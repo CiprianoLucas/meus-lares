@@ -1,5 +1,7 @@
 from django.contrib import admin
 
+from .models import SoftModel
+
 
 class SoftInline(admin.TabularInline):
     extra = 0
@@ -11,16 +13,16 @@ class SoftAdmin(admin.ModelAdmin):
     exclude = []
     readonly_fields = ("created_at", "history")
 
-    def save_model(self, request, obj, form, change):
+    def save_model(self, request, obj: SoftModel, _, __):
         obj.save(user=request.user)
 
     def delete_queryset(self, request, queryset):
         queryset.delete(user=request.user)
 
-    def delete_model(self, request, obj):
+    def delete_model(self, request, obj: SoftModel):
         obj.delete(user=request.user)
 
-    def its_deleted(self, obj):
+    def its_deleted(self, obj: SoftModel):
         if obj.is_deleted:
             return "DELETED"
         return ""
@@ -52,7 +54,7 @@ class SoftAdmin(admin.ModelAdmin):
 
         return self.exclude
 
-    def get_readonly_fields(self, request, obj):
+    def get_readonly_fields(self, request, obj: SoftModel):
 
         if obj and obj.is_deleted:
             readonly = [column.name for column in obj._meta._get_fields()]

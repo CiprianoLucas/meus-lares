@@ -6,7 +6,9 @@ from django.db.models.fields.files import FileField, ImageField
 from django.db.models.fields.related import ForeignKey
 from django.utils.timezone import now
 
-from . import SoftManager
+from users.models import User
+
+from .managers import SoftManager
 
 
 class SoftModel(models.Model):
@@ -24,7 +26,7 @@ class SoftModel(models.Model):
         self.is_deleted = True
         self.save(user=user)
 
-    def save(self, *args, user=None, query_delete=False, **kwargs):
+    def save(self, *args, user: User = None, query_delete=False, **kwargs):
         if self.pk:
             old_instance = type(self).objects.filter(pk=self.pk).first()
             if old_instance:

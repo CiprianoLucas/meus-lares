@@ -7,6 +7,10 @@ from soft_components import SoftAdmin, SoftInline
 from .models import Apartment, Condominium
 
 
+class ApartmentsInline(SoftInline):
+    model = Apartment
+
+
 class CondoStaffInline(SoftInline):
     model = CondoStaff
 
@@ -29,7 +33,7 @@ class CondominiumsAdmin(SoftAdmin):
     )
     list_filter = ("is_active", "city__state")
     search_fields = ("id", "name", "number", "street", "city")
-    inlines = [CondoStaffInline]
+    inlines = [CondoStaffInline, ApartmentsInline]
 
     class Meta:
         verbose_name = "Condomínio"

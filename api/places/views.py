@@ -1,11 +1,11 @@
 import httpx
 from django.db.models import Q
-from rest_framework import status, viewsets
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from soft_components.views import SoftPagination
+from soft_components.views import SoftModelsViewSet
 
 from .models import Apartment, City, Condominium
 from .permissions import CondominiumOwnerPermission
@@ -17,10 +17,9 @@ from .serializers import (
 )
 
 
-class CondominiumOwnerView(viewsets.ModelViewSet):
+class CondominiumOwnerView(SoftModelsViewSet):
     serializer_class = CondominiumsSerializer
     permission_classes = [IsAuthenticated, CondominiumOwnerPermission]
-    pagination_class = SoftPagination
 
     def get_queryset(self):
         user = self.request.user
@@ -31,10 +30,9 @@ class CondominiumOwnerView(viewsets.ModelViewSet):
         return condominiums
 
 
-class ApartmentOwnerView(viewsets.ModelViewSet):
+class ApartmentOwnerView(SoftModelsViewSet):
     serializer_class = ApartmentSerializer
     permission_classes = [IsAuthenticated, CondominiumOwnerPermission]
-    pagination_class = SoftPagination
 
     def get_queryset(self):
         user = self.request.user
@@ -43,18 +41,13 @@ class ApartmentOwnerView(viewsets.ModelViewSet):
             condominium__condostaff__user=user, condominium__condostaff__role="owner"
         ).distinct()
 
-        condominium_id = self.request.query_params.get("condominium", None)
-        if condominium_id:
-            apartments = apartments.filter(condominium__id=condominium_id)
-
         return apartments
 
 
 class CitiesView(APIView):
     serializer_class = CitySerializer
-    permission_classes = [IsAuthenticated]
 
-    def get(self, request, uf):
+    def get(self, _, uf: str):
         cities = City.objects.filter(state__acronym=uf)
         serializer = self.serializer_class(cities, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -62,9 +55,8 @@ class CitiesView(APIView):
 
 class FullAddressView(APIView):
     serializer_class = FullAddressSerializer
-    permission_classes = [IsAuthenticated]
 
-    def get(self, request, cep):
+    def get(self, _, cep: str):
         url = f"https://viacep.com.br/ws/{cep}/json/"
         http_response = httpx.request("GET", url)
         result = http_response.json()

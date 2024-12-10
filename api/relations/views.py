@@ -1,48 +1,101 @@
-from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from places.models import Apartment, Condominium
-from places.permissions import CondominiumOwnerPermission
-from soft_components.views import SoftPagination
+from soft_components.views import SoftModelsViewSet
 
-from .models import CondoTenant
+from .models import CondoStaff, CondoTenant
 from .serializers import (
-    AptoTenantListSerializer,
-    CondoTenantListSerializer,
+    AptoListSerializer,
+    CondoListSerializer,
+    CondoStaffSerializer,
     CondoTenantSerializer,
 )
 
 
-class CondoTenanListView(viewsets.ReadOnlyModelViewSet):
-    serializer_class = CondoTenantListSerializer
+class CondoListView(SoftModelsViewSet):
+    serializer_class = CondoListSerializer
     permission_classes = [IsAuthenticated]
-    pagination_class = SoftPagination
 
     def get_queryset(self):
         user = self.request.user
-        condominiuns = Condominium.objects.filter(
-            apartment__condotenant__user=user
-        ).distinct()
+        role = self.request.query_params.get("role", None)
+        match role:
+            case "tenant":
+                user_role = {"apartment__condotenant__user": user}
+            case _:
+                user_role = {"condostaff__user": user, "condostaff__role": role}
+
+        condominiuns = Condominium.objects.filter(**user_role).distinct()
+
         return condominiuns
 
 
-class AptoTenanListView(viewsets.ReadOnlyModelViewSet):
-    serializer_class = AptoTenantListSerializer
+class AptoListView(SoftModelsViewSet):
+    serializer_class = AptoListSerializer
     permission_classes = [IsAuthenticated]
-    pagination_class = SoftPagination
 
     def get_queryset(self):
         user = self.request.user
-        condominiuns = Apartment.objects.filter(condotenant__user=user).distinct()
-        return condominiuns
 
+        role = self.request.query_params.get("role", None)
+        match role:
+            case "tenant":
+                user_role = {"condotenant__user": user}
+            case _:
+                user_role = {
+                    "condominium__condostaff__user": user,
+                    "condominium__condostaff__role": role,
+                }
 
-class ApartmentTenantView(viewsets.ModelViewSet):
-    serializer_class = CondoTenantSerializer
-    permission_classes = [IsAuthenticated, CondominiumOwnerPermission]
-    pagination_class = SoftPagination
-
-    def get_queryset(self):
-        user = self.request.user
-        apartments = CondoTenant.objects.filter(user=user).distinct()
+        apartments = Apartment.objects.filter(**user_role).distinct()
         return apartments
+
+
+class CondoTenantView(SoftModelsViewSet):
+    serializer_class = CondoTenantSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        relations = CondoTenant.objects.filter(
+            apartment__condominium__condostaff__user=user,
+            apartment__condominium__condostaff__role="owner",
+        ).distinct()
+        return relations
+
+
+class CondoStaffView(SoftModelsViewSet):
+    serializer_class = CondoStaffSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        relations = CondoStaff.objects.filter(
+            condominium__condostaff__user=user, condominium__condostaff__role="owner"
+        ).distinct()
+
+        condominium = self.request.query_params.get("condominium")
+        condominium_name = self.request.query_params.get("condominium_name")
+        condominium_city = self.request.query_params.get("condominium_city")
+        condominium_state = self.request.query_params.get("condominium_state")
+        role = self.request.query_params.get("role")
+        user_fullname = self.request.query_params.get("user_fullname")
+        if condominium:
+            relations = relations.filter(condominium__id=condominium)
+        if condominium_name:
+            relations = relations.filter(condominium__name__icontains=condominium_name)
+        if condominium_city:
+            relations = relations.filter(
+                condominium__city__name__icontains=condominium_city
+            )
+        if condominium_state:
+            relations = relations.filter(
+                condominium__city__state__acronym__iexact=condominium_state
+            )
+        if role:
+            relations = relations.filter(role__iexact=role)
+        if user_fullname:
+            relations = relations.filter(user__full_name__icontains=user_fullname)
+
+        return relations
