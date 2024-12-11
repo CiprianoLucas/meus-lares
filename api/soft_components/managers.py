@@ -1,12 +1,11 @@
+from django.contrib.auth.models import UserManager
 from django.db import models
 from django.utils.timezone import now
-
-from users.models import User
 
 
 class SoftDeleteQuerySet(models.QuerySet):
 
-    def delete(self, user: User = None):
+    def delete(self, user=None):
         for obj in self:
             if hasattr(obj, "history") and isinstance(obj.history, list):
                 obj.history.append(
@@ -36,3 +35,7 @@ class SoftManager(models.Manager):
 
     def get_all_queryset(self):
         return SoftDeleteQuerySet(self.model, using=self._db).all()
+
+
+class SoftUserManager(SoftManager, UserManager):
+    pass

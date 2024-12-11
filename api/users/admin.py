@@ -1,14 +1,29 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.admin import UserAdmin as UD
+
+from soft_components.admin import SoftAdmin
 
 from .models import User
 
 
-class UserAdmin(UserAdmin):
-    fieldsets = UserAdmin.fieldsets + (
-        (None, {"fields": ("cpf", "phone_number", "full_name", "profile_photo")}),
+class UserAdmin(UD, SoftAdmin):
+    fieldsets = UD.fieldsets + (
+        (
+            None,
+            {
+                "fields": (
+                    "cpf",
+                    "phone_number",
+                    "full_name",
+                    "profile_photo",
+                    "history",
+                    "is_deleted",
+                )
+            },
+        ),
     )
-    add_fieldsets = UserAdmin.add_fieldsets + (
+    readonly_fields = ("history",)
+    add_fieldsets = UD.add_fieldsets + (
         (
             None,
             {
@@ -34,8 +49,38 @@ class UserAdmin(UserAdmin):
     )
     search_fields = ("username", "email", "cpf", "full_name", "phone_number")
 
-    def delete_queryset(self, request, queryset):
-        return
+    def delete_model(self, request, obj):
+        return SoftAdmin.delete_model(self, request, obj)
+
+    def get_list_display(self, request):
+        return SoftAdmin.get_list_display(self, request)
+
+    def get_list_filter(self, request):
+        return SoftAdmin.get_list_filter(self, request)
+
+    def get_exclude(self, request, _):
+        if request.user.is_superuser:
+            return []
+
+        self.exclude = list(self.exclude)
+        self.exclude.append("is_deleted")
+        self.readonly_fields = [
+            item for item in self.readonly_fields if item not in self.exclude
+        ]
+        new_fields = list(self.fieldsets[4][1]["fields"])
+        new_fields.remove("is_deleted")
+        self.fieldsets[4][1]["fields"] = new_fields
+
+        return self.exclude
+
+    def get_readonly_fields(self, request, obj):
+        return SoftAdmin.get_readonly_fields(self, request, obj)
+
+    def save_model(self, request, obj, _, __):
+        return SoftAdmin.save_model(self, request, obj, _, __)
+
+    def delete_queryset(self, _, __):
+        return SoftAdmin.delete_queryset(self, _, __)
 
 
 admin.site.register(User, UserAdmin)

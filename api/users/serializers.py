@@ -69,7 +69,7 @@ class CustomSignupSerializer(serializers.Serializer):
         user = adapter.new_user(request=request)
         self._set_fields(user, validated_data)
 
-        user.save()
+        user.save(user=self.context["request"].user)
         email_address = EmailAddress.objects.create(
             user=user, email=validated_data.get("email"), primary=True, verified=False
         )
