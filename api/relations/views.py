@@ -3,12 +3,13 @@ from rest_framework.permissions import IsAuthenticated
 from places.models import Apartment, Condominium
 from soft_components.views import SoftModelsViewSet
 
-from .models import CondoStaff, CondoTenant
+from .models import CondoStaff, CondoTenant, Contract
 from .serializers import (
     AptoListSerializer,
     CondoListSerializer,
     CondoStaffSerializer,
     CondoTenantSerializer,
+    ContractSerializer,
 )
 
 
@@ -99,3 +100,47 @@ class CondoStaffView(SoftModelsViewSet):
             relations = relations.filter(user__full_name__icontains=user_fullname)
 
         return relations
+
+
+class ContractTenantView(SoftModelsViewSet):
+    serializer_class = ContractSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        contracts = Contract.objects.filter(content_type__model="condotenant")
+        user_contracts = [
+            contract
+            for contract in contracts
+            if (
+                contract.related_object.user == user
+                or contract.related_object.apartment.condominium.condostaff_set.filter(
+                    user=user, role__in=["owner"]
+                ).exists()
+            )
+        ]
+
+        return user_contracts
+
+
+class ContractStaffView(SoftModelsViewSet):
+    serializer_class = ContractSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        contracts = Contract.objects.filter(content_type__model="condostaff")
+        user_contracts = [
+            contract
+            for contract in contracts
+            if (
+                contract.related_object.user == user
+                or contract.related_object.condominium.condostaff_set.filter(
+                    user=user, role__in=["owner"]
+                ).exists()
+            )
+        ]
+
+        return user_contracts

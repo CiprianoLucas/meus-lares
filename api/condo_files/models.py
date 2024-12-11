@@ -6,7 +6,7 @@ from soft_components import SoftModel
 
 
 class ContractFiles(SoftModel):
-    constract = models.ForeignKey(Contract, on_delete=models.DO_NOTHING)
+    contract = models.ForeignKey(Contract, on_delete=models.DO_NOTHING)
     file = models.FileField(
         upload_to="relations/contracts/files",
         validators=[validate_file],

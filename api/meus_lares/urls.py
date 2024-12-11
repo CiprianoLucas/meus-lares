@@ -6,9 +6,10 @@ from django.urls import include, path
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("user/", include("users.urls")),
-    path("accounts/", include("allauth.urls")),
+    path("account/", include("allauth.urls")),
     path("place/", include("places.urls")),
-    path("relations/", include("relations.urls")),
+    path("relation/", include("relations.urls")),
+    path("file/", include("condo_files.urls")),
     # path('request/', include('requests.urls')),
     # path('invoice/', include('invoices.urls')),
     # path('ai/', include('ai.urls')),

@@ -3,7 +3,7 @@ from rest_framework import serializers
 from places.models import Apartment, Condominium
 from soft_components.serializers import softModelSerializer
 
-from .models import CondoStaff, CondoTenant
+from .models import CondoStaff, CondoTenant, Contract
 
 
 class CondoListSerializer(softModelSerializer):
@@ -160,3 +160,21 @@ class CondoStaffSerializer(softModelSerializer):
         if obj.user.identity_photo:
             return obj.user.identity_photo
         return None
+
+
+class ContractSerializer(softModelSerializer):
+    class Meta:
+        model = Contract
+        fields = [
+            "id",
+            "content_type",
+            "object_id",
+            "start_date",
+            "end_date",
+            "terms",
+        ]
+        extra_kwargs = {
+            "id": {"read_only": True},
+            "content_type": {"write_only": True},
+            "object_id": {"write_only": True},
+        }

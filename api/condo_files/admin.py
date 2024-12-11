@@ -6,9 +6,9 @@ from .models import AptInspectImages, ContractFiles
 
 
 class ConstractFilesAdmin(SoftAdmin):
-    list_display = ("constract", "name", "file", "created_at")
-    list_filter = ("constract", "constract__content_type__model", "created_at")
-    search_fields = ("constract__content_type__model", "name")
+    list_display = ("contract", "name", "file", "created_at")
+    list_filter = ("contract", "contract__content_type__model", "created_at")
+    search_fields = ("contract__content_type__model", "name")
 
     class Meta:
         verbose_name = "Arquivo de contrato"

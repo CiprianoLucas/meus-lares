@@ -25,6 +25,7 @@ class CondoStaffAdmin(SoftAdmin):
 
 class CondoTenantAdmin(SoftAdmin):
     list_display = (
+        "id",
         "apartment",
         "user",
         "is_renter",

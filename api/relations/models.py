@@ -1,10 +1,24 @@
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import (
+    GenericForeignKey,
+    GenericRelation,
+)
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from places.models import Apartment, Condominium
 from soft_components import SoftModel
 from users.models import User
+
+
+def contract_relation_validator(value: int | ContentType):
+    if isinstance(value, ContentType):
+        value = value.id
+    allowed_models = {"condotenant", "condostaff"}
+    model = ContentType.objects.get(id=value)
+
+    if model.model not in allowed_models:
+        raise ValidationError("This model is not correct")
 
 
 class CondoTenant(SoftModel):
@@ -13,6 +27,11 @@ class CondoTenant(SoftModel):
     is_renter = models.BooleanField(default=False)
     is_responsible = models.BooleanField(default=False)
     notes = models.TextField(blank=True, null=True)
+    contracts = GenericRelation("Contract")
+
+    @property
+    def condominium(self):
+        return self.apartment.condominium
 
     def __str__(self):
         return f'tenant: "{self.user}" of {self.apartment}'
@@ -45,7 +64,9 @@ class CondoStaff(SoftModel):
 
 
 class Contract(SoftModel):
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE, validators=[contract_relation_validator]
+    )
     object_id = models.UUIDField()
     related_object = GenericForeignKey("content_type", "object_id")
     start_date = models.DateField()
