@@ -17,6 +17,20 @@ class UserAdmin(UD, SoftAdmin):
                     "full_name",
                     "profile_photo",
                     "history",
+                )
+            },
+        ),
+    )
+    backup_fieldsets = UD.fieldsets + (
+        (
+            None,
+            {
+                "fields": (
+                    "cpf",
+                    "phone_number",
+                    "full_name",
+                    "profile_photo",
+                    "history",
                     "is_deleted",
                 )
             },
@@ -58,20 +72,10 @@ class UserAdmin(UD, SoftAdmin):
     def get_list_filter(self, request):
         return SoftAdmin.get_list_filter(self, request)
 
-    def get_exclude(self, request, _):
+    def get_fieldsets(self, request, _):
         if request.user.is_superuser:
-            return []
-
-        self.exclude = list(self.exclude)
-        self.exclude.append("is_deleted")
-        self.readonly_fields = [
-            item for item in self.readonly_fields if item not in self.exclude
-        ]
-        new_fields = list(self.fieldsets[4][1]["fields"])
-        new_fields.remove("is_deleted")
-        self.fieldsets[4][1]["fields"] = new_fields
-
-        return self.exclude
+            return self.backup_fieldsets
+        return self.fieldsets
 
     def get_readonly_fields(self, request, obj):
         return SoftAdmin.get_readonly_fields(self, request, obj)

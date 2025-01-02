@@ -8,6 +8,7 @@ from .views import (
     CondoTenantView,
     ContractStaffView,
     ContractTenantView,
+    PlaceReservationViewSet
 )
 
 router = DefaultRouter()
@@ -17,5 +18,6 @@ router.register(r"tenant", CondoTenantView, "tenant")
 router.register(r"staff", CondoStaffView, "staff")
 router.register(r"contract/tenant", ContractTenantView, "contract-tenant")
 router.register(r"contract/staff", ContractStaffView, "contract-staff")
+router.register(r"reservate", PlaceReservationViewSet, "reservate")
 
 urlpatterns = [path("", include(router.urls))]

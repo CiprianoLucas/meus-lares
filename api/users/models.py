@@ -6,14 +6,40 @@ from django.db.models.fields import UUIDField
 from django.db.models.fields.files import FileField, ImageField
 from django.db.models.fields.related import ForeignKey
 from django.utils.timezone import now
+from rest_framework import serializers
 
 from meus_lares.storages import PrivateMediaStorage, PublicMediaStorage
 from soft_components.managers import SoftUserManager
+from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.db import IntegrityError
 
+username_validator = UnicodeUsernameValidator()
+def unique_cpf(value, id):
+    if User.objects.filter(cpf=value).exclude(id=id).exists():
+        raise serializers.ValidationError("cpf is already in use")
+
+def unique_username(value, id):
+    if User.objects.filter(username=value).exclude(id=id).exists():
+        raise serializers.ValidationError("username is already in use")
+
+def unique_email(value, id):
+    if User.objects.filter(email=value).exclude(id=id).exists():
+        raise serializers.ValidationError("email is already in use")
+    
+def validate_all_params(user):
+    unique_cpf(user.cpf, user.id)
+    unique_username(user.username, user.id)
+    unique_email(user.email, user.id)
+        
 
 class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    cpf = models.CharField(max_length=11, unique=True)
+    cpf = models.CharField(max_length=11)
+    username = models.CharField(
+        max_length=25,
+        validators=[username_validator],
+    )
+    email = models.EmailField(blank=True)
     phone_number = models.CharField(max_length=15)
     full_name = models.CharField(max_length=255)
     birth = models.DateField()
@@ -39,6 +65,11 @@ class User(AbstractUser):
     history = models.JSONField(default=list, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     objects = SoftUserManager()
+    
+    def clean(self):
+        unique_cpf(self.cpf, self.id)
+        unique_username(self.username, self.id)
+        unique_email(self.email, self.id)
 
     def save(self, *args, user=None, query_delete=False, **kwargs):
         if self.pk:
@@ -47,8 +78,15 @@ class User(AbstractUser):
                 changes = {}
                 for field in self._meta.fields:
                     field_name = field.name
+                    if field_name in ['last_login', 'date_joined']:
+                        continue
+                    
                     old_value = getattr(old_instance, field_name)
                     new_value = getattr(self, field_name)
+                    
+                    if isinstance(field, models.DateField):
+                        old_value = str(old_value) if old_value else None
+                        new_value = str(new_value) if new_value else None
 
                     if isinstance(field, ForeignKey):
                         old_value = str(old_value.pk) if old_value else None
@@ -83,6 +121,7 @@ class User(AbstractUser):
                     )
             else:
                 created_at = self.created_at
+                validate_all_params(self)
                 super().save(*args, **kwargs)
                 if type(self).objects.filter(pk=self.pk) and created_at is not None:
                     self.history.append(

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericTabularInline
 
-from relations.models import CondoStaff, CondoTenant, Contract
+from relations.models import CondoStaff, CondoTenant, Contract, PlaceReservation
 from soft_components import SoftAdmin
 
 
@@ -45,27 +45,26 @@ class CondoTenantAdmin(SoftAdmin):
         verbose_name_plural = "Moradores"
 
 
-class ConstractsAdmin(SoftAdmin):
-    list_display = ("content_type", "object_id", "is_renter", "is_responsible")
-    list_filter = ("user", "is_renter", "is_responsible", "apartment__condominium")
-    search_fields = (
-        "apartment__identifier",
-        "user__username",
-        "apartment__condominium__name",
-    )
-    inlines = [ConstractsInline]
-
-    class Meta:
-        verbose_name = "Morador"
-        verbose_name_plural = "Moradores"
-
-
 class ContractAdmin(SoftAdmin):
     list_display = ("id", "related_object", "start_date", "end_date", "is_active")
     list_filter = ("start_date", "end_date", "content_type")
     search_fields = ("related_object__str", "terms")
+    
+class PlaceReservationAdmin(SoftAdmin):
+    list_display = ("place", "tenant", "date", "start_time", "end_time")
+    list_filter = ("place", "tenant", "date", "start_time", "end_time")
+    search_fields = (
+        "place__name",
+        "tenant__user__fullname",
+        "date",
+    )
+
+    class Meta:
+        verbose_name = "Reserva de espaço"
+        verbose_name_plural = "Reservas de espaços"
 
 
+admin.site.register(PlaceReservation, PlaceReservationAdmin)
 admin.site.register(Contract, ContractAdmin)
 admin.site.register(CondoStaff, CondoStaffAdmin)
 admin.site.register(CondoTenant, CondoTenantAdmin)

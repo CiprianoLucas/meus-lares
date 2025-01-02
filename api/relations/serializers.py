@@ -3,7 +3,7 @@ from rest_framework import serializers
 from places.models import Apartment, Condominium
 from soft_components.serializers import softModelSerializer
 
-from .models import CondoStaff, CondoTenant, Contract
+from .models import CondoStaff, CondoTenant, Contract, PlaceReservation
 
 
 class CondoListSerializer(softModelSerializer):
@@ -178,3 +178,25 @@ class ContractSerializer(softModelSerializer):
             "content_type": {"write_only": True},
             "object_id": {"write_only": True},
         }
+
+
+class PlaceReservationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlaceReservation
+        fields = ("place", "tenant", "date", "start_time", "end_time")
+
+    def validate(self, data):
+        place = data["place"]
+        date = data["date"]
+        start_time = data["start_time"]
+        end_time = data["end_time"]
+
+        conflit = PlaceReservation.objects.filter(
+            place=place,
+            date=date,
+            start_time__lt=end_time,
+            end_time__gt=start_time
+        )
+        if conflit.exists():
+            raise serializers.ValidationError("This time is already booked.")
+        return data

@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from places.models import Apartment, Condominium
+from places.models import Apartment, Condominium, SharedPlaces
 from soft_components import SoftModel
 from users.models import User
 
@@ -79,3 +79,27 @@ class Contract(SoftModel):
     class Meta:
         verbose_name = "Contrato"
         verbose_name_plural = "Contratos"
+
+
+class PlaceReservation(SoftModel):
+    place = models.ForeignKey(SharedPlaces, on_delete=models.CASCADE)
+    tenant = models.ForeignKey(CondoTenant, on_delete=models.CASCADE)
+    date = models.DateField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    
+    class Meta:
+        verbose_name = "Reserva de espaço"
+        verbose_name_plural = "Reservas de espaços"
+        ordering = ["date", "start_time"]
+
+    def clean(self):
+        conflit = PlaceReservation.objects.filter(
+            place=self.place,
+            date=self.date,
+            start_time__lt=self.end_time,
+            end_time__gt=self.start_time
+        )
+        if conflit.exists():
+            raise ValidationError("This time is already booked.")
+        super().clean()

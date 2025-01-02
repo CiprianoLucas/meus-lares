@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     "places.apps.PlacesConfig",
     "relations.apps.RelationsConfig",
     "condo_files.apps.CondoFilesConfig",
+    "bills.apps.BillsConfig",
+    "notifications.apps.NotificationsConfig",
     # 'condo_requests.apps.CondoRequestsConfig',
     # 'invoices.apps.InvoicesConfig',
     # 'ai.apps.AiConfig',

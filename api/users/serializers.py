@@ -22,8 +22,6 @@ class CustomSignupSerializer(serializers.Serializer):
         return full_name
 
     def validate_email(self, email: str):
-        if User.objects.filter(email=email).exists():
-            raise serializers.ValidationError("Email já está em uso.")
         return get_adapter().clean_email(email)
 
     def validate_password(self, password: str):
@@ -57,9 +55,6 @@ class CustomSignupSerializer(serializers.Serializer):
 
         if novo != inteiros:
             raise serializers.ValidationError("CPF inválido.")
-
-        if User.objects.filter(cpf=cpf).exists():
-            raise serializers.ValidationError("CPF já está em uso.")
 
         return cpf
 

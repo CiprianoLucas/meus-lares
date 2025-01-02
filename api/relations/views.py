@@ -1,21 +1,19 @@
-from rest_framework.permissions import IsAuthenticated
-
 from places.models import Apartment, Condominium
 from soft_components.views import SoftModelsViewSet
 
-from .models import CondoStaff, CondoTenant, Contract
+from .models import CondoStaff, CondoTenant, Contract, PlaceReservation
 from .serializers import (
     AptoListSerializer,
     CondoListSerializer,
     CondoStaffSerializer,
     CondoTenantSerializer,
     ContractSerializer,
+    PlaceReservationSerializer
 )
 
 
 class CondoListView(SoftModelsViewSet):
     serializer_class = CondoListSerializer
-    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -33,7 +31,6 @@ class CondoListView(SoftModelsViewSet):
 
 class AptoListView(SoftModelsViewSet):
     serializer_class = AptoListSerializer
-    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -54,7 +51,6 @@ class AptoListView(SoftModelsViewSet):
 
 class CondoTenantView(SoftModelsViewSet):
     serializer_class = CondoTenantSerializer
-    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -67,7 +63,6 @@ class CondoTenantView(SoftModelsViewSet):
 
 class CondoStaffView(SoftModelsViewSet):
     serializer_class = CondoStaffSerializer
-    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -104,7 +99,6 @@ class CondoStaffView(SoftModelsViewSet):
 
 class ContractTenantView(SoftModelsViewSet):
     serializer_class = ContractSerializer
-    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -126,7 +120,6 @@ class ContractTenantView(SoftModelsViewSet):
 
 class ContractStaffView(SoftModelsViewSet):
     serializer_class = ContractSerializer
-    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -144,3 +137,7 @@ class ContractStaffView(SoftModelsViewSet):
         ]
 
         return user_contracts
+
+class PlaceReservationViewSet(SoftModelsViewSet):
+    queryset = PlaceReservation.objects.all()
+    serializer_class = PlaceReservationSerializer

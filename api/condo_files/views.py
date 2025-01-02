@@ -8,7 +8,11 @@ class ContractsFilesView(SoftModelsViewSet):
     serializer_class = ContractsFilesSerializer
 
     def get_queryset(self):
-        images = ContractFiles.objects.all()
+        user = self.request.user
+        images = ContractFiles.objects.filter(
+            tenant__apartment__condominium__condostaff__user=user,
+            tenant__apartment__condominium__condostaff__role__in=["owner", "manager"],
+        )
         return images
 
 
@@ -19,6 +23,6 @@ class AptInspectImagesView(SoftModelsViewSet):
         user = self.request.user
         images = AptInspectImages.objects.filter(
             tenant__apartment__condominium__condostaff__user=user,
-            tenant__apartment__condominium__condostaff__rule__in=["owner", "manager"],
+            tenant__apartment__condominium__condostaff__role__in=["owner", "manager"],
         )
         return images

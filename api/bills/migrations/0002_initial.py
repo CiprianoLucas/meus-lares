@@ -9,21 +9,27 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("condo_files", "0001_initial"),
+        ("bills", "0001_initial"),
         ("relations", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="aptinspectimages",
-            name="tenant",
+            model_name="breachpenalty",
+            name="contract",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.DO_NOTHING,
-                to="relations.condotenant",
+                on_delete=django.db.models.deletion.DO_NOTHING, to="relations.contract"
             ),
         ),
         migrations.AddField(
-            model_name="contractfiles",
+            model_name="finepenalty",
+            name="contract",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.DO_NOTHING, to="relations.contract"
+            ),
+        ),
+        migrations.AddField(
+            model_name="recurringfee",
             name="contract",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.DO_NOTHING, to="relations.contract"

@@ -4,7 +4,7 @@ from django.utils.html import format_html
 from relations.models import CondoStaff, CondoTenant
 from soft_components import SoftAdmin, SoftInline
 
-from .models import Apartment, Condominium
+from .models import Apartment, Condominium, ParkingSpace
 
 
 class ApartmentsInline(SoftInline):
@@ -67,7 +67,15 @@ class ApartmentsAdmin(SoftAdmin):
         return "Sem foto"
 
     profile_photo_url.short_description = "Foto"
+    
+class ParkingSpaceAdmin(SoftAdmin):
+    list_display = ("id", "condominium", "identifier", "apartment")
+    list_filter = ("condominium", "apartment")
+    search_fields = ("id", "condominium__name", "identifier", "apartment__identifier")
+    verbose_name = "Vaga de estacionamento"
+    verbose_name_plural = "Vagas de estacionamento"
 
 
+admin.site.register(ParkingSpace, ParkingSpaceAdmin)
 admin.site.register(Condominium, CondominiumsAdmin)
 admin.site.register(Apartment, ApartmentsAdmin)

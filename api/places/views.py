@@ -7,11 +7,12 @@ from rest_framework.views import APIView
 
 from soft_components.views import SoftModelsViewSet
 
-from .models import Apartment, City, Condominium
+from .models import Apartment, City, Condominium, SharedPlaces
 from .permissions import CondominiumOwnerPermission
 from .serializers import (
     ApartmentSerializer,
     CitySerializer,
+    SharedPlacesSerializer,
     CondominiumsSerializer,
     FullAddressSerializer,
 )
@@ -42,6 +43,18 @@ class ApartmentOwnerView(SoftModelsViewSet):
         ).distinct()
 
         return apartments
+
+class SharedPlacesView(SoftModelsViewSet):
+    serializer_class = SharedPlacesSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+
+        places = SharedPlaces.objects.filter(
+            condominium__condostaff__user=user, condominium__condostaff__role="owner"
+        ).distinct()
+
+        return places
 
 
 class CitiesView(APIView):
