@@ -52,8 +52,7 @@ INSTALLED_APPS = [
     "condo_files.apps.CondoFilesConfig",
     "bills.apps.BillsConfig",
     "notifications.apps.NotificationsConfig",
-    # 'condo_requests.apps.CondoRequestsConfig',
-    # 'invoices.apps.InvoicesConfig',
+    'condo_requests.apps.CondoRequestsConfig',
     # 'ai.apps.AiConfig',
     "storages",
 ]

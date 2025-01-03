@@ -1,28 +1,38 @@
-import uuid
-
 from django.db import models
-
+from soft_components import SoftModel
 from places.models import Apartment, Condominium
 from users.models import User
 
 
-class Request(models.Model):
+class CondoRequest(SoftModel):
     TYPE_CHOICES = [
-        ("R", "RECLAMAÇÃO"),
-        ("M", "MANUTENÇÃO"),
-        ("O", "OUTROS"),
+        ("complaint", "Complaint"),
+        ("repair", "Repair"),
+        ("others", "Others"),
+        ("reservation", "Reservation"),
+        ("payment_issue", "Payment Issue"),
+        ("noise_complaint", "Noise Complaint"),
+        ("security_issue", "Security Issue"),
+        ("lost_found", "Lost and Found"),
+        ("visitor_authorization", "Visitor Authorization"),
+        ("package_delivery", "Package Delivery"),
+        ("suggestion", "Suggestion"),
+        ("event", "Event"),
+        ("billing_question", "Billing Question"),
+        ("vehicle", "Vehicle"),
     ]
     STATUS_CHOICES = [
-        ("A", "ANDAMENTO"),
-        ("C", "CONCLUIDO"),
-        ("P", "PENDENTE"),
+        ("pending", "Pending"),
+        ("in_progress", "In Progress"),
+        ("completed", "Completed"),
+        ("canceled", "Canceled"),
+        ("awaiting_payment", "Awaiting Payment"),
+        ("rejected", "Rejected"),
+        ("awaiting_feedback", "Awaiting Feedback"),
     ]
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     requester = models.ForeignKey(
         User,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+        on_delete=models.DO_NOTHING,
         related_name="request_requester",
     )
     guardian = models.ForeignKey(
@@ -38,10 +48,10 @@ class Request(models.Model):
     )
     title = models.CharField(max_length=50)
     description = models.TextField(max_length=3000)
-    type = models.CharField(max_length=1, choices=TYPE_CHOICES, default="O")
-    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default="P")
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_active = models.BooleanField(default=True)
+    observations = models.JSONField(default=list, blank=True)
+    type = models.CharField(choices=TYPE_CHOICES, default="others")
+    status = models.CharField(choices=STATUS_CHOICES, default="pending")
+    anonymous = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
@@ -51,14 +61,4 @@ class Request(models.Model):
         verbose_name_plural = "Requisições"
 
 
-class RequestFiles:
-    file = models.FileField(upload_to="requests/files/")
-    request = models.ForeignKey(Request, on_delete=models.CASCADE)
 
-    class Meta:
-        verbose_name = "Arquivo da requisição"
-        verbose_name_plural = "Arquivos das requisições"
-
-    def delete(self, *args, **kwargs):
-        self.file.delete(save=False)
-        super().delete(*args, **kwargs)

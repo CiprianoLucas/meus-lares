@@ -11,6 +11,7 @@ urlpatterns = [
     path("relation/", include("relations.urls")),
     path("file/", include("condo_files.urls")),
     path("bill/", include("bills.urls")),
+    path("notification/", include("notifications.urls")),
     # path('request/', include('requests.urls')),
     # path('invoice/', include('invoices.urls')),
     # path('ai/', include('ai.urls')),

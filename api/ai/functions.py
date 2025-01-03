@@ -2,7 +2,7 @@ import json
 
 from django.core.serializers.json import DjangoJSONEncoder
 
-from invoices.models import Invoice
+from condo_requests.models import CondoRequest
 from users.models import User
 
 
@@ -12,17 +12,17 @@ class AiFunctions:
         self.__args = args
 
         match function:
-            case "get_invoices_by_requester":
-                self.__function = self.get_invoices_by_requester
+            case "get_requests_by_requester":
+                self.__function = self.get_requests_by_requester
 
     def exec(self) -> str:
         return self.__function(self.__args)
 
-    def get_invoices_by_requester(self, args: dict) -> str:
+    def get_requests_by_requester(self, args: dict) -> str:
         try:
             username = args["username"]
             user = User.objects.get(username=username)
-            invoices = Invoice.objects.filter(relation__resident=user).values(
+            requests = CondoRequest.objects.filter(relation__resident=user).values(
                 "ticket_number",
                 "value",
                 "relation__company",
@@ -30,20 +30,20 @@ class AiFunctions:
                 "relation__unit_number",
                 "created_at",
             )
-            invoices_data = [
+            requests_data = [
                 {
-                    "numero_bolero": invoice["ticket_number"],
-                    "valor": invoice["value"],
-                    "empresa": invoice["relation__company"],
-                    "nome_do_local": invoice["relation__place__name"],
-                    "unidade_consumidora": invoice["relation__unit_number"],
-                    "data_recebimento": invoice["created_at"],
+                    "numero_bolero": request["ticket_number"],
+                    "valor": request["value"],
+                    "empresa": request["relation__company"],
+                    "nome_do_local": request["relation__place__name"],
+                    "unidade_consumidora": request["relation__unit_number"],
+                    "data_recebimento": request["created_at"],
                 }
-                for invoice in invoices
+                for request in requests
             ]
-            list_invoices = list(invoices_data)
-            invoices_json = json.dumps(list_invoices, cls=DjangoJSONEncoder)
-            content = invoices_json
+            list_requests = list(requests_data)
+            requests_json = json.dumps(list_requests, cls=DjangoJSONEncoder)
+            content = requests_json
             content += """ - Só passar os dados que o usuário pediu, nenhum outro."""
             return content
         except Exception as e:

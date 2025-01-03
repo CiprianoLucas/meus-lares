@@ -1,43 +1,19 @@
 from django.contrib import admin
+from soft_components import SoftAdmin, SoftInline
+from .models import CondoRequest
+from condo_files.models import RequestFiles
 
-from .models import Request
+class RequestFilesInline(SoftInline):
+    extra = 0
+    can_delete = False
+    model = RequestFiles
 
-
-class RequestAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "place",
-        "title",
-        "requester",
-        "guardian",
-        "type",
-        "status",
-        "created_at",
-        "is_active",
-    )
-    list_filter = ("id", "place", "type", "status", "created_at", "is_active")
-    search_fields = (
-        "id",
-        "place",
-        "title",
-        "description",
-        "requester__username",
-        "guardian__username",
-        "is_active",
-    )
-    fields = (
-        "place",
-        "requester",
-        "guardian",
-        "title",
-        "description",
-        "type",
-        "status",
-        "is_active",
-    )
-    list_per_page = 20
+class RequestAdmin(SoftAdmin):
+    list_display = ("id", "requester", "guardian", "condominium", "apartment", "title", "type", "status")
+    list_filter = ("requester", "guardian", "condominium", "type", "status")
+    search_fields = ("id","requester__username","guardian__username","condominium__name","apartment__identfier", "title")
     verbose_name = "Requisição"
     verbose_name_plural = "Requisições"
-
-
-admin.site.register(Request, RequestAdmin)
+    inlines = [RequestFilesInline]
+    
+admin.site.register(CondoRequest, RequestAdmin)
