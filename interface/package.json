@@ -14,6 +14,7 @@
     },
     "dependencies": {
         "@floating-ui/vue": "^1.1.4",
+        "@popperjs/core": "^2.11.8",
         "@types/js-cookie": "^3.0.6",
         "axios": "^1.7.2",
         "body-parser": "^1.20.2",
@@ -31,6 +32,7 @@
         "@rushstack/eslint-patch": "^1.8.0",
         "@tsconfig/node20": "^20.1.4",
         "@types/axios": "^0.14.0",
+        "@types/bootstrap": "^5.2.10",
         "@types/node": "^20.14.14",
         "@vitejs/plugin-vue": "^5.0.5",
         "@vue/eslint-config-prettier": "^9.0.0",
