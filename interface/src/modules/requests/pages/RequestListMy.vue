@@ -47,7 +47,7 @@ const requestList = app.ref<Request[]>([])
 app.onMounted(() => {
     // Obtém a lista de chamados pendentes ao montar o componente
     app.api
-        .getCashed<Request[]>('/request/residents/')
+        .getListCashed<Request[]>('/request/residents/')
         .then((response) => {
             requestList.value = response
         })

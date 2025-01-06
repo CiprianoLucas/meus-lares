@@ -4,23 +4,15 @@
         <custom-form :form="placeForm" :inputs="inputs" />
         <div class="mb-3">
             <label for="user-image-input" class="form-label">Foto de perfil do condomínio:</label>
-            <input
-                type="file"
-                class="form-control"
-                id="user-image-input"
-                @change="photoChange"
-                required
-            />
+            <input type="file" class="form-control" id="user-image-input" @change="photoChange" required />
         </div>
         <button v-if="!placeId" @click="registerPlace" class="btn btn-primary">Cadastrar</button>
         <div v-else>
             <button @click="updatePlace" class="btn btn-primary mx-3">Atualizar</button>
-            <router-link class="btn btn-secondary mx-3" :to="`/condominio/${placeId}/sindicos`"
-                >Cadastrar síndicos</router-link
-            >
-            <router-link class="btn btn-secondary mx-3" :to="`/condominio/${placeId}/moradores`"
-                >Cadastrar moradores</router-link
-            >
+            <router-link class="btn btn-secondary mx-3" :to="`/condominio/${placeId}/sindicos`">Cadastrar
+                síndicos</router-link>
+            <router-link class="btn btn-secondary mx-3" :to="`/condominio/${placeId}/moradores`">Cadastrar
+                moradores</router-link>
         </div>
     </div>
 </template>
@@ -46,9 +38,9 @@ const placeForm = app.ref<Place>({
     state: ''
 })
 
-const userImageInput = app.ref<File|null>(null)
+const userImageInput = app.ref<File | null>(null)
 
-async function photoChange(event: Event){
+async function photoChange(event: Event) {
     const target = event.target as HTMLInputElement;
     const file = target.files?.[0] || null;
     userImageInput.value = file;
@@ -69,10 +61,10 @@ app.watch(
 )
 
 async function updateCities(uf: string = '') {
-    const info = (await app.api.getCashed('/place/cities/' + uf)) as [
-        { id: number; name: string; state: string }
-    ]
-    const options = info.map((item) => ({ value: item.id, label: item.name }))
+    const { result } = (await app.api.getListCashed('/place/cities/' + uf)) as {
+        result: [{ id: number; name: string; state: string }]
+    }
+    const options = result.map((item) => ({ value: item.id, label: item.name }))
     const cityInput = inputs.value.find((input) => input.reference === 'city')
     if (cityInput && cityInput.options) {
         cityInput.options = options
@@ -81,11 +73,11 @@ async function updateCities(uf: string = '') {
 
 async function verifyCep(cep: string = '') {
     if (cep.length === 9) {
-        const info = await (<Place>app.api.getCashed('/place/cep/' + cep))
-        placeForm.value.city = info.city
-        placeForm.value.state = info.state
-        placeForm.value.neighborhood = info.neighborhood
-        placeForm.value.street = info.street
+        const {data} = await (app.api.get('/place/cep/' + cep))
+        placeForm.value.city = data.city
+        placeForm.value.state = data.state
+        placeForm.value.neighborhood = data.neighborhood
+        placeForm.value.street = data.street
     }
 }
 
@@ -94,7 +86,7 @@ function registerPlace() {
         .post('/place/condominium/', placeForm.value)
         .then(({ data }) => {
             app.popup('Sucesso!', 'Informações do condomínio salvas', 'success')
-            sessionStorage.removeItem('/place/unions/')
+            sessionStorage.removeItem('/place/condominium/')
             app.redirect('/condominio/lista')
         })
         .catch((error) => {
@@ -107,7 +99,7 @@ function updatePlace() {
         .put(`/place/${placeId.value}/`, placeForm.value)
         .then(() => {
             app.popup('Sucesso!', 'Informações do condomínio salvas', 'success')
-            sessionStorage.removeItem('/place/unions/')
+            sessionStorage.removeItem('/place/condominium/')
             app.redirect('/condominio/lista')
         })
         .catch((error) => {

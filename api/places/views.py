@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.pagination import PageNumberPagination
 
 from soft_components.views import SoftModelsViewSet
 
@@ -56,14 +57,20 @@ class SharedPlacesView(SoftModelsViewSet):
 
         return places
 
+class CitiesStatesPagination(PageNumberPagination):
+    page_size = 6000
+    page_size_query_param = "page_size"
 
 class CitiesView(APIView):
     serializer_class = CitySerializer
+    pagination_class = CitiesStatesPagination
 
-    def get(self, _, uf: str):
+    def get(self, request, uf: str):
         cities = City.objects.filter(state__acronym=uf)
-        serializer = self.serializer_class(cities, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        paginator = self.pagination_class()
+        paginated_cities = paginator.paginate_queryset(cities, request, view=self)
+        serializer = self.serializer_class(paginated_cities, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
 
 class FullAddressView(APIView):

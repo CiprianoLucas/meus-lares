@@ -13,7 +13,7 @@ from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from rest_framework.views import APIView
-
+from relations.models import CondoTenant, CondoStaff
 from .models import User
 from .serializers import CustomSignupSerializer
 
@@ -21,10 +21,7 @@ from .serializers import CustomSignupSerializer
 @api_view(["GET"])
 def get_info(request: HttpRequest):
     csrftoken = get_token(request)
-    user = request.user
-
-    response = {"username": user.username, "csrftoken": csrftoken}
-
+    response = {"csrftoken": csrftoken}
     return JsonResponse(response)
 
 
@@ -75,8 +72,12 @@ class LoginView(APIView):
                 )
 
             perform_login(request, user, email_verification=None)
-
-            response = {"email": user.email}
+            roles = list(CondoStaff.objects.filter(user=user).values('role'))
+            roles = list(set([role["role"] for role in roles]))
+            if CondoTenant.objects.filter(user=user).exists(): roles.append('tenant')
+            
+            response = {"username": user.username, "roles": roles}
+            
             return JsonResponse(response)
 
         return JsonResponse(
@@ -141,6 +142,23 @@ class GoogleLogin(APIView):
                 {"error": "Internal server error."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+def roles_view(request: HttpRequest):
+    user = request.user
+    
+    if not user.is_authenticated:
+        return JsonResponse(
+                {"error": "Usuário não está logado"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+    roles = list(CondoStaff.objects.filter(user=user).values('role'))
+    roles = list(set([role["role"] for role in roles]))
+    if CondoTenant.objects.filter(user=user).exists(): roles.append('tenant')
+    
+    return JsonResponse(
+            {"roles": roles}, status=status.HTTP_200_OK
+        )
 
 
 def logout_view(request: HttpRequest):

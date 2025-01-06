@@ -83,7 +83,7 @@ const invoiceRelationForm = app.ref({
 
 function updateSelectRedidents() {
     app.api
-        .getCashed<User[]>(`/place/${invoiceRelationForm.value.place}/residents/`)
+        .getListCashed<User[]>(`/place/${invoiceRelationForm.value.place}/residents/`)
         .then((response) => {
             residents.value = response
         })
@@ -120,7 +120,7 @@ function updateInvoiceRelation() {
 
 app.onMounted(() => {
     app.api
-        .getCashed<Place[]>('/place/unions/')
+        .getListCashed<Place[]>('/place/unions/')
         .then((response) => {
             places.value = response
         })

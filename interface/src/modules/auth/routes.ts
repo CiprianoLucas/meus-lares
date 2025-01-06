@@ -2,6 +2,7 @@ export default [
     {
         path: '/login',
         name: 'login',
-        component: () => import(/* webpacjChunkName: "login" */ './pages/UserLogin.vue')
+        component: () => import(/* webpacjChunkName: "login" */ './pages/UserLogin.vue'),
+        meta: { requiresAuth: false }
     }
 ]

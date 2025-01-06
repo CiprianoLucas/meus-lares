@@ -1,9 +1,10 @@
 import { type AxiosInstance } from 'axios'
+import type { Role } from '@/modules/user/interfaces'
 
 interface LoginResponse {
     username: string
-    isResident: boolean
-    isUnion: boolean
+    role: Role
+    roles: Role[]
 }
 
 interface LoginRequest {
@@ -14,7 +15,7 @@ interface LoginRequest {
 interface CustomAxiosInstance extends AxiosInstance {
     login(form: LoginRequest): Promise<LoginResponse>
     logout(): Promise<void>
-    getCashed<T>(path: string, force?: boolean, time?: number): Promise<T>
+    getListCashed<T>(path: string, force?: boolean, time?: number): Promise<{ result: T; count: number; next: string | null; previous: string | null }>
 }
 
 export type { LoginResponse, LoginRequest, CustomAxiosInstance }

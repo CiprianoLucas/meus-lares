@@ -1,73 +1,34 @@
 <template>
-    <div v-if="props.data.length === 0" class="alert alert-info text-center">
+    <div v-if="listData.length === 0" class="alert alert-info text-center">
         Nenhum disponível no momento.
     </div>
 
     <div v-else>
-        <input v-model="searchQuery" placeholder="Pesquisar..." class="form-control mb-3" />
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th
-                            v-for="(v, k) in headers"
-                            :key="k"
-                            @click="sortBy(k as string)"
-                            :class="getThClass(k as string)"
-                        >
-                            {{ v }}
-                        </th>
-                        <th v-if="props.options">Opções</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(item, i) in paginatedData" :key="i">
-                        <td v-for="(v, k) in headers" :key="v" :class="getTdClass(k as string)">
-                            {{ item[k] }}
-                        </td>
-                        <td>
-                            <a v-if="props.options" href="">teste</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="row">
-            <div class="col-3">
-                <div class="input-group input-group-sm">
-                    <span class="input-group-text">Itens por página:</span>
-                    <select
-                        v-model="itemsPerPage"
-                        class="form-select"
-                        aria-label="Sizing example input"
-                        aria-describedby="inputGroup-sizing-sm"
-                    >
-                        <option :value="20">20</option>
-                        <option :value="50">50</option>
-                        <option :value="100">100</option>
-                    </select>
-                </div>
+        <form @submit.prevent="handleSearch">
+            <div class="input-group mb-3">
+                <input v-model="searchQuery" type="text" placeholder="Pesquisar..." class="form-control"
+                    aria-label="Pesquisar" />
+                <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
+                    Pesquisar
+                </button>
             </div>
-            <div class="col">
-                <div class="input-group">
-                    <button
-                        class="btn btn-secondary"
-                        @click="previousPage"
-                        :disabled="currentPage === 1"
-                    >
-                        Anterior
-                    </button>
-                    <span class="input-group-text"
-                        >Página {{ currentPage }} de {{ totalPages }}</span
-                    >
-                    <button
-                        class="btn btn-secondary"
-                        @click="nextPage"
-                        :disabled="currentPage === totalPages"
-                    >
-                        Próxima
-                    </button>
+        </form>
+        <div>
+            <div v-for="(item, i) in listData" :key="i" class="card">
+                <div class="row g-0">
+                    <div v-if="props.img" class="col-4 d-flex justify-content-center align-items-center">
+                        <img :src="item[props.img] ? item[props.img] : 'https://cdn-icons-png.flaticon.com/512/1066/1066153.png'"
+                            class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col">
+                        <div class="card-body">
+                            <div v-for="(v, k) in headers">
+                                <h5 v-if="k == props.title">{{ item[k] }}</h5>
+                                <p class="mb-1" v-else-if="k != props.img"><small><strong>{{ v }}:</strong><br>{{
+                                    item[k] }}</small></p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -75,32 +36,46 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { inputsLabel } from '../forms'
+import { api } from '@/http'
+import { popup } from '../PopUps'
 
 interface Item {
     [key: string]: any
 }
 
 const props = defineProps<{
-    data: Item[]
+    url: string
+    title?: string
+    cashTime?: number
     headers?: { [key: string]: string }
-    options?: boolean
+    img?: string
 }>()
 
 const headers = ref(props.headers || inputsLabel)
 const searchQuery = ref('')
-const sortKey = ref<string | null>(null)
-const sortOrder = ref(1)
-const currentPage = ref(1)
-const itemsPerPage = ref(20)
+const listData = ref<Item[]>([])
+const forceUpdate = ref<Item[]>([])
+
+onMounted(() => {
+    api
+        .getListCashed<Item[]>(props.url, false,)
+        .then(({ result }) => {
+            listData.value = result
+        })
+        .catch(() => {
+            popup('Erro!', 'Falha ao listar', 'warning')
+        })
+})
+
+function handleSearch(){}
 
 const processData = (data: Item[]) => {
-    debugger
     const keys = Object.keys(headers.value)
-    if (props.data.length > 0) {
+    if (listData.value.length > 0) {
         keys.forEach((element) => {
-            if (!props.data[0]?.[element]) {
+            if (!listData.value[0]?.[element]) {
                 delete headers.value[element]
             }
         })
@@ -108,119 +83,17 @@ const processData = (data: Item[]) => {
 }
 
 watch(
-    () => props.data,
+    () => listData.value,
     (newData) => {
         processData(newData)
     },
     { immediate: true }
 )
-
-const filteredAndSortedData = computed(() => {
-    let result = props.data
-    if (searchQuery.value) {
-        result = result.filter((item) =>
-            Object.keys(headers.value).some((k) =>
-                String(item[k]).toLowerCase().includes(searchQuery.value.toLowerCase())
-            )
-        )
-    }
-
-    if (sortKey.value) {
-        result = result.slice().sort((a: Item, b: Item) => {
-            const aValue = a[sortKey.value as keyof Item].toString().toLowerCase()
-            const bValue = b[sortKey.value as keyof Item].toString().toLowerCase()
-
-            if (aValue < bValue) return sortOrder.value === 1 ? -1 : 1
-            if (aValue > bValue) return sortOrder.value === 1 ? 1 : -1
-            return 0
-        })
-    }
-
-    return result
-})
-
-const paginatedData = computed(() => {
-    const start = (currentPage.value - 1) * itemsPerPage.value
-    const end = start + itemsPerPage.value
-    return filteredAndSortedData.value.slice(start, end)
-})
-
-const totalPages = computed(() =>
-    Math.ceil(filteredAndSortedData.value.length / itemsPerPage.value)
-)
-
-const resetPage = () => {
-    currentPage.value = 1
-}
-
-const sortBy = (key: string) => {
-    if (sortKey.value === key) {
-        sortOrder.value = -sortOrder.value
-    } else {
-        sortKey.value = key
-        sortOrder.value = 1
-    }
-}
-
-const nextPage = () => {
-    if (currentPage.value < totalPages.value) {
-        currentPage.value++
-    }
-}
-
-const previousPage = () => {
-    if (currentPage.value > 1) {
-        currentPage.value--
-    }
-}
-
-const getThClass = (key: string) => {
-    let thClass = ''
-    if (key === 'state') {
-        thClass += 'sticky-last-column '
-    }
-    if (sortKey.value === key) {
-        thClass += sortOrder.value === 1 ? 'ascending' : 'descending'
-    }
-    return thClass
-}
-
-const getTdClass = (key: string) => {
-    let tdClass = ''
-    if (key === 'state') {
-        tdClass += 'sticky-last-column'
-    }
-    return tdClass
-}
-
-watch(searchQuery, resetPage)
 </script>
 
 <style scoped>
-.table-responsive {
-    overflow-x: auto;
-}
-
-.sticky-last-column {
-    position: sticky;
-    right: 0;
-    z-index: 1;
-}
-
-.table th,
-.table td {
-    border: 1px solid #ddd;
-}
-
-th {
-    cursor: pointer;
-}
-
-.table th.ascending::after {
-    content: ' ▲';
-}
-
-.table th.descending::after {
-    content: ' ▼';
+img {
+    width: 100px;
+    height: 100px;
 }
 </style>

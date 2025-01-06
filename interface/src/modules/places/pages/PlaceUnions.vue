@@ -68,7 +68,7 @@ app.onMounted(() => {
 
 function fetchUnions() {
     app.api
-        .getCashed<User[]>(url)
+        .getListCashed<User[]>(url)
         .then((response) => {
             unions.value = response
         })

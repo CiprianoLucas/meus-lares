@@ -73,7 +73,7 @@ app.onMounted(() => {
 
 function fetchResidents() {
     app.api
-        .getCashed<User[]>(url)
+        .getListCashed<User[]>(url)
         .then((data) => {
             residents.value = data
         })

@@ -65,7 +65,7 @@ function capture(id: string) {
 
 function getList(force: boolean) {
     app.api
-        .getCashed<Request[]>(url, force)
+        .getListCashed<Request[]>(url, force)
         .then((response) => {
             requestList.value = response
             carregando.value = false

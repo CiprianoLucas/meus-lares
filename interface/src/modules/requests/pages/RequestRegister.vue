@@ -91,7 +91,7 @@ function updatePlace() {
 
 app.onMounted(() => {
     app.api
-        .getCashed<Place[]>('/place/residents/')
+        .getListCashed<Place[]>('/place/residents/')
         .then((response) => {
             places.value = response
         })

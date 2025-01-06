@@ -55,7 +55,7 @@ function exclude(id: string) {
 
 app.onMounted(() => {
     app.api
-        .getCashed<InvoiceRelation[]>(url)
+        .getListCashed<InvoiceRelation[]>(url)
         .then((response) => {
             invoicesRelations.value = response
         })

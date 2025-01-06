@@ -1,3 +1,5 @@
+type Role = "" | "tenant" | "owner";
+
 interface User {
     id?: string
     username?: string
@@ -9,4 +11,11 @@ interface User {
     birth?: string
 }
 
-export type { User }
+const roleMap = {
+    "": "",
+    tenant: "Morador",
+    owner: "Proprietário"
+}
+
+export type { User , Role}
+export { roleMap }

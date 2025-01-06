@@ -68,7 +68,7 @@ function updateRequest(id: string, status: 'P' | 'A' | 'C') {
 
 app.onMounted(() => {
     app.api
-        .getCashed<Request[]>('/request/guardians/')
+        .getListCashed<Request[]>('/request/guardians/')
         .then((response) => {
             requestList.value = response
         })

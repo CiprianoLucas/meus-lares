@@ -6,6 +6,7 @@ from .views import (
     UserCreateView,
     get_info,
     logout_view,
+    roles_view
 )
 
 urlpatterns = [
@@ -14,4 +15,5 @@ urlpatterns = [
     path("login/", LoginView.as_view(), name="user-login"),
     path("google-login/", GoogleLogin.as_view(), name="google_login_by_token"),
     path("logout/", logout_view, name="logout"),
+    path("roles/", roles_view, name="roles"),
 ]

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { popup } from '@/components/PopUps'
 import type { CustomAxiosInstance } from './interfaces'
+import { userStore } from '@/modules/user/stores'
 
 const api: CustomAxiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -20,7 +21,7 @@ api.interceptors.response.use(
         ) {
             originalRequest._retry = true
             try {
-                getUserAndCsrf()
+                getCsrf()
                 return api(originalRequest)
             } catch (err) {
                 return Promise.reject(err)
@@ -32,27 +33,12 @@ api.interceptors.response.use(
     }
 )
 
-function getUserAndCsrf() {
+function getCsrf() {
     api.get('/user/info/').then(({ data }) => {
         api.defaults.headers.common['X-CSRFToken'] = data.csrftoken
-        if (data.username != 'Anonimous') {
-            localStorage.setItem('username', data.username)
-            if (data.isResident) {
-                localStorage.setItem('isResident', 'true')
-            } else {
-                localStorage.removeItem('isResident')
-            }
-            if (data.isUnion) {
-                localStorage.setItem('isUnion', 'true')
-            } else {
-                localStorage.removeItem('isUnion')
-            }
-        } else {
-            localStorage.clear()
-        }
     })
 }
-getUserAndCsrf()
+getCsrf()
 
 export default api
 //DON'T CHANGE THIS FILE

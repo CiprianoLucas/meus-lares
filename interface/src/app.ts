@@ -9,9 +9,7 @@ const app = {
     ref: ref,
     routeQuery: (param: string) => useRoute().query[param],
     routeParam: (param: string) => useRoute().params[param],
-    redirect: (param: RouteLocationRaw) => {
-        router.replace(param).then(() => window.location.reload())
-    },
+    redirect: (param: RouteLocationRaw) => router.push(param),
     onMounted: onMounted,
     popup: popup,
     resumeErrors: resumeErrors,

@@ -1,30 +1,23 @@
 import type { LoginResponse, LoginRequest } from './interfaces'
 import { type AxiosResponse } from 'axios'
 import api from './setup'
+import router from '@/router'
+import { userStore } from '@/modules/user/stores'
 
 api.login = async function (form) {
     try {
-        if (localStorage.getItem('username')) {
-            await api.logout()
-        }
-
+        const user = userStore()
+        user.username = ''
         const response: AxiosResponse<LoginResponse> = await this.post('/user/login/', {
             username: form.username,
             password: form.password
         })
-
-        localStorage.setItem('username', response.data.username)
-        if (response.data.isResident) {
-            localStorage.setItem('isResident', 'true')
-        } else {
-            localStorage.removeItem('isResident')
+        user.username = response.data.username
+        user.roles = response.data.roles
+        if (!user.roles.includes(user.role)) {
+            user.role = ''
         }
-        if (response.data.isUnion) {
-            localStorage.setItem('isUnion', 'true')
-        } else {
-            localStorage.removeItem('isUnion')
-        }
-        window.location.href = '/'
+        router.replace('/')
         return response.data
     } catch (error) {
         throw error
@@ -32,16 +25,13 @@ api.login = async function (form) {
 }
 
 api.logout = async function () {
-    localStorage.clear()
-    sessionStorage.clear()
-    try {
-        await this.get('/user/logout/', { withCredentials: true })
-    } catch (error) {
-        throw error
-    }
+    const user = userStore()
+    user.username = ''
+    this.get('/user/logout/', { withCredentials: true })
+    router.replace('/login')
 }
 
-api.getCashed = async function (path, force?, time?) {
+api.getListCashed = async function (path, force?, time?) {
     try {
         const actualForce = force !== undefined ? force : false
         const actualTime = time !== undefined ? time : 300
@@ -56,10 +46,16 @@ api.getCashed = async function (path, force?, time?) {
                 (obj.createAt + 30000 < timestampAtual && !actualForce) ||
                 (obj.createAt + obj.expirate > timestampAtual && actualForce)
             ) {
-                return obj.response
+                const response = obj.response
+                const result = response.results
+                const count = response.count
+                const next = response.next
+                const previous = response.previous
+                return { result, count, next, previous }
             }
         }
         const response = (await this.get(path)).data
+
         const session = {
             response: response,
             createAt: timestampAtual,
@@ -68,7 +64,11 @@ api.getCashed = async function (path, force?, time?) {
 
         sessionStorage.setItem(path, JSON.stringify(session))
 
-        return response
+        const result = response.results
+        const count = response.count
+        const next = response.next
+        const previous = response.previous
+        return { result, count, next, previous }
     } catch (error) {
         throw error
     }

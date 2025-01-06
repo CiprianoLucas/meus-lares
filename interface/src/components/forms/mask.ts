@@ -7,10 +7,13 @@ export const maskDefinitions = {
     '!': { escape: true }
 }
 
-function applyMask(mask: string, value: string) {
+function applyMask(mask: string, value?: string) {
     const maskedValue = []
     let unmaskedIndex = 0
     let maskIndex = 0
+    if(!value){
+        return ""
+    }
 
     while (unmaskedIndex < value.length && maskIndex < mask.length) {
         const maskChar = mask[maskIndex] as '#' | 'X' | 'S' | 'A' | 'a' | '!'

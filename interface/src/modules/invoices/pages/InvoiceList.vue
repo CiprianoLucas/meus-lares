@@ -34,7 +34,7 @@ const invoices = app.ref<Invoice[]>([])
 
 app.onMounted(() => {
     app.api
-        .getCashed<Invoice[]>('/invoice/invoices/')
+        .getListCashed<Invoice[]>('/invoice/invoices/')
         .then((response) => {
             invoices.value = response
         })

@@ -3,7 +3,7 @@ import re
 from allauth.account.adapter import get_adapter
 from allauth.account.models import EmailAddress
 from rest_framework import serializers
-
+from datetime import date
 from .models import User
 
 
@@ -13,13 +13,19 @@ class CustomSignupSerializer(serializers.Serializer):
     cpf = serializers.CharField(required=True)
     phone_number = serializers.CharField(required=True)
     password = serializers.CharField(write_only=True, required=True)
-    birth = serializers.CharField(required=True)
+    birth = serializers.DateField(required=True)
     username = serializers.CharField(required=True)
 
     def validate_full_name(self, full_name: str):
         if len(full_name.strip().split(" ")) < 2:
             raise serializers.ValidationError("Insira o nome completo.")
         return full_name
+    
+    def validate_birth(self, birth: str):
+        if birth >= date.today():
+            raise serializers.ValidationError("A data de nascimento deve ser anterior a hoje.")
+
+        return birth
 
     def validate_email(self, email: str):
         return get_adapter().clean_email(email)
