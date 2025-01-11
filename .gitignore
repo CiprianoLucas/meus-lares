@@ -10,6 +10,7 @@ static
 env/
 venv/
 *.venv
+api/.gcloud/*
 
 # Python
 __pycache__

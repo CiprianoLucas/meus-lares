@@ -17,7 +17,6 @@ services:
       - "${API_PORT}:8000"
     depends_on:
       - db
-      - redis
     networks:
       - meuslares-network
 
@@ -33,13 +32,6 @@ services:
       TZ: America/Sao_Paulo
     ports:
       - "${DB_PORT}:5432"
-    networks:
-      - meuslares-network
-
-  redis:
-    image: "redis:latest"
-    ports:
-      - "${REDIS_PORT}:6379"
     networks:
       - meuslares-network
     

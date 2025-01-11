@@ -51,13 +51,6 @@ services:
       - "${DB_PORT}:5432"
     networks:
       - meuslares-network
-
-  redis:
-    image: "redis:latest"
-    ports:
-      - "${REDIS_PORT}:6379"
-    networks:
-      - meuslares-network
     
 networks:
   meuslares-network:
