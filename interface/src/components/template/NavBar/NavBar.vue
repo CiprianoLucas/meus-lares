@@ -1,5 +1,40 @@
 <template>
-    <div id="main-nav" ref="mainNav">
+        <nav class="navbar navbar-dark bg-dark ps-2 py-1 border-bottom border-secondary">
+            <div class="row align-items-center w-100">
+                <div class="col-12  d-flex align-items-center justify-content-center ms-2 py-3 border-bottom border-secondary">
+                    <img src="../../../assets/img/meuslares-logo.png"
+                        alt="logo" class="square-image" @click="homepage">
+                </div>
+                <div class="col-8 text-white">
+                    <div v-if="!username">
+                        <div class="row text-center">
+                            <div class="col-12 mb-0">
+                                <span class="fw-bold">BEM VINDO</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else-if="username" class="row text-center">
+                        <div class="col-12 mb-0">
+                            <span class="fw-bold">{{ role }}</span>
+                        </div>
+                        <div class="col-12">
+                            <span class="text-white">{{ username }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2 d-flex justify-content-end my-2">
+                    <button class="navbar-toggler py-2 px-3" type="button" @click="notificationCollapse?.toggle()">
+                        <i class="bi bi-bell"></i>
+                    </button>
+                </div>
+                <div class="col-2 d-flex justify-content-start">
+                    <button class="navbar-toggler py-2 px-3" type="button" @click="navCollapse?.toggle()">
+                        <i class="bi bi-list"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <div id="main-nav" ref="mainNav">
         <div class="collapse bg-dark" id="navbarCollapse">
             <div class="pt-3">
                 <a class="text-white text-decoration-none" @click="homepage">
@@ -33,41 +68,6 @@
                 </a>
             </div>
         </div>
-        <nav class="navbar navbar-dark bg-dark ps-2 py-1 border-bottom border-secondary">
-            <div class="row align-items-center w-100">
-                <div class="col-2  d-flex">
-                    <img src="https://www.shutterstock.com/image-vector/real-estate-logo-design-unique-260nw-2510650431.jpg"
-                        alt="logo" class="square-image">
-                </div>
-                <div class="col-6 text-white">
-                    <div v-if="!username">
-                        <div class="row text-center">
-                            <div class="col-12 mb-0">
-                                <span class="fw-bold">BEM VINDO</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div v-else-if="username" class="row text-center">
-                        <div class="col-12 mb-0">
-                            <span class="fw-bold">{{ role }}</span>
-                        </div>
-                        <div class="col-12">
-                            <span class="text-white">{{ username }}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-2 d-flex justify-content-end">
-                    <button class="navbar-toggler" type="button" @click="notificationCollapse?.toggle()">
-                        <i class="bi bi-bell"></i>
-                    </button>
-                </div>
-                <div class="col-2 d-flex justify-content-start">
-                    <button class="navbar-toggler" type="button" @click="navCollapse?.toggle()">
-                        <i class="bi bi-list"></i>
-                    </button>
-                </div>
-            </div>
-        </nav>
         <div class="collapse bg-dark text-white" id="notificationCollapse">
             <div class="p-3">Notificações aqui</div>
         </div>
@@ -157,14 +157,10 @@ function hide() {
 
 <style>
 .square-image {
-    width: 35px;
-    height: 35px;
+    width: 300px;
+    height: 40px;
     object-fit: cover;
     border-radius: 10px;
     overflow: hidden;
-}
-
-nav {
-    font-size: 0.8rem;
 }
 </style>

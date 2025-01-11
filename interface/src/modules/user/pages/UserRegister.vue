@@ -31,7 +31,9 @@
                 :validators="[passwordRepeatValid]" />
         </div>
 
-        <button @click="RegisterUser" class="btn btn-primary" :disabled="registrando">Cadastrar</button>
+        <div class="d-flex justify-content-center mt-5">
+            <button @click="RegisterUser" class="btn btn-primary" :disabled="registrando">Cadastrar</button>
+        </div>
     </div>
 </template>
 

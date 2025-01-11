@@ -25,16 +25,14 @@
                         placeholder="Digite sua senha"
                     />
                 </div>
-                <button type="submit" class="btn btn-primary w-100" :disabled="buttonDisabled">
+                <button type="submit" class="btn btn-primary w-100 mt-4" :disabled="buttonDisabled">
                     Entrar
                 </button>
             </form>
             <div id="google-login-button" class="d-flex justify-content-center mt-3"></div>
 
-            <router-link class="text-black text-decoration-none" to="/usuario/cadastro">
-                <div class="text-center mt-5 p-2 border rounded">
-                    <span>Registre-se</span>
-                </div>
+            <router-link class="btn btn-secondary mt-5" to="/usuario/cadastro">
+                    Cadastre-se
             </router-link>
         </div>
     </div>

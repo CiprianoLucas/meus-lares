@@ -3,10 +3,12 @@ import { type AxiosResponse } from 'axios'
 import api from './setup'
 import router from '@/router'
 import { userStore } from '@/modules/user/stores'
+import { apiListStore } from './stores'
 
 api.login = async function (form) {
     try {
         const user = userStore()
+        const cash = apiListStore()
         user.username = ''
         const response: AxiosResponse<LoginResponse> = await this.post('/user/login/', {
             username: form.username,
@@ -15,9 +17,10 @@ api.login = async function (form) {
         user.username = response.data.username
         user.roles = response.data.roles
         if (!user.roles.includes(user.role)) {
+            cash.clear()
             user.role = ''
         }
-        router.replace('/')
+        router.push('/')
         return response.data
     } catch (error) {
         throw error
@@ -28,7 +31,7 @@ api.logout = async function () {
     const user = userStore()
     user.username = ''
     this.get('/user/logout/', { withCredentials: true })
-    router.replace('/login')
+    router.push('/login')
 }
 
 api.getListCashed = async function (path, force?, time?) {
@@ -36,10 +39,10 @@ api.getListCashed = async function (path, force?, time?) {
         const actualForce = force !== undefined ? force : false
         const actualTime = time !== undefined ? time : 300
         const timestampAtual = Date.now()
-        const sessionCash = sessionStorage.getItem(path)
+        const cash = apiListStore()
+        const obj = cash.getResult(path)
 
-        if (sessionCash) {
-            const obj = JSON.parse(sessionCash)
+        if (obj) {
 
             if (
                 obj.createAt + 30000 > timestampAtual ||
@@ -62,7 +65,7 @@ api.getListCashed = async function (path, force?, time?) {
             expirate: actualTime * 1000
         }
 
-        sessionStorage.setItem(path, JSON.stringify(session))
+        cash.setResult(path, session)
 
         const result = response.results
         const count = response.count
