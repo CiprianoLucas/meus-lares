@@ -171,7 +171,7 @@ GS_BUCKET_NAME = env("GS_BUCKET_NAME")
 DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 
-GS_STATIC_LOCATION = "static"
+GS_STATIC_LOCATION = ""
 STATIC_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
 
 GS_MEDIA_LOCATION = "media"
