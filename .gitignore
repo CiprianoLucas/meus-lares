@@ -11,6 +11,7 @@ env/
 venv/
 *.venv
 api/.gcloud/*
+!api/.gcloud/credencial.md
 
 # Python
 __pycache__

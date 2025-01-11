@@ -163,7 +163,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 # Credenciais e Configuração do Google Cloud
 GOOGLE_CLOUD_PROJECT_ID = env("GOOGLE_CLOUD_PROJECT_ID")
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    env("GOOGLE_APPLICATION_CREDENTIALS")
+    os.path.join(BASE_DIR, ".gcloud", env("GOOGLE_APPLICATION_CREDENTIALS"))
 )
 
 GS_BUCKET_NAME = env("GS_BUCKET_NAME")
@@ -172,7 +172,7 @@ DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 
 GS_STATIC_LOCATION = "static"
-STATIC_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}"
+STATIC_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
 
 GS_MEDIA_LOCATION = "media"
 MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/{GS_MEDIA_LOCATION}/"
