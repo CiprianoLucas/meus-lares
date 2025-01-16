@@ -20,13 +20,11 @@ api.login = async function (form) {
             cash.clear()
             user.role = ''
         }
-        router.push('/')
         return response.data
     } catch (error) {
         throw error
     }
 }
-
 api.logout = async function () {
     const user = userStore()
     user.username = ''

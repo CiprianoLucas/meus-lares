@@ -72,12 +72,15 @@ MIDDLEWARE = [
 ]
 
 
+
 ROOT_URLCONF = "meus_lares.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            os.path.join(BASE_DIR, "users", "templates"),
+            ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -152,15 +155,17 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_LOGOUT_ON_GET = True
 
-GOOGLE_CLIENT_ID = env("VITE_GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID")
 SITE_ID = 1
-LOGIN_REDIRECT_URL = env("URL_FRONT")
-LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL + "/login"
+
+URL_BACK = env("URL_BACK")
+URL_FRONT = env("URL_FRONT")
+LOGIN_REDIRECT_URL = URL_FRONT
+LOGOUT_REDIRECT_URL = URL_FRONT + "/login"
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = LOGOUT_REDIRECT_URL
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
-# Credenciais e Configuração do Google Cloud
 GOOGLE_CLOUD_PROJECT_ID = env("GOOGLE_CLOUD_PROJECT_ID")
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
     os.path.join(BASE_DIR, ".gcloud", env("GOOGLE_APPLICATION_CREDENTIALS"))
@@ -202,16 +207,17 @@ MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/{GS_MEDIA_LOCATION
 if env("ENV") == "production":
     DEBUG = False
 
-    ALLOWED_HOSTS = ["meuslares.com.br", "api.meuslares.com.br"]
+    ALLOWED_HOSTS = [URL_FRONT.lstrip('https://'), URL_BACK.lstrip('https://')]
 
-    SITE = "api.meuslares.com.br"
+    SITE = URL_BACK.lstrip('https://')
 
     CSRF_TRUSTED_ORIGINS = [
-        "https://meuslares.com.br",
-        "https://api.meuslares.com.br",
+        URL_FRONT,
+        URL_BACK,
     ]
 
-    CORS_ALLOWED_ORIGINS = ["https://meuslares.com.br", "https://api.meuslares.com.br"]
+    CORS_ALLOWED_ORIGINS = [URL_FRONT, URL_BACK]
+    CORS_ORIGIN_WHITELIST = [URL_FRONT, URL_BACK]
 
     # STORAGES = {
     #     "default": {
@@ -273,6 +279,7 @@ if env("ENV") == "production":
 
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    MIDDLEWARE.append("meus_lares.middleware.DomainAccessMiddleware")
 
 
 else:
@@ -289,6 +296,11 @@ else:
     ]
 
     CORS_ALLOWED_ORIGINS = [
+        f"http://localhost:{interface_port}",
+        f"http://127.0.0.1:{interface_port}",
+    ]
+    
+    CORS_ORIGIN_WHITELIST = [
         f"http://localhost:{interface_port}",
         f"http://127.0.0.1:{interface_port}",
     ]

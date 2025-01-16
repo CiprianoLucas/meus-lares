@@ -2,7 +2,7 @@
         <nav class="navbar navbar-dark bg-dark ps-2 py-1 border-bottom border-secondary">
             <div class="row align-items-center w-100">
                 <div class="col-12  d-flex align-items-center justify-content-center ms-2 py-3 border-bottom border-secondary">
-                    <img src="../../../assets/img/meuslares-logo.png"
+                    <img src="/img/meuslares-logo.png"
                         alt="logo" class="square-image" @click="homepage">
                 </div>
                 <div class="col-8 text-white">
@@ -115,6 +115,10 @@ async function logout() {
 }
 
 function homepage() {
+    if (!user.username){
+        router.push('/')
+        return
+    }
     switch (user.role) {
         case "owner":
             router.push('/proprietario')

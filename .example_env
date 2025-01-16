@@ -1,7 +1,8 @@
 # Django
 ENV=develop
-SECRET_KEY=my_secret_key
+URL_BACK=http://localhost:9000
 URL_FRONT=http://localhost:9001
+SECRET_KEY=my_secret_key
 API_PORT=9000
 # Database
 DB_NAME=meus-lares
@@ -12,7 +13,6 @@ DB_HOST=127.0.0.1
 DB_PORT_DOCKER=5432
 DB_PORT=9002
 # Vue3
-VITE_API_URL=http://localhost:9000
 VITE_GOOGLE_CLIENT_ID=google_client_id
 INTERFACE_PORT=9001
 # AWS

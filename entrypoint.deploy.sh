@@ -4,8 +4,8 @@ docker compose -f docker-compose.prod.yml down
 rm -rf ./api/static
 . .env
 cd interface
-[ -n "$VITE_API_URL" ] && echo "VITE_API_URL=${VITE_API_URL}" > .env
-[ -n "$VITE_GOOGLE_CLIENT_ID" ] && echo "VITE_APP_NAME=${VITE_GOOGLE_CLIENT_ID}" >> .env
+[ -n "$URL_BACK" ] && echo "VITE_API_URL=${URL_BACK}" > .env
+[ -n "$GOOGLE_CLIENT_ID" ] && echo "VITE_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}" >> .env
 npm i
 npm run build
 cd ..

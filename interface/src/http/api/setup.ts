@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { popup } from '@/components/PopUps'
 import type { CustomAxiosInstance } from './interfaces'
-import { userStore } from '@/modules/user/stores'
 
 const api: CustomAxiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_URL,

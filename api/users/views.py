@@ -120,15 +120,21 @@ class GoogleLogin(APIView):
                 response = {
                     "has_user": False,
                     "email": email,
-                    "full_name": name,
-                    "email": email,
+                    "full_name": name
                 }
 
                 return JsonResponse(response, status=status.HTTP_200_OK)
 
             perform_login(request, user, email_verification=None)
+            roles = list(CondoStaff.objects.filter(user=user).values('role'))
+            roles = list(set([role["role"] for role in roles]))
+            if CondoTenant.objects.filter(user=user).exists(): roles.append('tenant')
 
-            response = {"has_user": True}
+            response = {
+                "has_user": True,
+                "username": user.username,
+                "roles": roles
+            }
 
             return JsonResponse(response, status=status.HTTP_200_OK)
 

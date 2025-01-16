@@ -17,7 +17,6 @@
 </template>
 
 <script lang="ts" setup>
-import app from '@/app'
 
 </script>
 

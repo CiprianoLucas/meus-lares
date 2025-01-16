@@ -39,7 +39,7 @@ class User(AbstractUser):
         max_length=25,
         validators=[username_validator],
     )
-    email = models.EmailField(blank=True)
+    email = models.EmailField()
     phone_number = models.CharField(max_length=15)
     full_name = models.CharField(max_length=255)
     birth = models.DateField()
