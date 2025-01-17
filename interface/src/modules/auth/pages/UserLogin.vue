@@ -31,10 +31,11 @@
 
 <script lang="ts" setup>
 import app from '@/app'
-import { apiListStore } from '@/http/api/stores'
 import { userStore } from '@/modules/user/stores'
+import { useRouter } from 'vue-router'
 
 const user = userStore()
+const router = useRouter()
 
 const form = app.ref({
     username: '',
@@ -73,7 +74,7 @@ const handleGoogleLogin = (token: string) => {
         .post('/user/google-login/', { access_token: token })
         .then(({ data }) => {
             if (!data.has_user) {
-                app.redirect({
+                router.push({
                     name: 'cadastro_usuario',
                     query: {
                         full_name: data.full_name,
@@ -82,11 +83,10 @@ const handleGoogleLogin = (token: string) => {
                 })
                 return
             }
-            const cash = apiListStore()
             user.username = data.username
             user.roles = data.roles
             if (!user.roles.includes(user.role)) {
-                cash.clear()
+                app.api.clearCash()
                 user.role = ''
             }
             redirectRole()
@@ -113,13 +113,13 @@ const login = () => {
 const redirectRole = () => {
     switch (user.role) {
         case "owner":
-            app.redirect('/proprietario')
+            router.push('/proprietario')
             break
         case "tenant":
-            app.redirect('/morador')
+            router.push('/morador')
             break
         case "":
-            app.redirect('/usuario/papel')
+            router.push('/usuario/papel')
             break
     }
 }

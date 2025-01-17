@@ -42,7 +42,9 @@ import app from '@/app'
 import type { User } from '../interfaces'
 import { computed } from 'vue'
 import TextInput from '@/components/forms/TextInput.vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const fullName = String(app.routeQuery('full_name') || '')
 const email = String(app.routeQuery('email') || '')
 const passwordStrength = app.ref("")
@@ -124,7 +126,7 @@ function RegisterUser() {
         .post('/user/register/', userForm.value)
         .then(() => {
             app.popup('Sucesso!', 'Usuário cadastrado com sucesso.<br><br> Verifique sua caixa de e-mail para confirmar', 'success', 10000)
-            app.redirect('/login')
+            router.push('/login')
         })
         .catch((error) => {
             app.popup('Erro!', app.resumeErrors(error), 'warning', 10000)

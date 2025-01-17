@@ -18,13 +18,17 @@ export const apiListStore = defineStore('apiCash', {
 
     actions: {
         setResult(url: string, result: ApiListCash) {
-            debugger
             const unsetOld = this.$state.filter(item => item.url !== url)
             this.$state.splice(0, this.$state.length, ...unsetOld, { url, result })
         },
 
         getResult(url: string) {
             return this.$state.find(item => item.url === url)?.result || null;
+        },
+
+        remove(url: string) {
+            const unsetOld = this.$state.filter(item => item.url !== url)
+            this.$state.splice(0, this.$state.length, ...unsetOld)
         },
 
         clear(){

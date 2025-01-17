@@ -14,7 +14,7 @@
             </div>
         </form>
         <div>
-            <div v-for="(item, i) in listData" :key="i" class="card">
+            <div v-for="(item, i) in listData" :key="i" class="card mb-3">
                 <router-link :to="item['redirect']" class="text-decoration-none text-dark">
                     <div class="row g-0" @click="redirect(item)">
                         <div v-if="props.img" class="col-4 d-flex justify-content-center align-items-center">

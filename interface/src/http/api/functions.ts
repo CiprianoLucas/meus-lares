@@ -32,6 +32,16 @@ api.logout = async function () {
     router.push('/login')
 }
 
+api.clearCash = async function () {
+    const cash = apiListStore()
+    cash.clear()
+}
+
+api.removeListCash = async function (path) {
+    const cash = apiListStore()
+    cash.remove(path)
+}
+
 api.getListCashed = async function (path, force?, time?) {
     try {
         const actualForce = force !== undefined ? force : false

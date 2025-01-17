@@ -16,7 +16,7 @@ from django.db import IntegrityError
 username_validator = UnicodeUsernameValidator()
 def unique_cpf(value, id):
     if User.objects.filter(cpf=value).exclude(id=id).exists():
-        raise serializers.ValidationError("cpf is already in use")
+        raise serializers.ValidationError({"cpf is already in use"})
 
 def unique_username(value, id):
     if User.objects.filter(username=value).exclude(id=id).exists():

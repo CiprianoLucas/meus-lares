@@ -7,9 +7,10 @@
             <div v-if="user.roles.length == 0">
                 <div class="d-flex justify-content-center align-items-center border rounded p-3 mt-3">
                     <p class="text-center">
-                        Não identificamos registros no seu nome em qualquer modelo de perfil.<br><br> 
+                        Não identificamos registros no seu nome em qualquer modelo de perfil.<br><br>
                         Passe seu e-mail para o responsável do condomínio para registra-lo.<br><br>
-                        Verifique nas notificações ou em seu email se não há uma solicitação de registro para ser aprovada.
+                        Verifique nas notificações ou em seu email se não há uma solicitação de registro para ser
+                        aprovada.
                     </p>
                 </div>
             </div>
@@ -37,10 +38,8 @@
                 </router-link>
             </div>
         </div>
-        <router-link v-if="!user.roles.includes('owner')" to="/condominio/cadastro" class="text-dark text-decoration-none">
-            <div class="d-flex justify-content-center align-items-center border rounded p-3 mt-3">
-                <h5 class="text-center">Quer administrar seu próprio condomínio? Então clique aqui!</h5>
-            </div>
+        <router-link v-if="!user.roles.includes('owner')" to="/condominio/cadastro" class="btn btn-primary mt-3">
+                    Quer administrar seu próprio condomínio? Então clique aqui!
         </router-link>
     </div>
 </template>

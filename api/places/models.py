@@ -30,7 +30,7 @@ class Condominium(SoftModel):
     number = models.CharField(max_length=20, null=True)
     complement = models.CharField(max_length=255, null=True)
     profile_photo = models.ImageField(
-        upload_to="places/profile-photo/", blank=True, storage=PublicMediaStorage()
+        upload_to="places/profile-photo/", blank=True, null=True, storage=PublicMediaStorage()
     )
 
     def __str__(self):

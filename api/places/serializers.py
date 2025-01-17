@@ -45,7 +45,8 @@ class CondominiumsSerializer(softModelSerializer):
 
     def to_internal_value(self, initial_data):
         data = initial_data.copy()
-        data["cep"] = re.sub(r"\D", "", data["cep"]).zfill(8)
+        if(data.get('cep', None)):
+            data["cep"] = re.sub(r"\D", "", data["cep"]).zfill(8)
         return super().to_internal_value(data)
 
     def create(self, data):

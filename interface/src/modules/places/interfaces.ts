@@ -1,4 +1,4 @@
-interface Place {
+interface Condominium {
     id?: string
     name?: string
     complement?: string
@@ -12,4 +12,4 @@ interface Place {
     profile_photo?: string
 }
 
-export type { Place }
+export type { Condominium }
