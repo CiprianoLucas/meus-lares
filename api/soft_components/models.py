@@ -61,7 +61,7 @@ class SoftModel(models.Model):
                     self.history.append(
                         {
                             "timestamp": now().isoformat(),
-                            "user": user.username if user else "system",
+                            "user": str(user.id) if user else "system",
                             "changes": changes,
                         }
                     )
@@ -72,7 +72,7 @@ class SoftModel(models.Model):
                     self.history.append(
                         {
                             "timestamp": now().isoformat(),
-                            "user": user.username if user else "system",
+                            "user": str(user.id) if user else "system",
                             "changes": {"is_deleted": {"new": False, "old": True}},
                         }
                     )

@@ -15,7 +15,7 @@ class ConstractsInline(GenericTabularInline):
 class CondoStaffAdmin(SoftAdmin):
     list_display = ("id", "condominium", "user", "role")
     list_filter = ("condominium", "user", "role")
-    search_fields = ("condominium__name", "user__username", "role")
+    search_fields = ("condominium__name", "user__full_name", "role")
     inlines = [ConstractsInline]
 
     class Meta:
@@ -35,7 +35,7 @@ class CondoTenantAdmin(SoftAdmin):
     list_filter = ("user", "is_renter", "is_responsible", "apartment__condominium")
     search_fields = (
         "apartment__identifier",
-        "user__username",
+        "user__full_name",
         "apartment__condominium__name",
     )
     inlines = [ConstractsInline]

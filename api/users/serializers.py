@@ -13,8 +13,8 @@ class CustomSignupSerializer(serializers.Serializer):
     cpf = serializers.CharField(required=True)
     phone_number = serializers.CharField(required=True)
     password = serializers.CharField(write_only=True, required=True)
-    birth = serializers.DateField(required=True)
-    username = serializers.CharField(required=True)
+    birth = serializers.CharField(required=True)
+    nick = serializers.CharField(required=False)
 
     def validate_full_name(self, full_name: str):
         if len(full_name.strip().split(" ")) < 2:
@@ -22,10 +22,12 @@ class CustomSignupSerializer(serializers.Serializer):
         return full_name
     
     def validate_birth(self, birth: str):
-        if birth >= date.today():
+        day, month, year = map(int, birth.split("/"))
+        formatted_date = date(year, month, day)
+        if formatted_date >= date.today():
             raise serializers.ValidationError("A data de nascimento deve ser anterior a hoje.")
 
-        return birth
+        return formatted_date
 
     def validate_email(self, email: str):
         return get_adapter().clean_email(email)
@@ -67,8 +69,12 @@ class CustomSignupSerializer(serializers.Serializer):
     def create(self, validated_data: dict):
         adapter = get_adapter()
         request = self.context.get("request")
+        if validated_data.get("nick", None) and not validated_data["nick"]:
+            validated_data["nick"] = validated_data["full_name"]
+            
         user = adapter.new_user(request=request)
         self._set_fields(user, validated_data)
+        
 
         user.save(user=self.context["request"].user)
         email_address = EmailAddress.objects.create(
@@ -84,4 +90,5 @@ class CustomSignupSerializer(serializers.Serializer):
         user.cpf = data.get("cpf")
         user.phone_number = data.get("phone_number")
         user.birth = data.get("birth")
-        user.username = data.get("username")
+        user.nick = data.get("nick")
+        user.username = data.get("email")

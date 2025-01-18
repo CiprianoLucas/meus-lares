@@ -1,6 +1,10 @@
 <template>
     <label v-if="label" :for="id" class="form-label">{{ label }}</label>
-    <input v-bind="$attrs" v-model="localValue" :class="`form-control mb-3 ${!valid?'border-danger' : ''}`" :id="id" @input="input" />
+    <div class="input-group mb-3">
+        <input v-bind="$attrs" v-model="localValue" :class="`form-control ${!valid ? 'border-danger' : ''}`" :id="id"
+        @input="input" @change="change"/>
+        <span v-if="buttomLabel"class="input-group-text"><button class="btn m-0 p-0" @click="buttomFunction?.apply" v-html="buttomLabel"/></span>
+    </div>
     <div v-if="!valid && errorMessage" class="mt-2">
         <span class="text-danger">{{ errorMessage }}</span>
     </div>
@@ -18,6 +22,8 @@ const props = defineProps<{
     modelValue?: string
     mask?: string
     label?: string
+    buttomLabel?: string
+    buttomFunction?: Function
     validators?: Function[]
 }>()
 
@@ -33,13 +39,16 @@ const emit = defineEmits<{
 
 function input() {
     verifyMask()
-    if (props.validators){
+}
+
+function change() {
+    if (props.validators) {
         valid.value = true
         for (const validator of props.validators) {
             const error = validator()
             if (error) {
                 valid.value = false
-                errorMessage.value = error!==true?error:""
+                errorMessage.value = error !== true ? error : ""
                 break
             }
         }

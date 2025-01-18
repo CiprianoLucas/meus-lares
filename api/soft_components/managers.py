@@ -11,7 +11,7 @@ class SoftDeleteQuerySet(models.QuerySet):
                 obj.history.append(
                     {
                         "timestamp": now().isoformat(),
-                        "user": user.username if user else "system",
+                        "user": str(user.id) if user else "system",
                         "changes": {"is_deleted": {"old": False, "new": True}},
                     }
                 )

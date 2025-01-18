@@ -125,7 +125,7 @@ const inputsLabel: { [key: string]: string } = {
     title: 'Título',
     description: 'Descrição',
     type: 'Tipo',
-    username: 'Nome de usuário',
+    nick: 'Como gostaria de ser chamado',
     cpf: 'CPF',
     phone_number: 'Telefone',
     full_name: 'Nome completo',

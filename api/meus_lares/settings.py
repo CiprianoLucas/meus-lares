@@ -171,16 +171,20 @@ GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
     os.path.join(BASE_DIR, ".gcloud", env("GOOGLE_APPLICATION_CREDENTIALS"))
 )
 
-GS_BUCKET_NAME = env("GS_BUCKET_NAME")
+
+GS_BUCKET_MEDIA = env("GS_BUCKET_MEDIA")
+GS_BUCKET_STATIC = env("GS_BUCKET_STATIC")
 
 DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 
 GS_STATIC_LOCATION = ""
-STATIC_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
+STATIC_URL = f"https://storage.googleapis.com/{GS_BUCKET_STATIC}/"
 
-GS_MEDIA_LOCATION = "media"
-MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/{GS_MEDIA_LOCATION}/"
+GS_MEDIA_LOCATION = ""
+MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_MEDIA}/"
+
+GS_DEFAULT_ACL = None
 
 # AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
 # AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
@@ -204,7 +208,9 @@ MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/{GS_MEDIA_LOCATION
 # AWS_PRIVATE_MEDIA_LOCATION = "media/private"
 # PRIVATE_MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_PRIVATE_MEDIA_LOCATION}/"
 
-if env("ENV") == "production":
+ENV = env("ENV")
+
+if ENV == "production":
     DEBUG = False
 
     ALLOWED_HOSTS = [URL_FRONT.lstrip('https://'), URL_BACK.lstrip('https://')]
@@ -262,7 +268,7 @@ if env("ENV") == "production":
         "default": {
             "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
             "OPTIONS": {
-                "bucket_name": GS_BUCKET_NAME,
+                "bucket_name": GS_BUCKET_MEDIA,
                 "credentials": GS_CREDENTIALS,
                 "location": GS_MEDIA_LOCATION,
             },
@@ -270,7 +276,7 @@ if env("ENV") == "production":
         "staticfiles": {
             "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
             "OPTIONS": {
-                "bucket_name": GS_BUCKET_NAME,
+                "bucket_name": GS_BUCKET_STATIC,
                 "credentials": GS_CREDENTIALS,
                 "location": GS_STATIC_LOCATION,
             },
@@ -282,6 +288,50 @@ if env("ENV") == "production":
     MIDDLEWARE.append("meus_lares.middleware.DomainAccessMiddleware")
 
 
+elif ENV == "storage":
+    
+    interface_port = env("INTERFACE_PORT")
+
+    ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+    STATIC_URL += "static/"
+
+    DEBUG = True
+    SITE = f"localhost:{env('API_PORT')}"
+    CSRF_TRUSTED_ORIGINS = [
+        f"http://localhost:{interface_port}",
+        f"http://127.0.0.1:{interface_port}",
+    ]
+
+    CORS_ALLOWED_ORIGINS = [
+        f"http://localhost:{interface_port}",
+        f"http://127.0.0.1:{interface_port}",
+    ]
+    
+    CORS_ORIGIN_WHITELIST = [
+        f"http://localhost:{interface_port}",
+        f"http://127.0.0.1:{interface_port}",
+    ]
+    
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+            "OPTIONS": {
+                "bucket_name": GS_BUCKET_MEDIA,
+                "credentials": GS_CREDENTIALS,
+                "location": GS_MEDIA_LOCATION,
+            },
+        },
+        "staticfiles": {
+            "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+            "OPTIONS": {
+                "bucket_name": GS_BUCKET_STATIC,
+                "credentials": GS_CREDENTIALS,
+                "location": GS_STATIC_LOCATION,
+            },
+        },
+    }
+    
+    
 else:
 
     interface_port = env("INTERFACE_PORT")

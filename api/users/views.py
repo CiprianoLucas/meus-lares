@@ -21,7 +21,7 @@ from .serializers import CustomSignupSerializer
 @api_view(["GET"])
 def get_info(request: HttpRequest):
     csrftoken = get_token(request)
-    response = {"csrftoken": csrftoken}
+    response = {"csrftoken": csrftoken, "email": request.user.email}
     return JsonResponse(response)
 
 
@@ -40,16 +40,16 @@ class UserCreateView(generics.CreateAPIView):
 
 class LoginView(APIView):
     def post(self, request: Request, *args, **kwargs):
-        username = request.data.get("username")
+        email = request.data.get("email")
         password = request.data.get("password")
 
-        if not username or not password:
+        if not email or not password:
             return JsonResponse(
                 {"error": "Email e senha são obrigatórios."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, email=email, password=password)
         if user is not None:
             if not user.is_active:
                 return JsonResponse(
@@ -65,8 +65,7 @@ class LoginView(APIView):
                 email_address.send_confirmation(request)
                 return JsonResponse(
                     {
-                        "error": """Seu e-mail ainda não foi verificado.
-                        Verifique sua caixa de entrada do e-mail."""
+                        "error": """Verifique seu e-mail."""
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
@@ -76,7 +75,7 @@ class LoginView(APIView):
             roles = list(set([role["role"] for role in roles]))
             if CondoTenant.objects.filter(user=user).exists(): roles.append('tenant')
             
-            response = {"username": user.username, "roles": roles}
+            response = {"nick": user.nick, "roles": roles}
             
             return JsonResponse(response)
 
@@ -132,7 +131,7 @@ class GoogleLogin(APIView):
 
             response = {
                 "has_user": True,
-                "username": user.username,
+                "nick": user.nick,
                 "roles": roles
             }
 

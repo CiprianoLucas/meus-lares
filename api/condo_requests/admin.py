@@ -11,7 +11,7 @@ class RequestFilesInline(SoftInline):
 class RequestAdmin(SoftAdmin):
     list_display = ("id", "requester", "guardian", "condominium", "apartment", "title", "type", "status")
     list_filter = ("requester", "guardian", "condominium", "type", "status")
-    search_fields = ("id","requester__username","guardian__username","condominium__name","apartment__identfier", "title")
+    search_fields = ("id","requester__email","guardian__email","condominium__name","apartment__identfier", "title")
     verbose_name = "Requisição"
     verbose_name_plural = "Requisições"
     inlines = [RequestFilesInline]

@@ -45,6 +45,7 @@ async function photoChange(event: Event) {
         app.api.patch('/place/condominium/' + condominiumId.value + '/', formData)
         .then(()=>{
             getCondominiumValues()
+            app.api.removeListCash('/place/condominium/')
             app.popup('Foto de perfil atualizada com sucesso!', 'success')
         })
         .catch(({error})=>{

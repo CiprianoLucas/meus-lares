@@ -16,6 +16,7 @@ class UserAdmin(UD, SoftAdmin):
                     "phone_number",
                     "full_name",
                     "profile_photo",
+                    "document_photo",
                     "history",
                 )
             },
@@ -30,6 +31,7 @@ class UserAdmin(UD, SoftAdmin):
                     "phone_number",
                     "full_name",
                     "profile_photo",
+                    "document_photo",
                     "history",
                     "is_deleted",
                 )
@@ -47,6 +49,7 @@ class UserAdmin(UD, SoftAdmin):
                     "phone_number",
                     "full_name",
                     "profile_photo",
+                    "document_photo",
                     "birth",
                 )
             },
@@ -54,14 +57,14 @@ class UserAdmin(UD, SoftAdmin):
     )
     list_display = (
         "id",
-        "username",
+        "nick",
         "email",
         "cpf",
         "full_name",
         "phone_number",
         "is_staff",
     )
-    search_fields = ("username", "email", "cpf", "full_name", "phone_number")
+    search_fields = ("nick", "email", "cpf", "full_name", "phone_number")
 
     def delete_model(self, request, obj):
         return SoftAdmin.delete_model(self, request, obj)

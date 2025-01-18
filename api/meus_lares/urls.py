@@ -19,5 +19,5 @@ urlpatterns = [
     # path('ai/', include('ai.urls')),
     
 ]
-if settings.DEBUG:
+if settings.ENV not in ["production", "storage"]:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

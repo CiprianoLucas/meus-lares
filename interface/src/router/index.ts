@@ -9,7 +9,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const user = userStore()
-    const isAuthenticated = Boolean(user.username)
+    const isAuthenticated = Boolean(user.email)
 
     const requiresAuth = to.meta.requiresAuth !== false
 

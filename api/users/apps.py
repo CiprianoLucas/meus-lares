@@ -18,6 +18,7 @@ def create_super_user_if_not_exists(sender, **kwargs):
     User = get_user_model()
     if not User.objects.filter(is_superuser=True).exists():
         User.objects.create_superuser(
+            nick="admin",
             username="admin",
             email="admin@admin.com",
             password="admin",

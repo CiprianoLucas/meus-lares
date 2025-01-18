@@ -77,7 +77,7 @@ def validate_compressed_contents(file):
                     )
 
 
-if settings.DEBUG:
+if settings.ENV not in ['production', 'storage']:
 
     class PublicMediaStorage(FileSystemStorage):
         location = os.path.join(settings.BASE_DIR, "media", "public")
@@ -112,15 +112,28 @@ else:
     #         )
 
     class PublicMediaStorage(GoogleCloudStorage):
-        location = "media/public"
-        default_acl = "publicRead"
+        bucket_name = settings.GS_BUCKET_MEDIA
+        location = "public"
 
-    class PrivateMediaStorage(GoogleCloudStorage):
-        location = "media/private"
-        default_acl = "private"
+        def _save(self, name, content):
+            name = super()._save(name, content)
+            blob = self.bucket.blob(f"{self.location}/{name}")
+            blob.cache_control = "public, max-age=31536000"
+            blob.patch()
+            return name
 
         def url(self, name):
-            return self.client.generate_signed_url(
-                self.bucket.blob(name),
+            return settings.MEDIA_URL + self.location + '/' + name
+        
+
+    class PrivateMediaStorage(GoogleCloudStorage):
+        bucket_name = settings.GS_BUCKET_MEDIA
+        location = "private"
+
+        def url(self, name):
+            blob = self.bucket.blob(f"{self.location}/{name}")
+            return blob.generate_signed_url(
+                version="v4",
                 expiration=120,
+                method="GET",
             )

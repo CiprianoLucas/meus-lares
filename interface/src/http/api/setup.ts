@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { popup } from '@/components/PopUps'
 import type { CustomAxiosInstance } from './interfaces'
+import { userStore } from '@/modules/user/stores'
 
 const api: CustomAxiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -35,6 +36,14 @@ api.interceptors.response.use(
 function getCsrf() {
     api.get('/user/info/').then(({ data }) => {
         api.defaults.headers.common['X-CSRFToken'] = data.csrftoken
+        try{
+            const user = userStore()
+            if(user.email != data.email){
+                user.email = ""
+            }
+        } catch {
+
+        }
     })
 }
 getCsrf()

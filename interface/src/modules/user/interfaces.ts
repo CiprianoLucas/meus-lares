@@ -2,7 +2,7 @@ type Role = "" | "tenant" | "owner";
 
 interface User {
     id?: string
-    username?: string
+    nick?: string
     cpf?: string
     phone_number?: string
     full_name?: string

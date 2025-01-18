@@ -9,12 +9,12 @@ api.login = async function (form) {
     try {
         const user = userStore()
         const cash = apiListStore()
-        user.username = ''
+        user.email = ''
         const response: AxiosResponse<LoginResponse> = await this.post('/user/login/', {
-            username: form.username,
+            email: form.email,
             password: form.password
         })
-        user.username = response.data.username
+        user.email = response.data.email
         user.roles = response.data.roles
         if (!user.roles.includes(user.role)) {
             cash.clear()
@@ -27,7 +27,7 @@ api.login = async function (form) {
 }
 api.logout = async function () {
     const user = userStore()
-    user.username = ''
+    user.email = ''
     this.get('/user/logout/', { withCredentials: true })
     router.push('/login')
 }

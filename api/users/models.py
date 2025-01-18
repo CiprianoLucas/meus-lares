@@ -7,37 +7,31 @@ from django.db.models.fields.files import FileField, ImageField
 from django.db.models.fields.related import ForeignKey
 from django.utils.timezone import now
 from rest_framework import serializers
+from PIL import Image
+from io import BytesIO
+from django.core.files import File
 
 from meus_lares.storages import PrivateMediaStorage, PublicMediaStorage
 from soft_components.managers import SoftUserManager
-from django.contrib.auth.validators import UnicodeUsernameValidator
-from django.db import IntegrityError
 
-username_validator = UnicodeUsernameValidator()
 def unique_cpf(value, id):
     if User.objects.filter(cpf=value).exclude(id=id).exists():
-        raise serializers.ValidationError({"cpf is already in use"})
-
-def unique_username(value, id):
-    if User.objects.filter(username=value).exclude(id=id).exists():
-        raise serializers.ValidationError("username is already in use")
+        raise serializers.ValidationError({"error": "cpf is already in use"})
 
 def unique_email(value, id):
     if User.objects.filter(email=value).exclude(id=id).exists():
-        raise serializers.ValidationError("email is already in use")
+        raise serializers.ValidationError({"error": "email is already in use"})
     
 def validate_all_params(user):
     unique_cpf(user.cpf, user.id)
-    unique_username(user.username, user.id)
     unique_email(user.email, user.id)
         
 
 class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     cpf = models.CharField(max_length=11)
-    username = models.CharField(
+    nick = models.CharField(
         max_length=25,
-        validators=[username_validator],
     )
     email = models.EmailField()
     phone_number = models.CharField(max_length=15)
@@ -68,10 +62,9 @@ class User(AbstractUser):
     
     def clean(self):
         unique_cpf(self.cpf, self.id)
-        unique_username(self.username, self.id)
         unique_email(self.email, self.id)
-
-    def save(self, *args, user=None, query_delete=False, **kwargs):
+        
+    def save_history(self, *args, user=None, query_delete=False, **kwargs):
         if self.pk:
             old_instance = type(self).objects.filter(pk=self.pk).first()
             if old_instance:
@@ -115,7 +108,7 @@ class User(AbstractUser):
                     self.history.append(
                         {
                             "timestamp": now().isoformat(),
-                            "user": user.username if user else "system",
+                            "user": str(user.id) if user else "system",
                             "changes": changes,
                         }
                     )
@@ -127,12 +120,40 @@ class User(AbstractUser):
                     self.history.append(
                         {
                             "timestamp": now().isoformat(),
-                            "user": user.username if user else "system",
+                            "user": str(user.id) if user else "system",
                             "changes": {"is_deleted": {"new": False, "old": True}},
                         }
                     )
-        super().save(*args, **kwargs)
+    
+    def sizeImgs(self, *args, **kwargs):
+        if self.profile_photo:
+            img = Image.open(self.profile_photo)
+            
+            if img.mode == 'RGBA':
+                img = img.convert('RGB')
+            
+            max_size = 400
+            width, height = img.size
 
+            if width > height:
+                new_width = max_size
+                new_height = int((new_width / width) * height)
+            else:
+                new_height = max_size
+                new_width = int((new_height / height) * width)
+
+            img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+
+            image_io = BytesIO()
+            img.save(image_io, format='JPEG')
+            image_io.seek(0)
+            
+            self.profile_photo.save(self.profile_photo.name, File(image_io), save=False)
+
+    def save(self, *args, user=None, query_delete=False, **kwargs):
+        self.sizeImgs(self, *args, **kwargs)
+        self.save_history(self, *args, user=user, query_delete=query_delete, **kwargs)
+        super().save(*args, **kwargs)
     class Meta:
         verbose_name = "Usuario"
         verbose_name_plural = "Usuarios"

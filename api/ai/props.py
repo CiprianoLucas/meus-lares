@@ -7,7 +7,7 @@ tools = [
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "username": {
+                    "email": {
                         "type": "string",
                         "description": """
                         Nome do usuário que está fazendo a pergunta,
@@ -17,7 +17,7 @@ tools = [
                     }
                 },
                 "additionalProperties": False,
-                "required": ["username"],
+                "required": ["email"],
             },
             "strict": True,
         },

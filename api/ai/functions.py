@@ -20,8 +20,8 @@ class AiFunctions:
 
     def get_requests_by_requester(self, args: dict) -> str:
         try:
-            username = args["username"]
-            user = User.objects.get(username=username)
+            email = args["email"]
+            user = User.objects.get(email=email)
             requests = CondoRequest.objects.filter(relation__resident=user).values(
                 "ticket_number",
                 "value",

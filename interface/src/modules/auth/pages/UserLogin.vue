@@ -4,9 +4,9 @@
             <h2 class="text-center mb-4">Entrar</h2>
             <form @submit.prevent="login">
                 <div class="mb-3">
-                    <label for="username" class="form-label">Usuário ou e-mail:</label>
-                    <input type="text" id="username" v-model="form.username" required class="form-control"
-                        placeholder="Digite seu nome de usuário" />
+                    <label for="email" class="form-label">E-mail:</label>
+                    <input type="text" id="email" v-model="form.email" required class="form-control"
+                        placeholder="Digite seu e-mail" />
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Senha:</label>
@@ -38,7 +38,7 @@ const user = userStore()
 const router = useRouter()
 
 const form = app.ref({
-    username: '',
+    email: '',
     password: ''
 })
 
@@ -83,7 +83,7 @@ const handleGoogleLogin = (token: string) => {
                 })
                 return
             }
-            user.username = data.username
+            user.email = data.email
             user.roles = data.roles
             if (!user.roles.includes(user.role)) {
                 app.api.clearCash()

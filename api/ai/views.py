@@ -19,7 +19,7 @@ def openai_chat(request):
     if serializer.is_valid():
 
         input_message = serializer.validated_data["message"]
-        username = request.user.username
+        email = request.user.email
 
         messages = [{"role": "user", "content": f"{input_message}"}]
 
@@ -38,7 +38,7 @@ def openai_chat(request):
         if tool_call:
             function = tool_call[0].function.name
             args = json.loads(tool_call[0].function.arguments)
-            args["username"] = username
+            args["email"] = email
 
             ai_function = AiFunctions(function, args)
             data = ai_function.exec()

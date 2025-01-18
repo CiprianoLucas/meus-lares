@@ -6,19 +6,19 @@
                         alt="logo" class="square-image" @click="homepage">
                 </div>
                 <div class="col-8 text-white">
-                    <div v-if="!username">
+                    <div v-if="!email">
                         <div class="row text-center">
                             <div class="col-12 mb-0">
                                 <span class="fw-bold">BEM VINDO</span>
                             </div>
                         </div>
                     </div>
-                    <div v-else-if="username" class="row text-center">
+                    <div v-else-if="email" class="row text-center">
                         <div class="col-12 mb-0">
                             <span class="fw-bold">{{ role }}</span>
                         </div>
                         <div class="col-12">
-                            <span class="text-white">{{ username }}</span>
+                            <span class="text-white">{{ email }}</span>
                         </div>
                     </div>
                 </div>
@@ -43,15 +43,15 @@
                     </div>
                 </a>
             </div>
-            <div v-if="!username" class="pb-1">
+            <div v-if="!email" class="pb-1">
+                <router-link class="text-white text-decoration-none" to="/usuario/cadastro" @click="hide">
+                    <div class="d-flex mb-2 w-100 justify-content-center align-items-center">
+                        <span>Cadastre-se</span>
+                    </div>
+                </router-link>
                 <router-link class="text-white text-decoration-none" to="/login" @click="hide">
                     <div class="d-flex mb-2 w-100 justify-content-center align-items-center">
                         <span>Entrar</span>
-                    </div>
-                </router-link>
-                <router-link class="text-white text-decoration-none" to="/usuario/cadastro" @click="hide">
-                    <div class="d-flex mb-2 w-100 justify-content-center align-items-center">
-                        <span>Registrar</span>
                     </div>
                 </router-link>
             </div>
@@ -83,7 +83,7 @@ import { roleMap } from '@/modules/user/interfaces';
 import { useRouter } from 'vue-router';
 
 const user = userStore();
-const username = ref<string | null>(user.username);
+const email = ref<string | null>(user.email);
 const role = ref<string | null>(roleMap[user.role]);
 const mainNav = ref<HTMLElement | null>(null);
 const notificationCollapse = ref<Collapse | null>(null);
@@ -93,9 +93,9 @@ const router = useRouter()
 
 
 watch(
-    () => user.username,
+    () => user.email,
     (newUsername) => {
-        username.value = newUsername;
+        email.value = newUsername;
     }
 
 );
@@ -115,7 +115,7 @@ async function logout() {
 }
 
 function homepage() {
-    if (!user.username){
+    if (!user.email){
         router.push('/')
         return
     }
