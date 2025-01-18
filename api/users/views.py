@@ -75,7 +75,7 @@ class LoginView(APIView):
             roles = list(set([role["role"] for role in roles]))
             if CondoTenant.objects.filter(user=user).exists(): roles.append('tenant')
             
-            response = {"nick": user.nick, "roles": roles}
+            response = {"nick": user.nick, "roles": roles, "email": user.email}
             
             return JsonResponse(response)
 
@@ -132,7 +132,8 @@ class GoogleLogin(APIView):
             response = {
                 "has_user": True,
                 "nick": user.nick,
-                "roles": roles
+                "roles": roles,
+                "email": user.email
             }
 
             return JsonResponse(response, status=status.HTTP_200_OK)

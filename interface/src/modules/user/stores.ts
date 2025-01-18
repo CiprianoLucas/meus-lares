@@ -3,6 +3,7 @@ import type { Role } from "./interfaces"
 
 interface UserState {
   email: string;
+  nick: string;
   role: Role;
   roles: Role[];
 }
@@ -10,6 +11,7 @@ interface UserState {
 export const userStore = defineStore('user', {
   state: (): UserState => ({
     email: "",
+    nick: "",
     role: "",
     roles: []
   }),

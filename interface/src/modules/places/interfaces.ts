@@ -12,4 +12,12 @@ interface Condominium {
     profile_photo?: string
 }
 
-export type { Condominium }
+interface Apartment {
+    condominium?: string
+    identifier?: string
+    complement?: string
+    tenant?: string
+    tenant_name?: string
+}
+
+export type { Condominium, Apartment }

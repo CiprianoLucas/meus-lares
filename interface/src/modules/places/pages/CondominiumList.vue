@@ -6,14 +6,14 @@
             </router-link>
         </div>
         <h1 class="text-center mt-5">Condomínios</h1>
-        <custom-table :headers="headers" url="/place/condominium/" :cashTime="300" title="name" img="profile_photo"
+        <list-cards :headers="headers" url="/place/condominium/" :cashTime="300" title="name" img="profile_photo"
             :hide="['id', 'name', 'profile_photo']" redirect="condominio" :params="['id']" />
     </div>
 </template>
 
 <script lang="ts" setup>
 import app from '@/app'
-import CustomTable from '@/components/tables/CustomTable.vue'
+import ListCards from '@/components/tables/ListCards.vue'
 const headers = app.ref({
     'id': "",
     'name': "",

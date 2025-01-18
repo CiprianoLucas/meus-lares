@@ -6,19 +6,19 @@
                         alt="logo" class="square-image" @click="homepage">
                 </div>
                 <div class="col-8 text-white">
-                    <div v-if="!email">
+                    <div v-if="!nick">
                         <div class="row text-center">
                             <div class="col-12 mb-0">
                                 <span class="fw-bold">BEM VINDO</span>
                             </div>
                         </div>
                     </div>
-                    <div v-else-if="email" class="row text-center">
+                    <div v-else-if="nick" class="row text-center">
                         <div class="col-12 mb-0">
                             <span class="fw-bold">{{ role }}</span>
                         </div>
                         <div class="col-12">
-                            <span class="text-white">{{ email }}</span>
+                            <span class="text-white">{{ nick }}</span>
                         </div>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                     </div>
                 </a>
             </div>
-            <div v-if="!email" class="pb-1">
+            <div v-if="!nick" class="pb-1">
                 <router-link class="text-white text-decoration-none" to="/usuario/cadastro" @click="hide">
                     <div class="d-flex mb-2 w-100 justify-content-center align-items-center">
                         <span>Cadastre-se</span>
@@ -83,7 +83,7 @@ import { roleMap } from '@/modules/user/interfaces';
 import { useRouter } from 'vue-router';
 
 const user = userStore();
-const email = ref<string | null>(user.email);
+const nick = ref<string | null>(user.nick);
 const role = ref<string | null>(roleMap[user.role]);
 const mainNav = ref<HTMLElement | null>(null);
 const notificationCollapse = ref<Collapse | null>(null);
@@ -95,7 +95,7 @@ const router = useRouter()
 watch(
     () => user.email,
     (newUsername) => {
-        email.value = newUsername;
+        nick.value = newUsername;
     }
 
 );

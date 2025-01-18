@@ -15,6 +15,7 @@ api.login = async function (form) {
             password: form.password
         })
         user.email = response.data.email
+        user.nick = response.data.nick
         user.roles = response.data.roles
         if (!user.roles.includes(user.role)) {
             cash.clear()
@@ -49,13 +50,17 @@ api.getListCashed = async function (path, force?, time?) {
         const timestampAtual = Date.now()
         const cash = apiListStore()
         const obj = cash.getResult(path)
+        
 
         if (obj) {
+            console.log(obj.createAt + 10000 >= timestampAtual)
+            console.log(obj.createAt + 10000 < timestampAtual && !actualForce)
+            console.log(obj.createAt + obj.expirate > timestampAtual && !actualForce)
 
             if (
-                obj.createAt + 30000 > timestampAtual ||
-                (obj.createAt + 30000 < timestampAtual && !actualForce) ||
-                (obj.createAt + obj.expirate > timestampAtual && actualForce)
+                obj.createAt + 0 >= timestampAtual ||
+                (obj.createAt + 0 < timestampAtual && !actualForce) ||
+                (obj.createAt + obj.expirate > timestampAtual && !actualForce)
             ) {
                 const response = obj.response
                 const result = response.results

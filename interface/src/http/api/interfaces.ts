@@ -3,6 +3,7 @@ import type { Role } from '@/modules/user/interfaces'
 
 interface LoginResponse {
     email: string
+    nick: string
     role: Role
     roles: Role[]
 }

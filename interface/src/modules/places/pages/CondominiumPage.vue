@@ -6,7 +6,7 @@
             <button @click="triggerFileInput" class="btn btn-secondary py-0 my-1"><small>Alterar foto do condominio</small></button>
             <input ref="fileInputRef" type="file" @change="photoChange" style="display: none;" />
         </div>
-        <div class="px-4 py-3">
+        <div class="border-bottom px-4 py-3">
             <div class="d-flex justify-content-between mb-3">
                 <h3 class="p-0 m-0">Localização:</h3>
                 <router-link :to="'/condominio/edicao/'+condominiumId" class="btn btn-secondary py-0"><small>Editar</small></router-link>
@@ -15,14 +15,18 @@
             <p>{{ `${condominium.neighborhood}, ${condominium.city_name}` }}</p>
             <p>{{ `${condominium.state}, ${condominium.cep}, ${condominium.complement}` }}</p>
         </div>
+        <div class="px-4 py-3">
+            <collapse-apartments :condominiumId="condominiumId"/>
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup>
 import app from '@/app'
 import type { Condominium } from '../interfaces'
+import collapseApartments from '../components/collapseApartments.vue'
 
-const condominiumId = app.ref(app.routeParam('id'))
+const condominiumId = app.ref<string>(app.routeParam('id').toString())
 const changeMode = app.ref(false)
 const condominium = app.ref<Condominium>({})
 

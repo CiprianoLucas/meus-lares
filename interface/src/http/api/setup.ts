@@ -40,6 +40,7 @@ function getCsrf() {
             const user = userStore()
             if(user.email != data.email){
                 user.email = ""
+                user.nick = ""
             }
         } catch {
 
