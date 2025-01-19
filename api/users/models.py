@@ -14,16 +14,11 @@ from django.core.files import File
 from meus_lares.storages import PrivateMediaStorage, PublicMediaStorage
 from soft_components.managers import SoftUserManager
 
-def unique_cpf(value, id):
-    if User.objects.filter(cpf=value).exclude(id=id).exists():
-        raise serializers.ValidationError({"error": "cpf is already in use"})
-
 def unique_email(value, id):
     if User.objects.filter(email=value).exclude(id=id).exists():
         raise serializers.ValidationError({"error": "email is already in use"})
     
 def validate_all_params(user):
-    unique_cpf(user.cpf, user.id)
     unique_email(user.email, user.id)
         
 
@@ -61,7 +56,6 @@ class User(AbstractUser):
     objects = SoftUserManager()
     
     def clean(self):
-        unique_cpf(self.cpf, self.id)
         unique_email(self.email, self.id)
         
     def save_history(self, *args, user=None, query_delete=False, **kwargs):

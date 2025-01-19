@@ -33,6 +33,11 @@ export const apiListStore = defineStore('apiCash', {
 
         clear(){
             this.$state.splice(0, this.$state.length)
+        },
+
+        clearStartPath(path: string){
+            const unsetOld = this.$state.filter(item => !item.url.includes(path))
+            this.$state.splice(0, this.$state.length, ...unsetOld)
         }
     },
 

@@ -5,7 +5,7 @@ from rest_framework import serializers
 from relations.models import CondoStaff
 from soft_components.serializers import softModelSerializer
 
-from .models import Apartment, City, Condominium, SharedPlaces
+from .models import Apartment, City, Condominium, SharedPlaces, ParkingSpace
 
 
 class CondominiumsSerializer(softModelSerializer):
@@ -61,6 +61,13 @@ class ApartmentSerializer(softModelSerializer):
     class Meta:
         model = Apartment
         fields = ["id", "condominium", "identifier", "complement", "profile_photo"]
+        extra_kwargs = {"id": {"read_only": True}}
+        
+        
+class ParkingSerializer(softModelSerializer):
+    class Meta:
+        model = ParkingSpace
+        fields = ["id", "identifier", "complement", "apartment", "condominium"]
         extra_kwargs = {"id": {"read_only": True}}
         
 class SharedPlacesSerializer(softModelSerializer):

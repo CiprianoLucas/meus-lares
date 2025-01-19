@@ -2,11 +2,11 @@
     <div class="container mt-2">
         <div class="d-flex justify-content-center mb-3">
             <router-link to="/condominio/cadastro" class="btn btn-primary">
-                <p class="h5 mb-1">Cadastrar novo condomínio</p>
+                Cadastrar novo condomínio
             </router-link>
         </div>
         <h1 class="text-center mt-5">Condomínios</h1>
-        <list-cards :headers="headers" url="/place/condominium/" :cashTime="300" title="name" img="profile_photo"
+        <list-cards :start="true" :headers="headers" url="/place/condominium/" :cashTime="300" title="name" img="profile_photo"
             :hide="['id', 'name', 'profile_photo']" redirect="condominio" :params="['id']" />
     </div>
 </template>
@@ -24,13 +24,3 @@ const headers = app.ref({
     'state': "Estado",
 })
 </script>
-
-<style scoped>
-.text-center {
-    text-align: center;
-}
-
-.table {
-    margin-top: 20px;
-}
-</style>

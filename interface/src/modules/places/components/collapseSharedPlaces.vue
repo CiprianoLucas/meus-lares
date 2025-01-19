@@ -1,6 +1,6 @@
 <template>
 
-    <h5 class="text-center">Apartamentos</h5>
+    <h5 class="text-center">Espaços compartilhados</h5>
     <div class="d-flex justify-content-center my-2">
         <button class="btn btn-secondary py-2 px-3 w-100" type="button" @click="onChangeCollapse">
             {{ showCollapse ? "Esconder" : "Mostrar" }} Configuração

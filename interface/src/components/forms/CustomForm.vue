@@ -108,7 +108,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref, onBeforeMount, onBeforeUnmount, onMounted, watch } from 'vue'
+import { ref, onBeforeMount} from 'vue'
 import { inputsProps } from '.'
 import Multiselect from 'vue-multiselect'
 import type { Input } from './interfaces'

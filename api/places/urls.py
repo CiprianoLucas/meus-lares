@@ -6,12 +6,14 @@ from .views import (
     CitiesView,
     CondominiumOwnerView,
     FullAddressView,
-    SharedPlacesView
+    SharedPlacesView,
+    ParkingView
 )
 
 router = DefaultRouter()
 router.register(r"condominium", CondominiumOwnerView, "condominium")
 router.register(r"apartment", ApartmentOwnerView, "apartment")
+router.register(r"park", ParkingView, "parking")
 router.register(r"shared", SharedPlacesView, "shared")
 
 urlpatterns = [

@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
+from django.db.models import Q
 
 
 class SoftPagination(PageNumberPagination):
@@ -12,4 +13,27 @@ class SoftPagination(PageNumberPagination):
 class SoftModelsViewSet(viewsets.ModelViewSet):
     pagination_class = SoftPagination
     permission_classes = [IsAuthenticated]
+    search: list = []
+    sort: dict = {}
     request: Request
+    
+    def search_sort(self, query):
+        
+        query_params = self.request.query_params
+        search = query_params.get("search")
+        sort_by = query_params.get("sort_by")
+        sort_asc = query_params.get("sort_asc")
+
+        if search:
+            queryset = Q()
+            for param in self.search:
+                queryset |= Q(**{param: search})
+                
+            query = query.filter(queryset)
+            
+        if sort_by and sort_by in self.sort.keys():
+            sort_prefix = "" if sort_asc == "true" else "-"
+            sort_field = sort_prefix + self.sort[sort_by]
+            query = query.order_by(sort_field)
+        
+        return query

@@ -1,19 +1,26 @@
 <template>
-    <div v-if="listData.length === 0" class="alert alert-info text-center">
-        Nenhum disponível no momento.
-    </div>
-
-    <div v-else>
-        <form @submit.prevent="handleSearch">
-            <div class="input-group mb-3">
-                <input v-model="searchQuery" type="text" placeholder="Pesquisar..." class="form-control"
-                    aria-label="Pesquisar" />
-                <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
-                    Pesquisar
-                </button>
+    <form @submit.prevent="updateList()">
+        <div class="input-group mb-3">
+            <input v-model="searchQuery" type="text" placeholder="Pesquisar..." class="form-control"
+                aria-label="Pesquisar" />
+            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
+                <i class="bi bi-search"></i>
+            </button>
+            <button @click="updateList(true)" type="button" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-clockwise"></i>
+            </button>
+        </div>
+    </form>
+    <div>
+        <div v-if="listData.length === 0" class="alert alert-info text-center">
+            Nenhum disponível no momento.
+        </div>
+        <div v-else-if="loading" class="d-flex justify-content-center m-3">
+            <div class="spinner-border text-secondary" role="status">
+                <span class="visually-hidden">Loading...</span>
             </div>
-        </form>
-        <div>
+        </div>
+        <div v-else>
             <div v-for="(item, i) in listData" :key="i" class="card mb-3">
                 <router-link :to="item['redirect']" class="text-decoration-none text-dark">
                     <div class="row g-0" @click="redirect(item)">
@@ -34,6 +41,15 @@
                     </div>
                 </router-link>
             </div>
+            <div class="input-group d-flex justify-content-center">
+                <button class="btn btn-secondary" @click="goPreviousPage" :disabled="!previousPage">
+                    Anterior
+                </button>
+                <span class="input-group-text">{{ page }} de {{ Math.ceil(total / 24) }}</span>
+                <button class="btn btn-secondary" @click="goNextPage" :disabled="!nextPage">
+                    Próxima
+                </button>
+            </div>
         </div>
     </div>
 </template>
@@ -50,6 +66,7 @@ interface Item {
 
 const props = defineProps<{
     url: string
+    start: boolean
     title?: string
     cashTime?: number
     headers?: { [key: string]: string }
@@ -62,7 +79,36 @@ const props = defineProps<{
 const headers = ref(props.headers || inputsLabel)
 const searchQuery = ref('')
 const listData = ref<Item[]>([])
-const forceUpdate = ref<Item[]>([])
+const previousPage = ref<string | null>(null)
+const nextPage = ref<string | null>(null)
+const page = ref<number>(1)
+const total = ref<number>(0)
+const loading = ref<boolean>(false)
+const start = ref<boolean>(props.start)
+let firstUpdate = false
+
+watch(
+    () => props.start,
+    () => {
+        if (firstUpdate) {
+            updateList()
+        }
+    }
+)
+
+function goNextPage() {
+    if (nextPage.value) {
+        page.value++
+        updateList()
+    }
+}
+
+function goPreviousPage() {
+    if (previousPage.value) {
+        page.value--
+        updateList()
+    }
+}
 
 function redirect(item: Item) {
     let url = '/' + props.redirect
@@ -74,23 +120,43 @@ function redirect(item: Item) {
 }
 
 onMounted(() => {
-    api
-        .getListCashed<Item[]>(props.url, false,)
-        .then(({ result }) => {
+    if (start.value) updateList()
+})
+
+function updateList(force: boolean = false) {
+    loading.value = true
+    let query = ""
+
+    if (props.url.includes('?')) {
+        query = `&page=${page.value}`
+    } else {
+        query = `?page=${page.value}`
+    }
+
+    if (searchQuery.value) query += `&search=${searchQuery.value}`
+
+    api.getListCashed<Item[]>(props.url + query, force, props.cashTime, props.url)
+        .then(({ result, next, previous, count }) => {
             listData.value = result
+            nextPage.value = next
+            previousPage.value = previous
+            total.value = count
+
             if (props.redirect) {
                 listData.value.forEach((item, index) => {
                     listData.value[index].redirect = redirect(item)
                 });
+                processData(listData.value)
                 props.hide?.push('redirect')
             }
         })
         .catch(() => {
             popup('Erro!', 'Falha ao listar', 'warning')
         })
-})
-
-function handleSearch() { }
+        .finally(() => {
+            loading.value = false
+        })
+}
 
 const processData = (data: Item[]) => {
     const keys = Object.keys(headers.value)
@@ -102,14 +168,6 @@ const processData = (data: Item[]) => {
         })
     }
 }
-
-watch(
-    () => listData.value,
-    (newData) => {
-        processData(newData)
-    },
-    { immediate: true }
-)
 </script>
 
 <style scoped>

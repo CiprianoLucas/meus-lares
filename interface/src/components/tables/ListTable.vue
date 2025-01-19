@@ -1,23 +1,30 @@
 <template>
-    <div v-if="listData.length === 0" class="alert alert-info text-center">
-        Nenhum disponível no momento.
-    </div>
-
-    <div v-else>
-        <form @submit.prevent="updateTable">
+    <div>
+        <form @submit.prevent="updateTable()">
             <div class="input-group mb-3">
                 <input v-model="searchQuery" type="text" placeholder="Pesquisar..." class="form-control"
                     aria-label="Pesquisar" />
                 <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
-                    Pesquisar
+                    <i class="bi bi-search"></i>
+                </button>
+                <button @click="updateTable(true)" type="button" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-clockwise"></i>
                 </button>
             </div>
         </form>
-        <div class="table-responsive">
+        <div v-if="listData.length === 0" class="alert alert-light text-center">
+            Nenhum registro encontrado.
+        </div>
+        <div v-else-if="loading" class="d-flex justify-content-center m-3">
+            <div class="spinner-border text-secondary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        <div v-else class="table-responsive">
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th v-for="(v, k) in columns" :key="k">
+                        <th v-for="(v, k) in columns" :key="k" @click="sort(k)">
                             {{ v }}
                         </th scope="col">
                     </tr>
@@ -32,11 +39,11 @@
                 </tbody>
             </table>
         </div>
-        <div class="input-group">
+        <div class="input-group d-flex justify-content-center">
             <button class="btn btn-secondary" @click="goPreviousPage" :disabled="!previousPage">
                 Anterior
             </button>
-            <span class="input-group-text">{{ total }} registro(s)</span>
+            <span class="input-group-text">{{ page }} de {{ Math.ceil(total / 24) }}</span>
             <button class="btn btn-secondary" @click="goNextPage" :disabled="!nextPage">
                 Próxima
             </button>
@@ -45,7 +52,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { api } from '@/http'
 import { popup } from '../PopUps'
 
@@ -55,6 +62,7 @@ interface Item {
 
 const props = defineProps<{
     url: string
+    start: boolean
     headers?: { [key: string]: string | null }
     columnPath?: { [key: string]: string }
     paramPath?: { [key: string]: string }
@@ -69,17 +77,42 @@ const page = ref<number>(1)
 const total = ref<number>(0)
 const listData = ref<Item[]>([])
 const columns = ref<{ [key: string]: string }>({})
+const sortBy = ref<string | null>(null)
+const sortAsc = ref<boolean>(true)
+const loading = ref<boolean>(false)
+const start = ref<boolean>(props.start===undefined?true:props.start)
+let firstUpdate = true
+
+watch(
+    () => props.start,
+    () => {
+        if (firstUpdate) {
+            firstUpdate = false
+            updateTable()
+        }
+    }
+)
+
+function sort(column: string | number) {
+    if (sortBy.value == column) {
+        sortAsc.value = !sortAsc.value
+    } else {
+        sortAsc.value = true
+    }
+    sortBy.value = String(column)
+    updateTable()
+}
 
 function goNextPage() {
     if (nextPage.value) {
-        page.value--
+        page.value++
         updateTable()
     }
 }
 
 function goPreviousPage() {
     if (previousPage.value) {
-        page.value++
+        page.value--
         updateTable()
     }
 }
@@ -96,9 +129,9 @@ function redirect(item: Item, key: string | number) {
     return ""
 }
 
-function celClass(item: Item, key: string | number){
+function celClass(item: Item, key: string | number) {
     let celClass = "link-offset-2 link-underline link-underline-opacity-0"
-    if (redirect(item, key)){
+    if (redirect(item, key)) {
         return celClass
     }
     return "text-dark " + celClass
@@ -110,14 +143,24 @@ onMounted(() => {
             Object.entries(props.headers).filter(([key, value]) => value !== null)
         ) as { [key: string]: string }
     }
-    updateTable()
+    if (start.value) updateTable()
 })
 
-function updateTable() {
-    let query = `?page=${page.value}`
+function updateTable(force: boolean = false) {
+    loading.value = true
+    let query = ""
+
+    if (props.url.includes('?')) {
+        query = `&page=${page.value}`
+    } else {
+        query = `?page=${page.value}`
+    }
+
     if (searchQuery.value) query += `&search=${searchQuery.value}`
 
-    api.getListCashed<Item[]>(props.url + query, true, props.cashTime)
+    if (sortBy.value) query += `&sort_by=${sortBy.value}&sort_asc=${sortAsc.value}`
+
+    api.getListCashed<Item[]>(props.url + query, force, props.cashTime, props.url)
         .then(({ result, next, previous, count }) => {
             listData.value = result
             nextPage.value = next
@@ -126,6 +169,9 @@ function updateTable() {
         })
         .catch(() => {
             popup('Erro!', 'Falha ao listar', 'warning')
+        })
+        .finally(() => {
+            loading.value = false
         })
 }
 </script>

@@ -15,6 +15,7 @@ from .serializers import (
     CitySerializer,
     SharedPlacesSerializer,
     CondominiumsSerializer,
+    ParkingSerializer,
     FullAddressSerializer,
 )
 
@@ -22,12 +23,22 @@ from .serializers import (
 class CondominiumOwnerView(SoftModelsViewSet):
     serializer_class = CondominiumsSerializer
     permission_classes = [IsAuthenticated, CondominiumOwnerPermission]
+    search = [
+        "name__icontains",
+        "city__name__icontains",
+        "cep__icontains",
+        "neighborhood__icontains",
+        "street__icontains",
+        "city__state__acronym",
+    ]
 
     def get_queryset(self):
         user = self.request.user
         condominiums = Condominium.objects.filter(
             condostaff__user=user, condostaff__role="owner"
         ).distinct()
+        
+        condominiums = self.search_sort(condominiums)
 
         return condominiums
 
@@ -35,13 +46,30 @@ class CondominiumOwnerView(SoftModelsViewSet):
 class ApartmentOwnerView(SoftModelsViewSet):
     serializer_class = ApartmentSerializer
     permission_classes = [IsAuthenticated, CondominiumOwnerPermission]
+    sort = {
+        "identifier": "identifier",
+        "tenant_name": "condotenant__user__full_name"
+    }
+    search = [
+        "identifier__icontains",
+        "condotenant__user__full_name__icontains",
+        "condotenant__user__email",
+    ]
 
     def get_queryset(self):
         user = self.request.user
-
+        
         apartments = Apartment.objects.filter(
-            condominium__condostaff__user=user, condominium__condostaff__role="owner"
+            condominium__condostaff__user=user, 
+            condominium__condostaff__role__in=["owner"]
         ).distinct()
+        
+        query_params = self.request.query_params
+        condominium_id = query_params.get("condominium")
+        if condominium_id:
+            apartments = apartments.filter(condominium__id=condominium_id)
+        
+        apartments = self.search_sort(apartments)
 
         return apartments
 
@@ -56,6 +84,18 @@ class SharedPlacesView(SoftModelsViewSet):
         ).distinct()
 
         return places
+    
+class ParkingView(SoftModelsViewSet):
+    serializer_class = ParkingSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+
+        parks = SharedPlaces.objects.filter(
+            condominium__condostaff__user=user, condominium__condostaff__role="owner"
+        ).distinct()
+
+        return parks
 
 class CitiesStatesPagination(PageNumberPagination):
     page_size = 6000

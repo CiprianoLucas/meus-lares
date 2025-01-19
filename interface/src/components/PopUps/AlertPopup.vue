@@ -59,6 +59,7 @@ setTimeout(() => {
     bottom: 1rem;
     right: 1rem;
     padding: 1rem;
+    z-index: 9999;
 }
 
 .v-enter-active {

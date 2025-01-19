@@ -38,30 +38,32 @@ api.clearCash = async function () {
     cash.clear()
 }
 
+api.clearStartPath = async function (path) {
+    const cash = apiListStore()
+    cash.clearStartPath(path)
+}
+
 api.removeListCash = async function (path) {
     const cash = apiListStore()
     cash.remove(path)
 }
 
-api.getListCashed = async function (path, force?, time?) {
+api.getListCashed = async function (path, force?, time?, clearPath?) {
     try {
         const actualForce = force !== undefined ? force : false
-        const actualTime = time !== undefined ? time : 300
+        const actualTime = time !== undefined ? time : 600
         const timestampAtual = Date.now()
         const cash = apiListStore()
         const obj = cash.getResult(path)
         
 
         if (obj) {
-            console.log(obj.createAt + 10000 >= timestampAtual)
-            console.log(obj.createAt + 10000 < timestampAtual && !actualForce)
-            console.log(obj.createAt + obj.expirate > timestampAtual && !actualForce)
 
             if (
-                obj.createAt + 0 >= timestampAtual ||
-                (obj.createAt + 0 < timestampAtual && !actualForce) ||
-                (obj.createAt + obj.expirate > timestampAtual && !actualForce)
+                obj.createAt + 20000 >= timestampAtual ||
+                (obj.createAt + 20000 < timestampAtual && !actualForce && obj.createAt + obj.expirate > timestampAtual)
             ) {
+                
                 const response = obj.response
                 const result = response.results
                 const count = response.count
@@ -70,6 +72,11 @@ api.getListCashed = async function (path, force?, time?) {
                 return { result, count, next, previous }
             }
         }
+
+        if(clearPath){
+            api.clearStartPath(clearPath)
+        }
+
         const response = (await this.get(path)).data
 
         const session = {
