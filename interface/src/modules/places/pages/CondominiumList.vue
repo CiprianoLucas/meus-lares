@@ -15,12 +15,12 @@
 import app from '@/app'
 import ListCards from '@/components/tables/ListCards.vue'
 const headers = app.ref({
-    'id': "",
-    'name': "",
-    'profile_photo': "",
-    'url': "",
-    'street': "Logradouro",
-    'city_name': "Cidade",
-    'state': "Estado",
+    'id': null,
+    'name': null,
+    'profile_photo': null,
+    'url': null,
+    'street': "",
+    'city_name': "",
+    'state': "",
 })
 </script>

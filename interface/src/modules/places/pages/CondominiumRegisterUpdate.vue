@@ -74,7 +74,7 @@ function registerCondominium() {
         .then(({ data }) => {
             app.popup('Sucesso!', 'Informações do condomínio salvas', 'success')
             app.api.removeListCash('/place/condominium/')
-            // router.push('/condominio/' + data.id)
+            router.push('/condominio/' + data.id)
         })
         .catch((error) => {
             app.popup('Erro!', app.resumeErrors(error), 'warning')

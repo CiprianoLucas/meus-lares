@@ -13,6 +13,7 @@ interface Condominium {
 }
 
 interface Apartment {
+    id?: string
     condominium?: string
     identifier?: string
     complement?: string
@@ -20,4 +21,13 @@ interface Apartment {
     tenant_name?: string
 }
 
-export type { Condominium, Apartment }
+interface Park {
+    id?: string
+    condominium?: string
+    identifier?: string
+    complement?: string
+    apartment?: string
+    apartment_identifier?: string
+}
+
+export type { Condominium, Apartment, Park }

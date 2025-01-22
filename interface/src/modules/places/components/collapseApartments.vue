@@ -9,8 +9,8 @@
 
     <div class="collapse pt-3" ref="listHtml">
         <div class="d-flex justify-content-center mb-3 mt-2">
-            <router-link :to="'condominio/condominio/apartamento/cadastro/'" class="btn btn-primary">Cadastrar novo
-                apartamento</router-link>
+            <router-link :to="'/apartamento/cadastro/?condominium=' + condominiumId" class="btn btn-primary">Cadastrar novos
+                apartamentos</router-link>
         </div>
         <list-table :url="'/place/apartment/?condominium=' + condominiumId" :headers="headers" :column-path="columnPath"
             :param-path="paramPath" :start="showCollapse" />

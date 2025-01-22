@@ -36,4 +36,7 @@ class SoftModelsViewSet(viewsets.ModelViewSet):
             sort_field = sort_prefix + self.sort[sort_by]
             query = query.order_by(sort_field)
         
+        else:
+            query = query.order_by("-created_at")
+        
         return query

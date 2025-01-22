@@ -186,7 +186,13 @@ const inputsProps = <Input[]>[
         label: 'Complemento',
         size: 'sm',
         type: 'text'
-    }
+    },
+    {
+        reference: 'identifier',
+        label: 'Identificador',
+        size: 'md',
+        type: 'text'
+    },
 ]
 
 export { inputsLabel, inputsProps, states }

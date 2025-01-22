@@ -20,21 +20,24 @@
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
-        <div v-else>
-            <div v-for="(item, i) in listData" :key="i" class="card mb-3">
+        <div v-else class="row">
+            <div v-for="(item, i) in listData" :key="i" class="card mb-3 col-12 col-md-4 p-0">
                 <router-link :to="item['redirect']" class="text-decoration-none text-dark">
                     <div class="row g-0" @click="redirect(item)">
-                        <div v-if="props.img" class="col-4 d-flex justify-content-center align-items-center">
+                        <div v-if="props.img" class="col-5">
                             <img :src="item[props.img] ? item[props.img] : 'https://cdn-icons-png.flaticon.com/512/1066/1066153.png'"
                                 class="img-fluid rounded-start" alt="...">
                         </div>
                         <div class="col">
                             <div class="card-body">
-                                <div v-for="(v, k) in headers">
-                                    <h5 v-if="k == props.title">{{ item[k] }}</h5>
-                                    <p class="mb-1" v-if="!props.hide?.includes(k)"><small><strong>{{ v
-                                                }}:</strong><br>{{
-                                                    item[k] }}</small></p>
+                                <div class="m-0 p-0">
+                                    <h6 v-if="props.title">{{ item[props.title] }}</h6>
+                                    <div class="card-span">
+                                        <span v-for="(v, k) in headers" ><small
+                                                v-if="v !== null"><br><strong v-if="v"><div class="mb-1"/>{{ v
+                                                    }}</strong><br v-if="v">{{
+                                                        item[k] }}</small></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -69,7 +72,7 @@ const props = defineProps<{
     start: boolean
     title?: string
     cashTime?: number
-    headers?: { [key: string]: string }
+    headers?: { [key: string]: string | null }
     img?: string
     redirect?: string
     params?: string[]
@@ -171,8 +174,8 @@ const processData = (data: Item[]) => {
 </script>
 
 <style scoped>
-img {
-    width: 100px;
-    height: 100px;
+.card-span {
+    font-size: 0.5rem;
+    line-height: 1.25;
 }
 </style>

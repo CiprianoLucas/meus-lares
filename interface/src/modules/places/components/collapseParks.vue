@@ -13,8 +13,8 @@
                 placa</router-link>
         </div>
         <div class="d-flex justify-content-center mb-3 mt-2">
-            <router-link :to="'condominio/condominio/apartamento/cadastro/'" class="btn btn-primary">Cadastrar novo
-                estacionamento</router-link>
+            <router-link :to="'/estacionamento/cadastro/?condominium=' + condominiumId" class="btn btn-primary">Cadastrar novos
+                estacionamentos</router-link>
         </div>
         <list-table :url="'/place/park/?condominium=' + condominiumId" :headers="headers" :column-path="columnPath"
             :param-path="paramPath" :start="showCollapse" />

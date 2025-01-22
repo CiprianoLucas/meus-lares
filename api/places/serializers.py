@@ -61,7 +61,38 @@ class ApartmentSerializer(softModelSerializer):
     class Meta:
         model = Apartment
         fields = ["id", "condominium", "identifier", "complement", "profile_photo"]
-        extra_kwargs = {"id": {"read_only": True}}
+        extra_kwargs = {
+            "id": {"read_only": True},
+            "complement": {"required": False, "allow_null": True},
+            "profile_photo": {"required": False, "allow_null": True},
+            "condominium": {"required": False, "allow_null": True},
+        }
+        
+class BulkApartmentCreateSerializer(serializers.Serializer):
+    condominium_id = serializers.UUIDField()
+    apartments = ApartmentSerializer(many=True)
+
+    def validate_condominium_id(self, value):
+        if not Condominium.objects.filter(id=value).exists():
+            raise serializers.ValidationError({"error": "Condominium does not exist."})
+        return value
+
+    def create(self, validated_data):
+        condominium_id = validated_data['condominium_id']
+        apartments_data = validated_data['apartments']
+        
+        condominium = Condominium.objects.get(id=condominium_id)
+        
+        apartments = [
+            Apartment(
+                condominium=condominium,
+                identifier=apartment['identifier'],
+                complement=apartment.get('complement', '')
+            )
+            for apartment in apartments_data
+        ]
+        Apartment.objects.bulk_create(apartments)
+        return apartments
         
         
 class ParkingSerializer(softModelSerializer):

@@ -12,6 +12,7 @@
                         :type="input.type"
                         :name="input.reference"
                         :id="`${input.reference}-input`"
+                        :placeholder="input.placeholder"
                         v-model="props.form[input.reference]"
                         class="form-control"
                         @input="verifyMask(input.mask, input.reference)"
@@ -138,8 +139,9 @@ onBeforeMount(() => {
             continue
         }
         let inputClass = 'mb-3 '
-
-        if (input.size === 'sm') {
+        if(input.size === 'bit'){
+            inputClass += 'col-6 col-sm-4 col-md-2 col-lg-1'
+        } else if (input.size === 'sm') {
             inputClass += 'col-12 col-sm-6 col-md-4 col-lg-3'
         } else if (input.size === 'md') {
             inputClass += 'col-12 col-sm-6 col-lg-4'

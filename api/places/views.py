@@ -17,6 +17,7 @@ from .serializers import (
     CondominiumsSerializer,
     ParkingSerializer,
     FullAddressSerializer,
+    BulkApartmentCreateSerializer
 )
 
 
@@ -72,6 +73,14 @@ class ApartmentOwnerView(SoftModelsViewSet):
         apartments = self.search_sort(apartments)
 
         return apartments
+
+class BulkApartmentCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = BulkApartmentCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Apartments created successfully!"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class SharedPlacesView(SoftModelsViewSet):
     serializer_class = SharedPlacesSerializer
