@@ -96,16 +96,91 @@ class BulkApartmentCreateSerializer(serializers.Serializer):
         
         
 class ParkingSerializer(softModelSerializer):
+    apartment_identifier = serializers.SerializerMethodField()
     class Meta:
         model = ParkingSpace
-        fields = ["id", "identifier", "complement", "apartment", "condominium"]
-        extra_kwargs = {"id": {"read_only": True}}
+        fields = ["id", "identifier", "complement", "apartment", "condominium", "apartment_identifier"]
+        extra_kwargs = {
+            "id": {"read_only": True},
+            "complement": {"required": False, "allow_null": True},
+            "condominium": {"required": False, "allow_null": True},
+            "apartment": {"required": False, "allow_null": True},
+            "apartment_identifier": {"read_only": True},
+        }
+    
+    def get_apartment_identifier(self, obj: ParkingSpace):
+        if obj.apartment:
+            return obj.apartment.identifier
+        return None
+        
+class BulkParkCreateSerializer(serializers.Serializer):
+    condominium_id = serializers.UUIDField()
+    parks = ParkingSerializer(many=True)
+
+    def validate_condominium_id(self, value):
+        if not Condominium.objects.filter(id=value).exists():
+            raise serializers.ValidationError({"error": "Condominium does not exist."})
+        return value
+
+    def create(self, validated_data):
+        condominium_id = validated_data['condominium_id']
+        parks_data = validated_data['parks']
+        
+        condominium = Condominium.objects.get(id=condominium_id)
+        
+        parks = [
+            ParkingSpace(
+                condominium=condominium,
+                identifier=park['identifier'],
+                complement=park.get('complement', ''),
+                apartment=park.get('apartment')
+            )
+            for park in parks_data
+        ]
+        ParkingSpace.objects.bulk_create(parks)
+        return parks
         
 class SharedPlacesSerializer(softModelSerializer):
     class Meta:
         model = SharedPlaces
-        fields = ["id", "condominium", "identifier", "complement", "capacity", "is_reserveable", "clean_time"]
-        extra_kwargs = {"id": {"read_only": True}}
+        fields = ["id", "condominium", "identifier", "complement", "capacity", "clean_time", "is_reserveable"]
+        extra_kwargs = {
+            "id": {"read_only": True},
+            "complement": {"required": False, "allow_null": True},
+            "condominium": {"required": False, "allow_null": True},
+            "is_reserveable": {"required": False, "allow_null": True},
+            "clean_time": {"required": False, "allow_null": True},
+            "capacity": {"required": False, "allow_null": True},
+        }
+        
+class BulkSharedPlacesCreateSerializer(serializers.Serializer):
+    condominium_id = serializers.UUIDField()
+    shareds = SharedPlacesSerializer(many=True)
+
+    def validate_condominium_id(self, value):
+        if not Condominium.objects.filter(id=value).exists():
+            raise serializers.ValidationError({"error": "Condominium does not exist."})
+        return value
+
+    def create(self, validated_data):
+        condominium_id = validated_data['condominium_id']
+        shareds_data = validated_data['shareds']
+        
+        condominium = Condominium.objects.get(id=condominium_id)
+        
+        shareds = [
+            SharedPlaces(
+                condominium=condominium,
+                identifier=shared['identifier'],
+                complement=shared.get('complement', ''),
+                capacity=shared.get('capacity'),
+                clean_time=shared.get('clean_time'),
+                is_reserveable=shared.get('is_reserveable'),
+            )
+            for shared in shareds_data
+        ]
+        SharedPlaces.objects.bulk_create(shareds)
+        return shareds
 
 
 class CitySerializer(serializers.ModelSerializer):

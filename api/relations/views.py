@@ -3,51 +3,11 @@ from soft_components.views import SoftModelsViewSet
 
 from .models import CondoStaff, CondoTenant, Contract, PlaceReservation
 from .serializers import (
-    AptoListSerializer,
-    CondoListSerializer,
     CondoStaffSerializer,
     CondoTenantSerializer,
     ContractSerializer,
     PlaceReservationSerializer
 )
-
-
-class CondoListView(SoftModelsViewSet):
-    serializer_class = CondoListSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        role = self.request.query_params.get("role", None)
-        match role:
-            case "tenant":
-                user_role = {"apartment__condotenant__user": user}
-            case _:
-                user_role = {"condostaff__user": user, "condostaff__role": role}
-
-        condominiuns = Condominium.objects.filter(**user_role).distinct()
-
-        return condominiuns
-
-
-class AptoListView(SoftModelsViewSet):
-    serializer_class = AptoListSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-
-        role = self.request.query_params.get("role", None)
-        match role:
-            case "tenant":
-                user_role = {"condotenant__user": user}
-            case _:
-                user_role = {
-                    "condominium__condostaff__user": user,
-                    "condominium__condostaff__role": role,
-                }
-
-        apartments = Apartment.objects.filter(**user_role).distinct()
-        return apartments
-
 
 class CondoTenantView(SoftModelsViewSet):
     serializer_class = CondoTenantSerializer
@@ -58,6 +18,12 @@ class CondoTenantView(SoftModelsViewSet):
             apartment__condominium__condostaff__user=user,
             apartment__condominium__condostaff__role="owner",
         ).distinct()
+        
+        query_params = self.request.query_params
+        apartment_id = query_params.get("apartment")
+        if apartment_id:
+            relations = relations.filter(apartment__id=apartment_id)
+        
         return relations
 
 

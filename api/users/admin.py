@@ -17,6 +17,7 @@ class UserAdmin(UD, SoftAdmin):
                     "full_name",
                     "profile_photo",
                     "document_photo",
+                    "identity_photo",
                     "history",
                 )
             },
@@ -32,6 +33,7 @@ class UserAdmin(UD, SoftAdmin):
                     "full_name",
                     "profile_photo",
                     "document_photo",
+                    "identity_photo",
                     "history",
                     "is_deleted",
                 )
@@ -50,6 +52,7 @@ class UserAdmin(UD, SoftAdmin):
                     "full_name",
                     "profile_photo",
                     "document_photo",
+                    "identity_photo",
                     "birth",
                 )
             },

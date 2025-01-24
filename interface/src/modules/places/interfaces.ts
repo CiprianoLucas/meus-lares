@@ -30,4 +30,14 @@ interface Park {
     apartment_identifier?: string
 }
 
-export type { Condominium, Apartment, Park }
+interface SharedPlace {
+    id?: string
+    condominium?: string
+    identifier?: string
+    complement?: string
+    capacity?: number
+    is_reserveable?: boolean
+    clean_time?: number
+}
+
+export type { Condominium, Apartment, Park, SharedPlace }

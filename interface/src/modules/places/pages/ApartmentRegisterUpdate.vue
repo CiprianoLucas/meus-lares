@@ -6,7 +6,7 @@
         <div v-if="!apartmentId" class="d-flex justify-content-end py-2 border-bottom">
             <button @click="addApartment" class="btn btn-secondary">Adicionar</button>
         </div>
-        <div class="p-2">
+        <div v-if="!apartmentId" class="p-2">
             <p><small>Os apartamentos adicionados só serão cadastrados ao clicar em "Cadastrar"</small></p>
         </div>
         <div class="d-flex justify-content-between my-3">
@@ -28,8 +28,9 @@
                             <td>{{ aparment.identifier }}</td>
                             <td>
                                 <div class="d-flex justify-content-end">
-                                    <button @click="complementModalBody = aparment.complement" class="btn btn-secondary py-0 px-1 mx-1"
-                                        data-bs-toggle="modal" data-bs-target="#complementModal">
+                                    <button @click="complementModalBody = aparment.complement"
+                                        class="btn btn-secondary py-0 px-1 mx-1" data-bs-toggle="modal"
+                                        data-bs-target="#complementModal">
                                         <small><i class="bi bi-file-text"></i></small>
                                     </button>
                                     <button @click="deleteApartment(i)" class="btn btn-danger py-0 px-1 mx-1">
@@ -42,7 +43,8 @@
                 </table>
             </div>
         </div>
-        <div class="modal fade" id="complementModal" tabindex="-1" aria-labelledby="complementModalLabel" aria-hidden="true">
+        <div class="modal fade" id="complementModal" tabindex="-1" aria-labelledby="complementModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -50,7 +52,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        {{complementModalBody}}
+                        {{ complementModalBody }}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
@@ -79,13 +81,6 @@ const inputs = app.ref<Input[]>([
         placeholder: 'Ex: apt, sala...'
     },
     {
-        reference: 'sufix',
-        label: 'Sufixo',
-        size: 'bit',
-        type: 'text',
-        placeholder: 'Ex: 101, 102, a1...'
-    },
-    {
         reference: 'complement',
         label: 'Descrição',
         size: 'xl',
@@ -93,6 +88,17 @@ const inputs = app.ref<Input[]>([
     }
 ])
 const apartmentId = app.ref(app.routeParam('id'))
+if (!apartmentId) {
+    inputs.value.push(
+        {
+            reference: 'sufix',
+            label: 'Sufixo',
+            size: 'bit',
+            type: 'text',
+            placeholder: 'Ex: 101, 102, a1...'
+        })
+}
+
 const condominiumId = app.routeQuery("condominium")
 const complementModalBody = app.ref()
 
@@ -108,7 +114,7 @@ function addApartment() {
     let identifier = apartmentForm.value.identifier + apartmentForm.value.sufix
 
     identifier = identifier.trim()
-    if(!identifier){
+    if (!identifier) {
         app.popup("Erro!", "Não foi inserido identificador", 'warning')
         return
     }
@@ -162,12 +168,16 @@ function registerApartments() {
 
 function updateApartment() {
     app.loading(true, "Atualizando...")
+    const payload = {
+        identifier: apartmentForm.value.identifier,
+        complement: apartmentForm.value.complement
+    }
     app.api
-        .patch('/place/apartment/' + apartmentId.value + '/', apartmentForm.value)
-        .then(({ data }) => {
-            app.popup('Sucesso!', 'Informações do condomínio salvas', 'success')
-            app.api.removeListCash('/place/apartment/')
-            router.push('/condominio/' + data.id)
+        .patch('/place/apartment/' + apartmentId.value + '/', payload)
+        .then(() => {
+            app.popup('Sucesso!', 'Informações do apartamento salvas', 'success')
+            app.api.clearStartPath('/place/apartment/')
+            router.push('/apartamento/' + apartmentId.value)
         })
         .catch((error) => {
             app.popup('Erro!', app.resumeErrors(error), 'warning')

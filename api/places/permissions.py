@@ -31,12 +31,12 @@ class CondominiumOwnerPermission(BasePermission):
 
             if view.action in ["list", "retrieve"]:
                 return True
-            elif view.action in ["create", "update"] and not request.data:
+            elif view.action in ["create", "update", "partial_update"] and not request.data:
                 return True
-            elif view.action in ["create", "update"] and request.data:
-                condominium_id = request.data["condominium"]
-                condominium = Condominium.objects.get(id=condominium_id)
-                if condominium.condostaff_set.filter(
+            elif view.action in ["create", "update", "partial_update"] and request.data:
+                apartment_id = request.data["apartment"]
+                apartment = Apartment.objects.get(id=apartment_id)
+                if apartment.condominium.condostaff_set.filter(
                     user=request.user, role="owner"
                 ).exists():
                     return True

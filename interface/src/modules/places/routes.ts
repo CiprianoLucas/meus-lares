@@ -39,7 +39,7 @@ export default [
         path: '/apartamento/:id/',
         name: 'apartamento_page',
         component: () =>
-            import(/* webpacjChunkName: "página do apartamento" */ './pages/CondominiumPage.vue')
+            import(/* webpacjChunkName: "página do apartamento" */ './pages/ApartmentPage.vue')
     },
     {
         path: '/estacionamento/cadastro/',
@@ -58,5 +58,23 @@ export default [
         name: 'estacionamento_page',
         component: () =>
             import(/* webpacjChunkName: "página do estacionamento" */ './pages/CondominiumPage.vue')
+    },
+    {
+        path: '/espaco-compartilhado/cadastro/',
+        name: 'espaco-compartilhado_cadastro',
+        component: () =>
+            import(/* webpacjChunkName: "cadastro de espaço compartilhado" */ './pages/SharedPlaceRegisterUpdate.vue')
+    },
+    {
+        path: '/espaco-compartilhado/edicao/:id/',
+        name: 'espaco-compartilhado_edicao',
+        component: () =>
+            import(/* webpacjChunkName: "edição de espaço compartilhado" */ './pages/SharedPlaceRegisterUpdate.vue')
+    },
+    {
+        path: '/espaco-compartilhado/:id/',
+        name: 'espaco-compartilhado_page',
+        component: () =>
+            import(/* webpacjChunkName: "página do espaço compartilhado" */ './pages/CondominiumPage.vue')
     }
 ]

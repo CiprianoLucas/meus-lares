@@ -7,8 +7,8 @@ import { loagingPageStore } from './components/template/Loading/stores'
 const app = {
     api: api,
     ref: ref,
-    routeQuery: (param: string) => useRoute().query[param] || null,
-    routeParam: (param: string) => useRoute().params[param] || null,
+    routeQuery: (param: string) => useRoute().query[param],
+    routeParam: (param: string) => useRoute().params[param],
     loading: (show: boolean, message: string = "Carregando...") => loagingPageStore().loading(show, message),
     onMounted: onMounted,
     onBeforeMount: onBeforeMount,

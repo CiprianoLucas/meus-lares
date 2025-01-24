@@ -1,6 +1,6 @@
 <template>
 
-<h5 class="text-center">Estacionamento</h5>
+    <h5 class="text-center">Estacionamento</h5>
     <div class="d-flex justify-content-center my-2">
         <button class="btn btn-secondary py-2 px-3 w-100" type="button" @click="onChangeCollapse">
             {{ showCollapse ? "Esconder" : "Mostrar" }} configuração
@@ -13,7 +13,8 @@
                 placa</router-link>
         </div>
         <div class="d-flex justify-content-center mb-3 mt-2">
-            <router-link :to="'/estacionamento/cadastro/?condominium=' + condominiumId" class="btn btn-primary">Cadastrar novos
+            <router-link :to="'/estacionamento/cadastro/?condominium=' + condominiumId"
+                class="btn btn-primary">Cadastrar novos
                 estacionamentos</router-link>
         </div>
         <list-table :url="'/place/park/?condominium=' + condominiumId" :headers="headers" :column-path="columnPath"
@@ -32,18 +33,19 @@ const listCollapse = app.ref<Collapse | null>(null);
 const headers = app.ref({
     'apartment_id': null,
     'id': null,
+    'apartment': null,
     'identifier': "Identificador",
-    'apartment': "Apartamento"
+    'apartment_identifier': "Apartamento",
 })
 
 const columnPath = app.ref({
     'identifier': "estacionamento/:parkId",
-    'apartment': "apartamento/:apartmentId"
+    'apartment_identifier': "apartamento/:apartmentId"
 })
 
 const paramPath = app.ref({
     ':parkId': "id",
-    ':apartmentId': "apartment_id"
+    ':apartmentId': "apartment"
 })
 
 const props = defineProps<{

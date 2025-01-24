@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="updateList()">
+    <form v-if="searchable" @submit.prevent="updateList()">
         <div class="input-group mb-3">
             <input v-model="searchQuery" type="text" placeholder="Pesquisar..." class="form-control"
                 aria-label="Pesquisar" />
@@ -21,30 +21,43 @@
             </div>
         </div>
         <div v-else class="row">
-            <div v-for="(item, i) in listData" :key="i" class="card mb-3 col-12 col-md-4 p-0">
-                <router-link :to="item['redirect']" class="text-decoration-none text-dark">
-                    <div class="row g-0" @click="redirect(item)">
-                        <div v-if="props.img" class="col-5">
-                            <img :src="item[props.img] ? item[props.img] : 'https://cdn-icons-png.flaticon.com/512/1066/1066153.png'"
-                                class="img-fluid rounded-start" alt="...">
-                        </div>
-                        <div class="col">
-                            <div class="card-body">
-                                <div class="m-0 p-0">
-                                    <h6 v-if="props.title">{{ item[props.title] }}</h6>
-                                    <div class="card-span">
-                                        <span v-for="(v, k) in headers" ><small
-                                                v-if="v !== null"><br><strong v-if="v"><div class="mb-1"/>{{ v
-                                                    }}</strong><br v-if="v">{{
-                                                        item[k] }}</small></span>
+            <div v-for="(item, i) in listData" :key="i" class="col-12 col-md-6 col-lg-4">
+                <div class="card my-2 mx-1 p-0">
+                    <router-link :to="item['redirect']" class="text-decoration-none text-dark">
+                        <div class="row g-0" @click="redirect(item)">
+                            <div v-if="props.img" class="col-5">
+                                <img :src="item[props.img] ? item[props.img] : 'https://cdn-icons-png.flaticon.com/512/1066/1066153.png'"
+                                    class="img-fluid rounded-start" alt="...">
+                            </div>
+                            <div class="col">
+                                <div class="card-body">
+                                    <div class="m-0 p-0">
+                                        <h6 v-if="props.title">{{ item[props.title] }}</h6>
+                                        <div class="card-span">
+                                            <span v-for="(v, k) in headers">
+                                                <small v-if="v !== null">
+                                                    <br>
+                                                    <strong v-if="v">
+                                                        <div class="mb-1" /> {{ v }}
+                                                    </strong>
+                                                    <br v-if="v">
+                                                    <span v-if="item[k] === false || item[k] === true">
+                                                        {{ item[k]?'Sim':'Não' }}
+                                                    </span>
+                                                    <span v-else>
+                                                        {{ item[k] }}
+                                                    </span>
+                                                </small>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </router-link>
+                    </router-link>
+                </div>
             </div>
-            <div class="input-group d-flex justify-content-center">
+            <div v-if="previousPage || nextPage" class="input-group d-flex justify-content-center">
                 <button class="btn btn-secondary" @click="goPreviousPage" :disabled="!previousPage">
                     Anterior
                 </button>
@@ -76,7 +89,7 @@ const props = defineProps<{
     img?: string
     redirect?: string
     params?: string[]
-    hide?: (string | number)[]
+    searchable?: boolean
 }>()
 
 const headers = ref(props.headers || inputsLabel)
@@ -150,7 +163,6 @@ function updateList(force: boolean = false) {
                     listData.value[index].redirect = redirect(item)
                 });
                 processData(listData.value)
-                props.hide?.push('redirect')
             }
         })
         .catch(() => {

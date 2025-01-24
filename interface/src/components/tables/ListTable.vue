@@ -1,6 +1,6 @@
 <template>
     <div>
-        <form @submit.prevent="updateTable()">
+        <form v-if="searchable" @submit.prevent="updateTable()">
             <div class="input-group mb-3">
                 <input v-model="searchQuery" type="text" placeholder="Pesquisar..." class="form-control"
                     aria-label="Pesquisar" />
@@ -39,7 +39,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="input-group d-flex justify-content-center">
+        <div v-if="previousPage || nextPage" class="input-group d-flex justify-content-center">
             <button class="btn btn-secondary" @click="goPreviousPage" :disabled="!previousPage">
                 Anterior
             </button>
@@ -67,7 +67,7 @@ const props = defineProps<{
     columnPath?: { [key: string]: string }
     paramPath?: { [key: string]: string }
     cashTime?: number
-    hide?: (string | number)[]
+    searchable?: boolean
 }>()
 
 const searchQuery = ref<string | null>(null)
@@ -80,7 +80,7 @@ const columns = ref<{ [key: string]: string }>({})
 const sortBy = ref<string | null>(null)
 const sortAsc = ref<boolean>(true)
 const loading = ref<boolean>(false)
-const start = ref<boolean>(props.start===undefined?true:props.start)
+const start = ref<boolean>(props.start === undefined ? true : props.start)
 let firstUpdate = true
 
 watch(
@@ -120,11 +120,15 @@ function goPreviousPage() {
 function redirect(item: Item, key: string | number) {
     if (props.columnPath && props.paramPath) {
         const path = props.columnPath[key]
-        let newPath = path
-        Object.entries(props.paramPath).forEach(([k, v]) => {
-            newPath = path.replace(new RegExp(k, 'g'), item[v]);
-        });
-        return (path == newPath) ? ("") : ("/" + newPath)
+        if(path){
+            let newPath = path
+            Object.entries(props.paramPath).forEach(([k, v]) => {
+                if (item[v]) {
+                    newPath = newPath.replace(new RegExp(k, 'g'), item[v]);
+                }
+            });
+            return (path == newPath) ? ("") : ("/" + newPath)
+        }
     }
     return ""
 }

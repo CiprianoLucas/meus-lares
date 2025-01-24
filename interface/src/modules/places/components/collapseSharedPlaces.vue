@@ -9,10 +9,10 @@
 
     <div class="collapse pt-3" ref="listHtml">
         <div class="d-flex justify-content-center mb-3 mt-2">
-            <router-link :to="'condominio/condominio/apartamento/cadastro/'" class="btn btn-primary">Cadastrar novo
-                apartamento</router-link>
+            <router-link :to="'/espaco-compartilhado/cadastro/?condominium=' + condominiumId" class="btn btn-primary">Cadastrar novos
+                espaços compartilhados</router-link>
         </div>
-        <list-table :url="'/place/apartment/?condominium=' + condominiumId" :headers="headers" :column-path="columnPath"
+        <list-table :url="'/place/shared/?condominium=' + condominiumId" :headers="headers" :column-path="columnPath"
             :param-path="paramPath" :start="showCollapse" />
     </div>
 </template>
@@ -26,20 +26,17 @@ const listHtml = app.ref<HTMLElement>();
 const showCollapse = app.ref<boolean>(false);
 const listCollapse = app.ref<Collapse | null>(null);
 const headers = app.ref({
-    'tenant': null,
     'id': null,
     'identifier': "Identificador",
-    'tenant_name': "Responsável"
+    'capacity': "Capacidade",
 })
 
 const columnPath = app.ref({
-    'identifier': "apartamento/:apartmentId",
-    'tenant_name': "proprietario/tenant/:tenantId"
+    'identifier': "espaco-compartilhado/:espaco",
 })
 
 const paramPath = app.ref({
-    ':tenantId': "tenant",
-    ':apartmentId': "id"
+    ':espaco': "id",
 })
 
 const props = defineProps<{

@@ -7,7 +7,7 @@
         </div>
         <h1 class="text-center mt-5">Condomínios</h1>
         <list-cards :start="true" :headers="headers" url="/place/condominium/" :cashTime="300" title="name" img="profile_photo"
-            :hide="['id', 'name', 'profile_photo']" redirect="condominio" :params="['id']" />
+            :hide="['id', 'name', 'profile_photo']" redirect="condominio" :params="['id']" :searchable="true" />
     </div>
 </template>
 

@@ -8,7 +8,9 @@ from .views import (
     FullAddressView,
     SharedPlacesView,
     ParkingView,
-    BulkApartmentCreateView
+    BulkApartmentCreateView,
+    BulkParkCreateView,
+    BulkSharedPlaceCreateView
 )
 
 router = DefaultRouter()
@@ -20,6 +22,8 @@ router.register(r"shared", SharedPlacesView, "shared")
 urlpatterns = [
     path("", include(router.urls)),
     path('apartments/bulk-create/', BulkApartmentCreateView.as_view(), name='bulk-apartment-create'),
+    path('parks/bulk-create/', BulkParkCreateView.as_view(), name='bulk-apartment-create'),
+    path('shareds/bulk-create/', BulkSharedPlaceCreateView.as_view(), name='bulk-apartment-create'),
     path("cities/<str:uf>", CitiesView.as_view(), name="cities"),
     path("cep/<str:cep>", FullAddressView.as_view(), name="full-address-by-cep"),
 ]

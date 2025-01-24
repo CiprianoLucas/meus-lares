@@ -81,11 +81,11 @@ if settings.ENV not in ['production', 'storage']:
 
     class PublicMediaStorage(FileSystemStorage):
         location = os.path.join(settings.BASE_DIR, "media", "public")
-        base_url = "/media/public/"
+        base_url = settings.URL_BACK + "/media/public/"
 
     class PrivateMediaStorage(FileSystemStorage):
         location = os.path.join(settings.BASE_DIR, "media", "private")
-        base_url = "/media/private/"
+        base_url = settings.URL_BACK + "/media/private/"
 
 else:
     # class PublicMediaStorage(S3Boto3Storage):
