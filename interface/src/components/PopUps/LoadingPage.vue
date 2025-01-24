@@ -12,21 +12,21 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
-import { loagingPageStore } from '../template/Loading/stores';
+import { ref, watch } from 'vue'
+import { loagingPageStore } from '../template/Loading/stores'
 
 const loading = loagingPageStore()
 
-const visible = ref(loading.show);
-const message = ref(loading.message);
+const visible = ref(loading.show)
+const message = ref(loading.message)
 
 watch(
     () => loading.show,
     (newValue) => {
-        visible.value = newValue;
-        message.value = loading.message;
+        visible.value = newValue
+        message.value = loading.message
     }
-);
+)
 </script>
 
 <style scoped>

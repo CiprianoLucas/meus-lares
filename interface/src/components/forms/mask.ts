@@ -11,8 +11,8 @@ function applyMask(mask: string, value?: string) {
     const maskedValue = []
     let unmaskedIndex = 0
     let maskIndex = 0
-    if(!value){
-        return ""
+    if (!value) {
+        return ''
     }
 
     while (unmaskedIndex < value.length && maskIndex < mask.length) {

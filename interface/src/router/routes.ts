@@ -9,6 +9,6 @@ const routes: Array<RouteRecordRaw> = [
     ...auth,
     ...home,
     ...user,
-    ...places,
+    ...places
 ]
 export { routes }

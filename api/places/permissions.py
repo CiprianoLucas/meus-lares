@@ -31,7 +31,10 @@ class CondominiumOwnerPermission(BasePermission):
 
             if view.action in ["list", "retrieve"]:
                 return True
-            elif view.action in ["create", "update", "partial_update"] and not request.data:
+            elif (
+                view.action in ["create", "update", "partial_update"]
+                and not request.data
+            ):
                 return True
             elif view.action in ["create", "update", "partial_update"] and request.data:
                 apartment_id = request.data["apartment"]

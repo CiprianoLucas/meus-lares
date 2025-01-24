@@ -5,7 +5,7 @@ from rest_framework import serializers
 from relations.models import CondoStaff
 from soft_components.serializers import softModelSerializer
 
-from .models import Apartment, City, Condominium, SharedPlaces, ParkingSpace
+from .models import Apartment, City, Condominium, ParkingSpace, SharedPlaces
 
 
 class CondominiumsSerializer(softModelSerializer):
@@ -45,7 +45,7 @@ class CondominiumsSerializer(softModelSerializer):
 
     def to_internal_value(self, initial_data):
         data = initial_data.copy()
-        if(data.get('cep', None)):
+        if data.get("cep", None):
             data["cep"] = re.sub(r"\D", "", data["cep"]).zfill(8)
         return super().to_internal_value(data)
 
@@ -67,7 +67,8 @@ class ApartmentSerializer(softModelSerializer):
             "profile_photo": {"required": False, "allow_null": True},
             "condominium": {"required": False, "allow_null": True},
         }
-        
+
+
 class BulkApartmentCreateSerializer(serializers.Serializer):
     condominium_id = serializers.UUIDField()
     apartments = ApartmentSerializer(many=True)
@@ -78,28 +79,36 @@ class BulkApartmentCreateSerializer(serializers.Serializer):
         return value
 
     def create(self, validated_data):
-        condominium_id = validated_data['condominium_id']
-        apartments_data = validated_data['apartments']
-        
+        condominium_id = validated_data["condominium_id"]
+        apartments_data = validated_data["apartments"]
+
         condominium = Condominium.objects.get(id=condominium_id)
-        
+
         apartments = [
             Apartment(
                 condominium=condominium,
-                identifier=apartment['identifier'],
-                complement=apartment.get('complement', '')
+                identifier=apartment["identifier"],
+                complement=apartment.get("complement", ""),
             )
             for apartment in apartments_data
         ]
         Apartment.objects.bulk_create(apartments)
         return apartments
-        
-        
+
+
 class ParkingSerializer(softModelSerializer):
     apartment_identifier = serializers.SerializerMethodField()
+
     class Meta:
         model = ParkingSpace
-        fields = ["id", "identifier", "complement", "apartment", "condominium", "apartment_identifier"]
+        fields = [
+            "id",
+            "identifier",
+            "complement",
+            "apartment",
+            "condominium",
+            "apartment_identifier",
+        ]
         extra_kwargs = {
             "id": {"read_only": True},
             "complement": {"required": False, "allow_null": True},
@@ -107,12 +116,13 @@ class ParkingSerializer(softModelSerializer):
             "apartment": {"required": False, "allow_null": True},
             "apartment_identifier": {"read_only": True},
         }
-    
+
     def get_apartment_identifier(self, obj: ParkingSpace):
         if obj.apartment:
             return obj.apartment.identifier
         return None
-        
+
+
 class BulkParkCreateSerializer(serializers.Serializer):
     condominium_id = serializers.UUIDField()
     parks = ParkingSerializer(many=True)
@@ -123,27 +133,36 @@ class BulkParkCreateSerializer(serializers.Serializer):
         return value
 
     def create(self, validated_data):
-        condominium_id = validated_data['condominium_id']
-        parks_data = validated_data['parks']
-        
+        condominium_id = validated_data["condominium_id"]
+        parks_data = validated_data["parks"]
+
         condominium = Condominium.objects.get(id=condominium_id)
-        
+
         parks = [
             ParkingSpace(
                 condominium=condominium,
-                identifier=park['identifier'],
-                complement=park.get('complement', ''),
-                apartment=park.get('apartment')
+                identifier=park["identifier"],
+                complement=park.get("complement", ""),
+                apartment=park.get("apartment"),
             )
             for park in parks_data
         ]
         ParkingSpace.objects.bulk_create(parks)
         return parks
-        
+
+
 class SharedPlacesSerializer(softModelSerializer):
     class Meta:
         model = SharedPlaces
-        fields = ["id", "condominium", "identifier", "complement", "capacity", "clean_time", "is_reserveable"]
+        fields = [
+            "id",
+            "condominium",
+            "identifier",
+            "complement",
+            "capacity",
+            "clean_time",
+            "is_reserveable",
+        ]
         extra_kwargs = {
             "id": {"read_only": True},
             "complement": {"required": False, "allow_null": True},
@@ -152,7 +171,8 @@ class SharedPlacesSerializer(softModelSerializer):
             "clean_time": {"required": False, "allow_null": True},
             "capacity": {"required": False, "allow_null": True},
         }
-        
+
+
 class BulkSharedPlacesCreateSerializer(serializers.Serializer):
     condominium_id = serializers.UUIDField()
     shareds = SharedPlacesSerializer(many=True)
@@ -163,19 +183,19 @@ class BulkSharedPlacesCreateSerializer(serializers.Serializer):
         return value
 
     def create(self, validated_data):
-        condominium_id = validated_data['condominium_id']
-        shareds_data = validated_data['shareds']
-        
+        condominium_id = validated_data["condominium_id"]
+        shareds_data = validated_data["shareds"]
+
         condominium = Condominium.objects.get(id=condominium_id)
-        
+
         shareds = [
             SharedPlaces(
                 condominium=condominium,
-                identifier=shared['identifier'],
-                complement=shared.get('complement', ''),
-                capacity=shared.get('capacity'),
-                clean_time=shared.get('clean_time'),
-                is_reserveable=shared.get('is_reserveable'),
+                identifier=shared["identifier"],
+                complement=shared.get("complement", ""),
+                capacity=shared.get("capacity"),
+                clean_time=shared.get("clean_time"),
+                is_reserveable=shared.get("is_reserveable"),
             )
             for shared in shareds_data
         ]

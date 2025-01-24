@@ -1,7 +1,9 @@
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import viewsets
-from soft_components.views import SoftModelsViewSet
 from django.db.models import Q
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+
+from soft_components.views import SoftModelsViewSet
+
 from .models import Notification, UserNotification
 from .serializers import NotificationSerializer, UserNotificationSerializer
 
@@ -18,7 +20,8 @@ class NotificationView(SoftModelsViewSet):
         ).distinct()
 
         return notifications
-    
+
+
 class UserNotificationView(viewsets.ModelViewSet):
     serializer_class = UserNotificationSerializer
     permission_classes = [IsAuthenticated]
@@ -26,10 +29,12 @@ class UserNotificationView(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        notifications = UserNotification.objects.filter(Q(
-            notification__condominium__condostaff__user=user, 
-            notification__condominium__condostaff__role="owner")|
-            Q(user=user)
+        notifications = UserNotification.objects.filter(
+            Q(
+                notification__condominium__condostaff__user=user,
+                notification__condominium__condostaff__role="owner",
+            )
+            | Q(user=user)
         ).distinct()
 
         return notifications

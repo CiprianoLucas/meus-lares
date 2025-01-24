@@ -31,6 +31,9 @@ const popup = (
 
 const resumeErrors = (error: AxiosError, defaultMessage: string = 'Algo saiu errao') => {
     let errorMessage = ''
+    if (error.code == 'ERR_NETWORK') {
+        return 'Falha ao se conectar com o servidor'
+    }
 
     if (error.response && error.response.data) {
         const data = error.response.data as { [key: string]: string }

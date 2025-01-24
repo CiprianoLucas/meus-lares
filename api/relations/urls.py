@@ -6,7 +6,7 @@ from .views import (
     CondoTenantView,
     ContractStaffView,
     ContractTenantView,
-    PlaceReservationViewSet
+    PlaceReservationViewSet,
 )
 
 router = DefaultRouter()

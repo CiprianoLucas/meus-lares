@@ -13,7 +13,9 @@ from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from rest_framework.views import APIView
-from relations.models import CondoTenant, CondoStaff
+
+from relations.models import CondoStaff, CondoTenant
+
 from .models import User
 from .serializers import CustomSignupSerializer
 
@@ -64,19 +66,18 @@ class LoginView(APIView):
             if not email_address or not email_address.verified:
                 email_address.send_confirmation(request)
                 return JsonResponse(
-                    {
-                        "error": """Verifique seu e-mail."""
-                    },
+                    {"error": """Verifique seu e-mail."""},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
             perform_login(request, user, email_verification=None)
-            roles = list(CondoStaff.objects.filter(user=user).values('role'))
+            roles = list(CondoStaff.objects.filter(user=user).values("role"))
             roles = list(set([role["role"] for role in roles]))
-            if CondoTenant.objects.filter(user=user).exists(): roles.append('tenant')
-            
+            if CondoTenant.objects.filter(user=user).exists():
+                roles.append("tenant")
+
             response = {"nick": user.nick, "roles": roles, "email": user.email}
-            
+
             return JsonResponse(response)
 
         return JsonResponse(
@@ -116,24 +117,21 @@ class GoogleLogin(APIView):
             user = User.objects.filter(email=email).first()
 
             if not user:
-                response = {
-                    "has_user": False,
-                    "email": email,
-                    "full_name": name
-                }
+                response = {"has_user": False, "email": email, "full_name": name}
 
                 return JsonResponse(response, status=status.HTTP_200_OK)
 
             perform_login(request, user, email_verification=None)
-            roles = list(CondoStaff.objects.filter(user=user).values('role'))
+            roles = list(CondoStaff.objects.filter(user=user).values("role"))
             roles = list(set([role["role"] for role in roles]))
-            if CondoTenant.objects.filter(user=user).exists(): roles.append('tenant')
+            if CondoTenant.objects.filter(user=user).exists():
+                roles.append("tenant")
 
             response = {
                 "has_user": True,
                 "nick": user.nick,
                 "roles": roles,
-                "email": user.email
+                "email": user.email,
             }
 
             return JsonResponse(response, status=status.HTTP_200_OK)
@@ -149,22 +147,22 @@ class GoogleLogin(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
+
 def roles_view(request: HttpRequest):
     user = request.user
-    
+
     if not user.is_authenticated:
         return JsonResponse(
-                {"error": "Usuário não está logado"},
-                status=status.HTTP_403_FORBIDDEN,
-            )
-
-    roles = list(CondoStaff.objects.filter(user=user).values('role'))
-    roles = list(set([role["role"] for role in roles]))
-    if CondoTenant.objects.filter(user=user).exists(): roles.append('tenant')
-    
-    return JsonResponse(
-            {"roles": roles}, status=status.HTTP_200_OK
+            {"error": "Usuário não está logado"},
+            status=status.HTTP_403_FORBIDDEN,
         )
+
+    roles = list(CondoStaff.objects.filter(user=user).values("role"))
+    roles = list(set([role["role"] for role in roles]))
+    if CondoTenant.objects.filter(user=user).exists():
+        roles.append("tenant")
+
+    return JsonResponse({"roles": roles}, status=status.HTTP_200_OK)
 
 
 def logout_view(request: HttpRequest):

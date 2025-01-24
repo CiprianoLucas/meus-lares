@@ -9,7 +9,8 @@ const app = {
     ref: ref,
     routeQuery: (param: string) => useRoute().query[param],
     routeParam: (param: string) => useRoute().params[param],
-    loading: (show: boolean, message: string = "Carregando...") => loagingPageStore().loading(show, message),
+    loading: (show: boolean, message: string = 'Carregando...') =>
+        loagingPageStore().loading(show, message),
     onMounted: onMounted,
     onBeforeMount: onBeforeMount,
     popup: popup,

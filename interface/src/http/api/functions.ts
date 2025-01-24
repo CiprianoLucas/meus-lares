@@ -55,15 +55,14 @@ api.getListCashed = async function (path, force?, time?, clearPath?) {
         const timestampAtual = Date.now()
         const cash = apiListStore()
         const obj = cash.getResult(path)
-        
 
         if (obj) {
-
             if (
                 obj.createAt + 20000 >= timestampAtual ||
-                (obj.createAt + 20000 < timestampAtual && !actualForce && obj.createAt + obj.expirate > timestampAtual)
+                (obj.createAt + 20000 < timestampAtual &&
+                    !actualForce &&
+                    obj.createAt + obj.expirate > timestampAtual)
             ) {
-                
                 const response = obj.response
                 const result = response.results
                 const count = response.count
@@ -73,7 +72,7 @@ api.getListCashed = async function (path, force?, time?, clearPath?) {
             }
         }
 
-        if(clearPath){
+        if (clearPath) {
             api.clearStartPath(clearPath)
         }
 

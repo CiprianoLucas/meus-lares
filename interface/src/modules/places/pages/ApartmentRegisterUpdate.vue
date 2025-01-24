@@ -7,11 +7,18 @@
             <button @click="addApartment" class="btn btn-secondary">Adicionar</button>
         </div>
         <div v-if="!apartmentId" class="p-2">
-            <p><small>Os apartamentos adicionados só serão cadastrados ao clicar em "Cadastrar"</small></p>
+            <p>
+                <small
+                    >Os apartamentos adicionados só serão cadastrados ao clicar em
+                    "Cadastrar"</small
+                >
+            </p>
         </div>
         <div class="d-flex justify-content-between my-3">
             <button @click="goBack" class="btn btn-secondary">Voltar</button>
-            <button v-if="apartmentId" @click="updateApartment" class="btn btn-primary">Salvar</button>
+            <button v-if="apartmentId" @click="updateApartment" class="btn btn-primary">
+                Salvar
+            </button>
             <button v-else @click="registerApartments" class="btn btn-primary">Cadastrar</button>
         </div>
         <div v-if="listApartmentsRegister.length > 0">
@@ -28,12 +35,18 @@
                             <td>{{ aparment.identifier }}</td>
                             <td>
                                 <div class="d-flex justify-content-end">
-                                    <button @click="complementModalBody = aparment.complement"
-                                        class="btn btn-secondary py-0 px-1 mx-1" data-bs-toggle="modal"
-                                        data-bs-target="#complementModal">
+                                    <button
+                                        @click="complementModalBody = aparment.complement"
+                                        class="btn btn-secondary py-0 px-1 mx-1"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#complementModal"
+                                    >
                                         <small><i class="bi bi-file-text"></i></small>
                                     </button>
-                                    <button @click="deleteApartment(i)" class="btn btn-danger py-0 px-1 mx-1">
+                                    <button
+                                        @click="deleteApartment(i)"
+                                        class="btn btn-danger py-0 px-1 mx-1"
+                                    >
                                         <small><i class="bi bi-trash"></i></small>
                                     </button>
                                 </div>
@@ -43,24 +56,35 @@
                 </table>
             </div>
         </div>
-        <div class="modal fade" id="complementModal" tabindex="-1" aria-labelledby="complementModalLabel"
-            aria-hidden="true">
+        <div
+            class="modal fade"
+            id="complementModal"
+            tabindex="-1"
+            aria-labelledby="complementModalLabel"
+            aria-hidden="true"
+        >
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="complementModalLabel">Descrição</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
                     </div>
                     <div class="modal-body">
                         {{ complementModalBody }}
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Fechar
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -84,28 +108,27 @@ const inputs = app.ref<Input[]>([
         reference: 'complement',
         label: 'Descrição',
         size: 'xl',
-        type: 'textarea',
+        type: 'textarea'
     }
 ])
 const apartmentId = app.ref(app.routeParam('id'))
 if (!apartmentId) {
-    inputs.value.push(
-        {
-            reference: 'sufix',
-            label: 'Sufixo',
-            size: 'bit',
-            type: 'text',
-            placeholder: 'Ex: 101, 102, a1...'
-        })
+    inputs.value.push({
+        reference: 'sufix',
+        label: 'Sufixo',
+        size: 'bit',
+        type: 'text',
+        placeholder: 'Ex: 101, 102, a1...'
+    })
 }
 
-const condominiumId = app.routeQuery("condominium")
+const condominiumId = app.routeQuery('condominium')
 const complementModalBody = app.ref()
 
 const apartmentForm = app.ref<{ [key: string]: string }>({
     identifier: '',
     sufix: '',
-    complement: '',
+    complement: ''
 })
 
 const listApartmentsRegister = app.ref<Apartment[]>([])
@@ -115,12 +138,12 @@ function addApartment() {
 
     identifier = identifier.trim()
     if (!identifier) {
-        app.popup("Erro!", "Não foi inserido identificador", 'warning')
+        app.popup('Erro!', 'Não foi inserido identificador', 'warning')
         return
     }
 
-    if (listApartmentsRegister.value.some(aparment => aparment.identifier === identifier)) {
-        app.popup("Erro!", "Já existe um apartamento com esse identificador.", 'warning')
+    if (listApartmentsRegister.value.some((aparment) => aparment.identifier === identifier)) {
+        app.popup('Erro!', 'Já existe um apartamento com esse identificador.', 'warning')
         return
     }
 
@@ -143,9 +166,9 @@ function deleteApartment(i: number) {
 
 function registerApartments() {
     if (!condominiumId) {
-        app.popup("Erro!", "Condomínio não identificado", "danger")
+        app.popup('Erro!', 'Condomínio não identificado', 'danger')
     }
-    app.loading(true, "Cadastrando...")
+    app.loading(true, 'Cadastrando...')
     const payload = {
         condominium_id: condominiumId,
         apartments: listApartmentsRegister.value
@@ -167,7 +190,7 @@ function registerApartments() {
 }
 
 function updateApartment() {
-    app.loading(true, "Atualizando...")
+    app.loading(true, 'Atualizando...')
     const payload = {
         identifier: apartmentForm.value.identifier,
         complement: apartmentForm.value.complement
@@ -207,5 +230,4 @@ async function getApartmentValues() {
             app.popup('Erro!', 'Falha ao obter informações do condomínio', 'warning')
         })
 }
-
 </script>

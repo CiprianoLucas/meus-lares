@@ -5,13 +5,25 @@
             <form @submit.prevent="login">
                 <div class="mb-3">
                     <label for="email" class="form-label">E-mail:</label>
-                    <input type="text" id="email" v-model="form.email" required class="form-control"
-                        placeholder="Digite seu e-mail" />
+                    <input
+                        type="text"
+                        id="email"
+                        v-model="form.email"
+                        required
+                        class="form-control"
+                        placeholder="Digite seu e-mail"
+                    />
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Senha:</label>
-                    <input type="password" id="password" v-model="form.password" required class="form-control"
-                        placeholder="Digite sua senha" />
+                    <input
+                        type="password"
+                        id="password"
+                        v-model="form.password"
+                        required
+                        class="form-control"
+                        placeholder="Digite sua senha"
+                    />
                 </div>
                 <button type="submit" class="btn btn-primary w-100 mt-4" :disabled="buttonDisabled">
                     Entrar
@@ -50,20 +62,20 @@ app.onMounted(() => {
     googleScript.src = 'https://accounts.google.com/gsi/client'
     googleScript.async = true
     googleScript.onload = () => {
-        ; (window as any).google.accounts.id.initialize({
+        ;(window as any).google.accounts.id.initialize({
             client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
             callback: (response: { credential: string }) => {
                 handleGoogleLogin(response.credential)
             }
         })
-            ; (window as any).google.accounts.id.renderButton(
-                document.getElementById('google-login-button'),
-                {
-                    theme: 'outline',
-                    size: 'large',
-                    width: '100%'
-                }
-            )
+        ;(window as any).google.accounts.id.renderButton(
+            document.getElementById('google-login-button'),
+            {
+                theme: 'outline',
+                size: 'large',
+                width: '100%'
+            }
+        )
     }
     document.head.appendChild(googleScript)
 })
@@ -112,13 +124,13 @@ const login = () => {
 
 const redirectRole = () => {
     switch (user.role) {
-        case "owner":
+        case 'owner':
             router.push('/proprietario')
             break
-        case "tenant":
+        case 'tenant':
             router.push('/morador')
             break
-        case "":
+        case '':
             router.push('/usuario/papel')
             break
     }

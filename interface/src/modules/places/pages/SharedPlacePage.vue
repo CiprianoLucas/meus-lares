@@ -7,11 +7,18 @@
             <button @click="addSharedPlace" class="btn btn-secondary">Adicionar</button>
         </div>
         <div class="p-2">
-            <p><small>Os espaços compartilhados adicionados só serão cadastrados ao clicar em "Cadastrar"</small></p>
+            <p>
+                <small
+                    >Os espaços compartilhados adicionados só serão cadastrados ao clicar em
+                    "Cadastrar"</small
+                >
+            </p>
         </div>
         <div class="d-flex justify-content-between my-3">
             <button @click="goBack" class="btn btn-secondary">Voltar</button>
-            <button v-if="sharedId" @click="updateSharedPlace" class="btn btn-primary">Salvar</button>
+            <button v-if="sharedId" @click="updateSharedPlace" class="btn btn-primary">
+                Salvar
+            </button>
             <button v-else @click="registerSharedPlaces" class="btn btn-primary">Cadastrar</button>
         </div>
         <div v-if="listSharedPlacesRegister.length > 0">
@@ -30,12 +37,18 @@
                             <td>{{ shared.capacity }}</td>
                             <td>
                                 <div class="d-flex justify-content-end">
-                                    <button @click="complementModalBody = shared"
-                                        class="btn btn-secondary py-0 px-1 mx-1" data-bs-toggle="modal"
-                                        data-bs-target="#complementModal">
+                                    <button
+                                        @click="complementModalBody = shared"
+                                        class="btn btn-secondary py-0 px-1 mx-1"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#complementModal"
+                                    >
                                         <small><i class="bi bi-file-text"></i></small>
                                     </button>
-                                    <button @click="deleteSharedPlace(i)" class="btn btn-danger py-0 px-1 mx-1">
+                                    <button
+                                        @click="deleteSharedPlace(i)"
+                                        class="btn btn-danger py-0 px-1 mx-1"
+                                    >
                                         <small><i class="bi bi-trash"></i></small>
                                     </button>
                                 </div>
@@ -45,30 +58,49 @@
                 </table>
             </div>
         </div>
-        <div class="modal fade" id="complementModal" tabindex="-1" aria-labelledby="complementModalLabel"
-            aria-hidden="true">
+        <div
+            class="modal fade"
+            id="complementModal"
+            tabindex="-1"
+            aria-labelledby="complementModalLabel"
+            aria-hidden="true"
+        >
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="complementModalLabel">Descrição</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
                     </div>
                     <div class="modal-body">
-                        <p><strong>Capacidade máxima:</strong> {{ complementModalBody?.capacity }}</p>
-                        <p><strong>Permite reservas:</strong> {{ complementModalBody?.is_reserveable?"Sim":"Não" }}</p>
-                        <p v-if="complementModalBody?.clean_time"><strong>Tempo de limpeza após uso (HH:MM):</strong> 
-                            {{ Math.floor(complementModalBody.clean_time / 60) }}:{{ complementModalBody.clean_time % 60 }}
+                        <p>
+                            <strong>Capacidade máxima:</strong> {{ complementModalBody?.capacity }}
+                        </p>
+                        <p>
+                            <strong>Permite reservas:</strong>
+                            {{ complementModalBody?.is_reserveable ? 'Sim' : 'Não' }}
+                        </p>
+                        <p v-if="complementModalBody?.clean_time">
+                            <strong>Tempo de limpeza após uso (HH:MM):</strong>
+                            {{ Math.floor(complementModalBody.clean_time / 60) }}:{{
+                                complementModalBody.clean_time % 60
+                            }}
                         </p>
                         <p v-else><strong>Tempo de limpeza após uso:</strong> 0</p>
                         <p><strong>Descrição:</strong> {{ complementModalBody?.complement }}</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Fechar
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -105,7 +137,7 @@ const inputs = app.ref<Input[]>([
         reference: 'is_reserveable',
         label: 'Permite reservas',
         size: 'sm',
-        type: 'check',
+        type: 'check'
     },
     {
         reference: 'clean_time',
@@ -119,11 +151,11 @@ const inputs = app.ref<Input[]>([
         reference: 'complement',
         label: 'Descrição',
         size: 'xl',
-        type: 'textarea',
+        type: 'textarea'
     }
 ])
 const sharedId = app.ref(app.routeParam('id'))
-const condominiumId = app.routeQuery("condominium")
+const condominiumId = app.routeQuery('condominium')
 const complementModalBody = app.ref<SharedPlace>()
 
 const sharedForm = app.ref<{ [key: string]: string }>({
@@ -132,7 +164,7 @@ const sharedForm = app.ref<{ [key: string]: string }>({
     capacity: '',
     is_reserveable: '',
     clean_time: '',
-    complement: '',
+    complement: ''
 })
 
 const listSharedPlacesRegister = app.ref<SharedPlace[]>([])
@@ -142,17 +174,17 @@ function addSharedPlace() {
 
     identifier = identifier.trim()
     if (!identifier) {
-        app.popup("Erro!", "Não foi inserido identificador", 'warning')
+        app.popup('Erro!', 'Não foi inserido identificador', 'warning')
         return
     }
 
-    if (listSharedPlacesRegister.value.some(shared => shared.identifier === identifier)) {
-        app.popup("Erro!", "Já existe um espaço compartilhado com esse identificador.", 'warning')
+    if (listSharedPlacesRegister.value.some((shared) => shared.identifier === identifier)) {
+        app.popup('Erro!', 'Já existe um espaço compartilhado com esse identificador.', 'warning')
         return
     }
-    const hourCleanTime = sharedForm.value.clean_time.slice(0,2)
-    const minCleanTime = sharedForm.value.clean_time.slice(3,5)
-    const clean_time = (Number(hourCleanTime) * 60) + Number(minCleanTime)
+    const hourCleanTime = sharedForm.value.clean_time.slice(0, 2)
+    const minCleanTime = sharedForm.value.clean_time.slice(3, 5)
+    const clean_time = Number(hourCleanTime) * 60 + Number(minCleanTime)
 
     const newSharedPlace = <SharedPlace>{
         complement: sharedForm.value.complement,
@@ -177,9 +209,9 @@ function deleteSharedPlace(i: number) {
 
 function registerSharedPlaces() {
     if (!condominiumId) {
-        app.popup("Erro!", "Condomínio não identificado", "danger")
+        app.popup('Erro!', 'Condomínio não identificado', 'danger')
     }
-    app.loading(true, "Cadastrando...")
+    app.loading(true, 'Cadastrando...')
     const payload = {
         condominium_id: condominiumId,
         shareds: listSharedPlacesRegister.value
@@ -201,7 +233,7 @@ function registerSharedPlaces() {
 }
 
 function updateSharedPlace() {
-    app.loading(true, "Atualizando...")
+    app.loading(true, 'Atualizando...')
     app.api
         .patch('/place/shared/' + sharedId.value + '/', sharedForm.value)
         .then(({ data }) => {
@@ -238,5 +270,4 @@ async function getSharedPlaceValues() {
             app.popup('Erro!', 'Falha ao obter informações do condomínio', 'warning')
         })
 }
-
 </script>

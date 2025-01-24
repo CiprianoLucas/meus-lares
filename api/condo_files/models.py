@@ -1,9 +1,10 @@
 from django.db import models
 
+from condo_requests.models import CondoRequest
 from meus_lares.storages import PrivateMediaStorage, validate_file
 from relations.models import CondoTenant, Contract
 from soft_components import SoftModel
-from condo_requests.models import CondoRequest
+
 
 class ContractFiles(SoftModel):
     contract = models.ForeignKey(Contract, on_delete=models.DO_NOTHING)
@@ -31,6 +32,7 @@ class AptInspectImages(SoftModel):
     class Meta:
         verbose_name = "Imagem de Inspeção de Apartamento"
         verbose_name_plural = "Imagens de Inspeção de Apartamentos"
+
 
 class RequestFiles(SoftModel):
     file = models.FileField(upload_to="requests/files/", storage=PrivateMediaStorage())

@@ -1,26 +1,28 @@
 import uuid
+from io import BytesIO
 
 from django.contrib.auth.models import AbstractUser
+from django.core.files import File
 from django.db import models
 from django.db.models.fields import UUIDField
 from django.db.models.fields.files import FileField, ImageField
 from django.db.models.fields.related import ForeignKey
 from django.utils.timezone import now
-from rest_framework import serializers
 from PIL import Image
-from io import BytesIO
-from django.core.files import File
+from rest_framework import serializers
 
 from meus_lares.storages import PrivateMediaStorage, PublicMediaStorage
 from soft_components.managers import SoftUserManager
 
+
 def unique_email(value, id):
     if User.objects.filter(email=value).exclude(id=id).exists():
         raise serializers.ValidationError({"error": "email is already in use"})
-    
+
+
 def validate_all_params(user):
     unique_email(user.email, user.id)
-        
+
 
 class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -54,10 +56,10 @@ class User(AbstractUser):
     history = models.JSONField(default=list, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     objects = SoftUserManager()
-    
+
     def clean(self):
         unique_email(self.email, self.id)
-        
+
     def save_history(self, *args, user=None, query_delete=False, **kwargs):
         if self.pk:
             old_instance = type(self).objects.filter(pk=self.pk).first()
@@ -65,12 +67,12 @@ class User(AbstractUser):
                 changes = {}
                 for field in self._meta.fields:
                     field_name = field.name
-                    if field_name in ['last_login', 'date_joined']:
+                    if field_name in ["last_login", "date_joined"]:
                         continue
-                    
+
                     old_value = getattr(old_instance, field_name)
                     new_value = getattr(self, field_name)
-                    
+
                     if isinstance(field, models.DateField):
                         old_value = str(old_value) if old_value else None
                         new_value = str(new_value) if new_value else None
@@ -118,14 +120,14 @@ class User(AbstractUser):
                             "changes": {"is_deleted": {"new": False, "old": True}},
                         }
                     )
-    
+
     def sizeImgs(self, *args, **kwargs):
         if self.profile_photo:
             img = Image.open(self.profile_photo)
-            
-            if img.mode == 'RGBA':
-                img = img.convert('RGB')
-            
+
+            if img.mode == "RGBA":
+                img = img.convert("RGB")
+
             max_size = 400
             width, height = img.size
 
@@ -139,15 +141,16 @@ class User(AbstractUser):
             img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
 
             image_io = BytesIO()
-            img.save(image_io, format='JPEG')
+            img.save(image_io, format="JPEG")
             image_io.seek(0)
-            
+
             self.profile_photo.save(self.profile_photo.name, File(image_io), save=False)
 
     def save(self, *args, user=None, query_delete=False, **kwargs):
         self.sizeImgs(self, *args, **kwargs)
         self.save_history(self, *args, user=user, query_delete=query_delete, **kwargs)
         super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = "Usuario"
         verbose_name_plural = "Usuarios"

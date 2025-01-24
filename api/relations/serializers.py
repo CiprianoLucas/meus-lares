@@ -1,6 +1,6 @@
 from rest_framework import serializers
+
 from soft_components.serializers import softModelSerializer
-from django.conf import settings
 
 from .models import CondoStaff, CondoTenant, Contract, PlaceReservation
 
@@ -118,10 +118,7 @@ class PlaceReservationSerializer(serializers.ModelSerializer):
         end_time = data["end_time"]
 
         conflit = PlaceReservation.objects.filter(
-            place=place,
-            date=date,
-            start_time__lt=end_time,
-            end_time__gt=start_time
+            place=place, date=date, start_time__lt=end_time, end_time__gt=start_time
         )
         if conflit.exists():
             raise serializers.ValidationError("This time is already booked.")

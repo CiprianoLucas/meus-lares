@@ -3,13 +3,17 @@ export default [
         path: '/condominio/cadastro/',
         name: 'condominio_cadastro',
         component: () =>
-            import(/* webpacjChunkName: "cadastro de condomínio" */ './pages/CondominiumRegisterUpdate.vue')
+            import(
+                /* webpacjChunkName: "cadastro de condomínio" */ './pages/CondominiumRegisterUpdate.vue'
+            )
     },
     {
         path: '/condominio/edicao/:id/',
         name: 'condominio_edicao',
         component: () =>
-            import(/* webpacjChunkName: "edição de condomínio" */ './pages/CondominiumRegisterUpdate.vue')
+            import(
+                /* webpacjChunkName: "edição de condomínio" */ './pages/CondominiumRegisterUpdate.vue'
+            )
     },
     {
         path: '/condominio/lista/',
@@ -27,13 +31,17 @@ export default [
         path: '/apartamento/cadastro/',
         name: 'apartamento_cadastro',
         component: () =>
-            import(/* webpacjChunkName: "cadastro de apartamento" */ './pages/ApartmentRegisterUpdate.vue')
+            import(
+                /* webpacjChunkName: "cadastro de apartamento" */ './pages/ApartmentRegisterUpdate.vue'
+            )
     },
     {
         path: '/apartamento/edicao/:id/',
         name: 'apartamento_edicao',
         component: () =>
-            import(/* webpacjChunkName: "edição de apartamento" */ './pages/ApartmentRegisterUpdate.vue')
+            import(
+                /* webpacjChunkName: "edição de apartamento" */ './pages/ApartmentRegisterUpdate.vue'
+            )
     },
     {
         path: '/apartamento/:id/',
@@ -45,13 +53,17 @@ export default [
         path: '/estacionamento/cadastro/',
         name: 'estacionamento_cadastro',
         component: () =>
-            import(/* webpacjChunkName: "cadastro de estacionamento" */ './pages/ParkRegisterUpdate.vue')
+            import(
+                /* webpacjChunkName: "cadastro de estacionamento" */ './pages/ParkRegisterUpdate.vue'
+            )
     },
     {
         path: '/estacionamento/edicao/:id/',
         name: 'estacionamento_edicao',
         component: () =>
-            import(/* webpacjChunkName: "edição de estacionamento" */ './pages/ParkRegisterUpdate.vue')
+            import(
+                /* webpacjChunkName: "edição de estacionamento" */ './pages/ParkRegisterUpdate.vue'
+            )
     },
     {
         path: '/estacionamento/:id/',
@@ -63,18 +75,24 @@ export default [
         path: '/espaco-compartilhado/cadastro/',
         name: 'espaco-compartilhado_cadastro',
         component: () =>
-            import(/* webpacjChunkName: "cadastro de espaço compartilhado" */ './pages/SharedPlaceRegisterUpdate.vue')
+            import(
+                /* webpacjChunkName: "cadastro de espaço compartilhado" */ './pages/SharedPlaceRegisterUpdate.vue'
+            )
     },
     {
         path: '/espaco-compartilhado/edicao/:id/',
         name: 'espaco-compartilhado_edicao',
         component: () =>
-            import(/* webpacjChunkName: "edição de espaço compartilhado" */ './pages/SharedPlaceRegisterUpdate.vue')
+            import(
+                /* webpacjChunkName: "edição de espaço compartilhado" */ './pages/SharedPlaceRegisterUpdate.vue'
+            )
     },
     {
         path: '/espaco-compartilhado/:id/',
         name: 'espaco-compartilhado_page',
         component: () =>
-            import(/* webpacjChunkName: "página do espaço compartilhado" */ './pages/CondominiumPage.vue')
+            import(
+                /* webpacjChunkName: "página do espaço compartilhado" */ './pages/CondominiumPage.vue'
+            )
     }
 ]

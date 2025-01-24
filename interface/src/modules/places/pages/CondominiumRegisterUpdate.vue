@@ -5,7 +5,9 @@
         <custom-form :form="condominiumForm" :inputs="inputs" />
         <div class="d-flex justify-content-between mt-5">
             <button @click="goBack" class="btn btn-secondary">Voltar</button>
-            <button v-if="condominiumId" @click="updateCondominium" class="btn btn-primary">Salvar</button>
+            <button v-if="condominiumId" @click="updateCondominium" class="btn btn-primary">
+                Salvar
+            </button>
             <button v-else @click="registerCondominium" class="btn btn-primary">Cadastrar</button>
         </div>
     </div>
@@ -60,7 +62,7 @@ async function updateCities(uf: string = '') {
 
 async function verifyCep(cep: string = '') {
     if (cep.length === 9) {
-        const {data} = await (app.api.get('/place/cep/' + cep))
+        const { data } = await app.api.get('/place/cep/' + cep)
         condominiumForm.value.city = data.city
         condominiumForm.value.state = data.state
         condominiumForm.value.neighborhood = data.neighborhood
@@ -84,7 +86,7 @@ function registerCondominium() {
 function updateCondominium() {
     app.api
         .patch('/place/condominium/' + condominiumId.value + '/', condominiumForm.value)
-        .then(({data}) => {
+        .then(({ data }) => {
             app.popup('Sucesso!', 'Informações do condomínio salvas', 'success')
             app.api.removeListCash('/place/condominium/')
             router.push('/condominio/' + data.id)
@@ -95,11 +97,11 @@ function updateCondominium() {
 }
 
 function goBack() {
-  router.go(-1)
+    router.go(-1)
 }
 
 app.onMounted(async () => {
-    if(condominiumId.value){
+    if (condominiumId.value) {
         await getCondominiumValues()
     }
 })
@@ -109,12 +111,11 @@ async function getCondominiumValues() {
         .get(`/place/condominium/${condominiumId.value}/`)
         .then(({ data }) => {
             condominiumForm.value = data
-            condominiumForm.value.cep = data.cep.replace(/(\d{5})(\d{3})/, "$1-$2")
+            condominiumForm.value.cep = data.cep.replace(/(\d{5})(\d{3})/, '$1-$2')
             delete condominiumForm.value.profile_photo
         })
         .catch(() => {
             app.popup('Erro!', 'Falha ao obter informações do condomínio', 'warning')
         })
 }
-
 </script>

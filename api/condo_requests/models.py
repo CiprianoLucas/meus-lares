@@ -1,6 +1,7 @@
 from django.db import models
-from soft_components import SoftModel
+
 from places.models import Apartment, Condominium
+from soft_components import SoftModel
 from users.models import User
 
 
@@ -59,6 +60,3 @@ class CondoRequest(SoftModel):
     class Meta:
         verbose_name = "Requisição"
         verbose_name_plural = "Requisições"
-
-
-

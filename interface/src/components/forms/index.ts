@@ -131,7 +131,7 @@ const inputsLabel: { [key: string]: string } = {
     full_name: 'Nome completo',
     password: 'Senha',
     error: 'Erro',
-    birth: "Data de nascimento",
+    birth: 'Data de nascimento'
 }
 
 const inputsProps = <Input[]>[
@@ -192,7 +192,7 @@ const inputsProps = <Input[]>[
         label: 'Identificador',
         size: 'md',
         type: 'text'
-    },
+    }
 ]
 
 export { inputsLabel, inputsProps, states }

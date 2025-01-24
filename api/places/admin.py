@@ -67,7 +67,8 @@ class ApartmentsAdmin(SoftAdmin):
         return "Sem foto"
 
     profile_photo_url.short_description = "Foto"
-    
+
+
 class ParkingSpaceAdmin(SoftAdmin):
     list_display = ("id", "condominium", "identifier", "apartment")
     list_filter = ("condominium", "apartment")

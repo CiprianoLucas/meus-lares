@@ -8,7 +8,8 @@ export default [
     {
         path: '/proprietario',
         name: 'home-owner',
-        component: () => import(/* webpackChunkName: "home proprietario" */ './pages/OwnerHomePage.vue'),
+        component: () =>
+            import(/* webpackChunkName: "home proprietario" */ './pages/OwnerHomePage.vue'),
         meta: { requiresAuth: false }
     }
 ]

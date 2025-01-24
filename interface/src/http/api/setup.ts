@@ -27,8 +27,6 @@ api.interceptors.response.use(
                 return Promise.reject(err)
             }
         }
-        if (error.code == 'ERR_NETWORK')
-            popup('Erro!', 'Não foi possível se conectar ao servidor', 'warning')
         return Promise.reject(error)
     }
 )
@@ -36,15 +34,13 @@ api.interceptors.response.use(
 function getCsrf() {
     api.get('/user/info/').then(({ data }) => {
         api.defaults.headers.common['X-CSRFToken'] = data.csrftoken
-        try{
+        try {
             const user = userStore()
-            if(user.email != data.email){
-                user.email = ""
-                user.nick = ""
+            if (user.email != data.email) {
+                user.email = ''
+                user.nick = ''
             }
-        } catch {
-
-        }
+        } catch {}
     })
 }
 getCsrf()

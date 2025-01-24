@@ -1,30 +1,25 @@
-from soft_components.serializers import softModelSerializer
 from rest_framework import serializers
 
-from .models import RecurringFee, BreachPenalty, FinePenalty
+from soft_components.serializers import softModelSerializer
+
+from .models import BreachPenalty, FinePenalty, RecurringFee
 
 
 class BreachPenaltySerializer(softModelSerializer):
     user_fullname = serializers.SerializerMethodField()
-    
+
     class Meta:
         model = BreachPenalty
-        fields = [
-            "id",
-            "name",
-            "contract",
-            "user_fullname",
-            "value",
-            "is_percentage"
-        ]
+        fields = ["id", "name", "contract", "user_fullname", "value", "is_percentage"]
         extra_kwargs = {"id": {"read_only": True}}
-    
+
     def get_user_fullname(self, obj: BreachPenalty):
         return obj.contract.related_object.user.full_name
 
 
 class RecurringFeeSerializer(softModelSerializer):
     user_fullname = serializers.SerializerMethodField()
+
     class Meta:
         model = RecurringFee
         fields = [
@@ -37,16 +32,17 @@ class RecurringFeeSerializer(softModelSerializer):
             "value",
             "payment_status",
             "opening_day",
-            "due_date"
+            "due_date",
         ]
         extra_kwargs = {"id": {"read_only": True}}
 
     def get_user_fullname(self, obj: RecurringFee):
         return obj.contract.related_object.user.full_name
-    
-    
+
+
 class FinePenaltySerializer(softModelSerializer):
     user_fullname = serializers.SerializerMethodField()
+
     class Meta:
         model = FinePenalty
         fields = [
@@ -57,12 +53,13 @@ class FinePenaltySerializer(softModelSerializer):
             "value",
             "status",
             "infraction_type",
-            "description"
+            "description",
         ]
         extra_kwargs = {"id": {"read_only": True}}
 
     def get_user_fullname(self, obj: FinePenalty):
-        return obj.contract.related_object.user.full_name 
+        return obj.contract.related_object.user.full_name
+
 
 class CalculatePenalitySerializer(serializers.Serializer):
     contract = serializers.CharField()

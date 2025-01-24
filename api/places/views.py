@@ -1,24 +1,24 @@
 import httpx
 from django.db.models import Q
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.pagination import PageNumberPagination
 
 from soft_components.views import SoftModelsViewSet
 
-from .models import Apartment, City, Condominium, SharedPlaces,ParkingSpace
+from .models import Apartment, City, Condominium, ParkingSpace, SharedPlaces
 from .serializers import (
     ApartmentSerializer,
-    CitySerializer,
-    SharedPlacesSerializer,
-    CondominiumsSerializer,
-    ParkingSerializer,
-    FullAddressSerializer,
     BulkApartmentCreateSerializer,
     BulkParkCreateSerializer,
-    BulkSharedPlacesCreateSerializer
+    BulkSharedPlacesCreateSerializer,
+    CitySerializer,
+    CondominiumsSerializer,
+    FullAddressSerializer,
+    ParkingSerializer,
+    SharedPlacesSerializer,
 )
 
 
@@ -39,7 +39,7 @@ class CondominiumOwnerView(SoftModelsViewSet):
         condominiums = Condominium.objects.filter(
             condostaff__user=user, condostaff__role="owner"
         ).distinct()
-        
+
         condominiums = self.search_sort(condominiums)
 
         return condominiums
@@ -48,10 +48,7 @@ class CondominiumOwnerView(SoftModelsViewSet):
 class ApartmentOwnerView(SoftModelsViewSet):
     serializer_class = ApartmentSerializer
     permission_classes = [IsAuthenticated]
-    sort = {
-        "identifier": "identifier",
-        "tenant_name": "condotenant__user__full_name"
-    }
+    sort = {"identifier": "identifier", "tenant_name": "condotenant__user__full_name"}
     search = [
         "identifier__icontains",
         "condotenant__user__full_name__icontains",
@@ -60,35 +57,37 @@ class ApartmentOwnerView(SoftModelsViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        
+
         apartments = Apartment.objects.filter(
-            condominium__condostaff__user=user, 
-            condominium__condostaff__role__in=["owner"]
+            condominium__condostaff__user=user,
+            condominium__condostaff__role__in=["owner"],
         ).distinct()
-        
+
         query_params = self.request.query_params
         condominium_id = query_params.get("condominium")
         if condominium_id:
             apartments = apartments.filter(condominium__id=condominium_id)
-        
+
         apartments = self.search_sort(apartments)
 
         return apartments
+
 
 class BulkApartmentCreateView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = BulkApartmentCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "Apartments created successfully!"}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"message": "Apartments created successfully!"},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 class ParkingView(SoftModelsViewSet):
     serializer_class = ParkingSerializer
-    sort = {
-        "identifier": "identifier",
-        "apartment": "apartment__identifier"
-    }
+    sort = {"identifier": "identifier", "apartment": "apartment__identifier"}
     search = [
         "identifier__icontains",
         "apartment__identifier__icontains",
@@ -100,7 +99,7 @@ class ParkingView(SoftModelsViewSet):
         parks = ParkingSpace.objects.filter(
             condominium__condostaff__user=user, condominium__condostaff__role="owner"
         ).distinct()
-        
+
         query_params = self.request.query_params
         condominium_id = query_params.get("condominium")
         apartment_id = query_params.get("apartment")
@@ -108,29 +107,28 @@ class ParkingView(SoftModelsViewSet):
             parks = parks.filter(condominium__id=condominium_id)
         if apartment_id:
             parks = parks.filter(apartment__id=apartment_id)
-        
+
         parks = self.search_sort(parks)
 
         return parks
-    
+
+
 class BulkParkCreateView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = BulkParkCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "Parks created successfully!"}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"message": "Parks created successfully!"},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SharedPlacesView(SoftModelsViewSet):
     serializer_class = SharedPlacesSerializer
-    sort = {
-        "identifier": "identifier",
-        "capacity": "capacity"
-    }
-    search = [
-        "identifier__icontains"
-    ]
+    sort = {"identifier": "identifier", "capacity": "capacity"}
+    search = ["identifier__icontains"]
 
     def get_queryset(self):
         user = self.request.user
@@ -138,26 +136,32 @@ class SharedPlacesView(SoftModelsViewSet):
         places = SharedPlaces.objects.filter(
             condominium__condostaff__user=user, condominium__condostaff__role="owner"
         ).distinct()
-        
+
         condominium_id = self.request.query_params.get("condominium")
         if condominium_id:
             places = places.filter(condominium__id=condominium_id)
-        
+
         places = self.search_sort(places)
 
         return places
-    
+
+
 class BulkSharedPlaceCreateView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = BulkSharedPlacesCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "Parks created successfully!"}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"message": "Parks created successfully!"},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 class CitiesStatesPagination(PageNumberPagination):
     page_size = 6000
     page_size_query_param = "page_size"
+
 
 class CitiesView(APIView):
     serializer_class = CitySerializer

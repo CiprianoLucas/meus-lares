@@ -12,9 +12,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import os
 from pathlib import Path
+
 import environ
-from google.oauth2 import service_account
 from corsheaders.defaults import default_headers
+from google.oauth2 import service_account
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -52,7 +53,7 @@ INSTALLED_APPS = [
     "condo_files.apps.CondoFilesConfig",
     "bills.apps.BillsConfig",
     "notifications.apps.NotificationsConfig",
-    'condo_requests.apps.CondoRequestsConfig',
+    "condo_requests.apps.CondoRequestsConfig",
     # 'ai.apps.AiConfig',
     "storages",
 ]
@@ -72,7 +73,6 @@ MIDDLEWARE = [
 ]
 
 
-
 ROOT_URLCONF = "meus_lares.urls"
 
 TEMPLATES = [
@@ -80,7 +80,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
             os.path.join(BASE_DIR, "users", "templates"),
-            ],
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -213,9 +213,9 @@ ENV = env("ENV")
 if ENV == "production":
     DEBUG = False
 
-    ALLOWED_HOSTS = [URL_FRONT.lstrip('https://'), URL_BACK.lstrip('https://')]
+    ALLOWED_HOSTS = [URL_FRONT.lstrip("https://"), URL_BACK.lstrip("https://")]
 
-    SITE = URL_BACK.lstrip('https://')
+    SITE = URL_BACK.lstrip("https://")
 
     CSRF_TRUSTED_ORIGINS = [
         URL_FRONT,
@@ -263,7 +263,7 @@ if ENV == "production":
     #         },
     #     },
     # }
-    
+
     STORAGES = {
         "default": {
             "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
@@ -289,7 +289,7 @@ if ENV == "production":
 
 
 elif ENV == "storage":
-    
+
     interface_port = env("INTERFACE_PORT")
 
     ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
@@ -306,12 +306,12 @@ elif ENV == "storage":
         f"http://localhost:{interface_port}",
         f"http://127.0.0.1:{interface_port}",
     ]
-    
+
     CORS_ORIGIN_WHITELIST = [
         f"http://localhost:{interface_port}",
         f"http://127.0.0.1:{interface_port}",
     ]
-    
+
     STORAGES = {
         "default": {
             "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
@@ -330,8 +330,8 @@ elif ENV == "storage":
             },
         },
     }
-    
-    
+
+
 else:
 
     interface_port = env("INTERFACE_PORT")
@@ -349,7 +349,7 @@ else:
         f"http://localhost:{interface_port}",
         f"http://127.0.0.1:{interface_port}",
     ]
-    
+
     CORS_ORIGIN_WHITELIST = [
         f"http://localhost:{interface_port}",
         f"http://127.0.0.1:{interface_port}",

@@ -1,7 +1,12 @@
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericTabularInline
 
-from relations.models import CondoStaff, CondoTenant, Contract, PlaceReservation
+from relations.models import (
+    CondoStaff,
+    CondoTenant,
+    Contract,
+    PlaceReservation,
+)
 from soft_components import SoftAdmin
 
 
@@ -49,7 +54,8 @@ class ContractAdmin(SoftAdmin):
     list_display = ("id", "related_object", "start_date", "end_date", "is_active")
     list_filter = ("start_date", "end_date", "content_type")
     search_fields = ("related_object__str", "terms")
-    
+
+
 class PlaceReservationAdmin(SoftAdmin):
     list_display = ("place", "tenant", "date", "start_time", "end_time")
     list_filter = ("place", "tenant", "date", "start_time", "end_time")

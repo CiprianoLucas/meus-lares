@@ -87,7 +87,7 @@ class PlaceReservation(SoftModel):
     date = models.DateField()
     start_time = models.TimeField()
     end_time = models.TimeField()
-    
+
     class Meta:
         verbose_name = "Reserva de espaço"
         verbose_name_plural = "Reservas de espaços"
@@ -98,23 +98,23 @@ class PlaceReservation(SoftModel):
             place=self.place,
             date=self.date,
             start_time__lt=self.end_time,
-            end_time__gt=self.start_time
+            end_time__gt=self.start_time,
         )
         if conflit.exists():
             raise ValidationError("This time is already booked.")
         super().clean()
-        
-        
+
+
 class Car(SoftModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     plate = models.CharField(max_length=7)
     brand = models.CharField(max_length=30)
     model = models.CharField(max_length=30)
     color = models.CharField(max_length=30)
-    
+
     def __str__(self):
         return f"{self.brand} {self.model} {self.color}: {self.plate}"
-    
+
     class Meta:
         verbose_name = "Carro"
         verbose_name_plural = "Carros"

@@ -1,19 +1,19 @@
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 
 interface LoadingPageState {
-  message: string;
-  show: boolean;
+    message: string
+    show: boolean
 }
 
 export const loagingPageStore = defineStore('loadingPage', {
-  state: (): LoadingPageState => ({
-    message: "Carregando...",
-    show: false,
-  }),
-  actions: {
-        loading(show: boolean, message: string = "Carregando...") {
+    state: (): LoadingPageState => ({
+        message: 'Carregando...',
+        show: false
+    }),
+    actions: {
+        loading(show: boolean, message: string = 'Carregando...') {
             this.$state.message = message
             this.$state.show = show
         }
     }
-});
+})

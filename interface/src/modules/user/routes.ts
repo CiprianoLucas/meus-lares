@@ -11,5 +11,5 @@ export default [
         name: 'escolha-perfil',
         component: () =>
             import(/* webpacjChunkName: "escolha de perfil" */ './pages/ChoiceRole.vue')
-    },
+    }
 ]

@@ -1,4 +1,3 @@
-from places.models import Apartment, Condominium
 from soft_components.views import SoftModelsViewSet
 
 from .models import CondoStaff, CondoTenant, Contract, PlaceReservation
@@ -6,8 +5,9 @@ from .serializers import (
     CondoStaffSerializer,
     CondoTenantSerializer,
     ContractSerializer,
-    PlaceReservationSerializer
+    PlaceReservationSerializer,
 )
+
 
 class CondoTenantView(SoftModelsViewSet):
     serializer_class = CondoTenantSerializer
@@ -18,12 +18,12 @@ class CondoTenantView(SoftModelsViewSet):
             apartment__condominium__condostaff__user=user,
             apartment__condominium__condostaff__role="owner",
         ).distinct()
-        
+
         query_params = self.request.query_params
         apartment_id = query_params.get("apartment")
         if apartment_id:
             relations = relations.filter(apartment__id=apartment_id)
-        
+
         return relations
 
 
@@ -103,6 +103,7 @@ class ContractStaffView(SoftModelsViewSet):
         ]
 
         return user_contracts
+
 
 class PlaceReservationViewSet(SoftModelsViewSet):
     queryset = PlaceReservation.objects.all()

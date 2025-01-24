@@ -7,7 +7,12 @@
             <button @click="addPark" class="btn btn-secondary">Adicionar</button>
         </div>
         <div class="p-2">
-            <p><small>Os estacionamentos adicionados só serão cadastrados ao clicar em "Cadastrar"</small></p>
+            <p>
+                <small
+                    >Os estacionamentos adicionados só serão cadastrados ao clicar em
+                    "Cadastrar"</small
+                >
+            </p>
         </div>
         <div class="d-flex justify-content-between my-3">
             <button @click="goBack" class="btn btn-secondary">Voltar</button>
@@ -30,12 +35,18 @@
                             <td>{{ park.apartment_identifier }}</td>
                             <td>
                                 <div class="d-flex justify-content-end">
-                                    <button @click="complementModalBody = park.complement"
-                                        class="btn btn-secondary py-0 px-1 mx-1" data-bs-toggle="modal"
-                                        data-bs-target="#complementModal">
+                                    <button
+                                        @click="complementModalBody = park.complement"
+                                        class="btn btn-secondary py-0 px-1 mx-1"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#complementModal"
+                                    >
                                         <small><i class="bi bi-file-text"></i></small>
                                     </button>
-                                    <button @click="deletePark(i)" class="btn btn-danger py-0 px-1 mx-1">
+                                    <button
+                                        @click="deletePark(i)"
+                                        class="btn btn-danger py-0 px-1 mx-1"
+                                    >
                                         <small><i class="bi bi-trash"></i></small>
                                     </button>
                                 </div>
@@ -45,24 +56,35 @@
                 </table>
             </div>
         </div>
-        <div class="modal fade" id="complementModal" tabindex="-1" aria-labelledby="complementModalLabel"
-            aria-hidden="true">
+        <div
+            class="modal fade"
+            id="complementModal"
+            tabindex="-1"
+            aria-labelledby="complementModalLabel"
+            aria-hidden="true"
+        >
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="complementModalLabel">Descrição</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
                     </div>
                     <div class="modal-body">
                         {{ complementModalBody }}
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Fechar
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -101,18 +123,18 @@ const inputs = app.ref<Input[]>([
         reference: 'complement',
         label: 'Descrição',
         size: 'xl',
-        type: 'textarea',
+        type: 'textarea'
     }
 ])
 const parkId = app.ref(app.routeParam('id'))
-const condominiumId = app.routeQuery("condominium")
+const condominiumId = app.routeQuery('condominium')
 const complementModalBody = app.ref()
 
 const parkForm = app.ref<{ [key: string]: string }>({
     identifier: '',
     sufix: '',
     apartment: '',
-    complement: '',
+    complement: ''
 })
 
 const listParksRegister = app.ref<Park[]>([])
@@ -122,12 +144,12 @@ function addPark() {
 
     identifier = identifier.trim()
     if (!identifier) {
-        app.popup("Erro!", "Não foi inserido identificador", 'warning')
+        app.popup('Erro!', 'Não foi inserido identificador', 'warning')
         return
     }
 
-    if (listParksRegister.value.some(park => park.identifier === identifier)) {
-        app.popup("Erro!", "Já existe um estacionamento com esse identificador.", 'warning')
+    if (listParksRegister.value.some((park) => park.identifier === identifier)) {
+        app.popup('Erro!', 'Já existe um estacionamento com esse identificador.', 'warning')
         return
     }
 
@@ -157,9 +179,9 @@ function deletePark(i: number) {
 
 function registerParks() {
     if (!condominiumId) {
-        app.popup("Erro!", "Condomínio não identificado", "danger")
+        app.popup('Erro!', 'Condomínio não identificado', 'danger')
     }
-    app.loading(true, "Cadastrando...")
+    app.loading(true, 'Cadastrando...')
     const payload = {
         condominium_id: condominiumId,
         parks: listParksRegister.value
@@ -181,7 +203,7 @@ function registerParks() {
 }
 
 function updatePark() {
-    app.loading(true, "Atualizando...")
+    app.loading(true, 'Atualizando...')
     app.api
         .patch('/place/park/' + parkId.value + '/', parkForm.value)
         .then(({ data }) => {
@@ -210,7 +232,8 @@ app.onMounted(async () => {
 })
 
 async function getApartments() {
-    app.api.getListCashed<Apartment[]>(`/place/apartment/?condominium=` + condominiumId)
+    app.api
+        .getListCashed<Apartment[]>(`/place/apartment/?condominium=` + condominiumId)
         .then(({ result }) => {
             const newApartmentList = result.map((apartment) => {
                 const toSelect = {
@@ -237,5 +260,4 @@ async function getParkValues() {
             app.popup('Erro!', 'Falha ao obter informações do condomínio', 'warning')
         })
 }
-
 </script>

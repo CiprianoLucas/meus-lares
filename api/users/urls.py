@@ -1,7 +1,7 @@
-from django.urls import path, re_path
 from allauth.account import views
-from django.views.generic.base import RedirectView
 from django.conf import settings
+from django.urls import path, re_path
+from django.views.generic.base import RedirectView
 
 from .views import (
     GoogleLogin,
@@ -9,7 +9,7 @@ from .views import (
     UserCreateView,
     get_info,
     logout_view,
-    roles_view
+    roles_view,
 )
 
 urlpatterns = [
@@ -25,17 +25,16 @@ urlpatterns = [
         name="account_email_verification_sent",
     ),
     path(
-        "f/signup/", 
-        RedirectView.as_view(url=settings.LOGOUT_REDIRECT_URL), 
-        name="account_signup"),
+        "f/signup/",
+        RedirectView.as_view(url=settings.LOGOUT_REDIRECT_URL),
+        name="account_signup",
+    ),
     re_path(
         r"^f/confirm-email/(?P<key>[-:\w]+)/$",
         views.confirm_email,
         name="account_confirm_email",
     ),
-    path(
-        "f/password/reset/", views.password_reset, name="account_reset_password"
-    ),
+    path("f/password/reset/", views.password_reset, name="account_reset_password"),
     path(
         "f/password/reset/done/",
         views.password_reset_done,

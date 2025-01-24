@@ -18,25 +18,25 @@ export const apiListStore = defineStore('apiCash', {
 
     actions: {
         setResult(url: string, result: ApiListCash) {
-            const unsetOld = this.$state.filter(item => item.url !== url)
+            const unsetOld = this.$state.filter((item) => item.url !== url)
             this.$state.splice(0, this.$state.length, ...unsetOld, { url, result })
         },
 
         getResult(url: string) {
-            return this.$state.find(item => item.url === url)?.result || null;
+            return this.$state.find((item) => item.url === url)?.result || null
         },
 
         remove(url: string) {
-            const unsetOld = this.$state.filter(item => item.url !== url)
+            const unsetOld = this.$state.filter((item) => item.url !== url)
             this.$state.splice(0, this.$state.length, ...unsetOld)
         },
 
-        clear(){
+        clear() {
             this.$state.splice(0, this.$state.length)
         },
 
-        clearStartPath(path: string){
-            const unsetOld = this.$state.filter(item => !item.url.includes(path))
+        clearStartPath(path: string) {
+            const unsetOld = this.$state.filter((item) => !item.url.includes(path))
             this.$state.splice(0, this.$state.length, ...unsetOld)
         }
     },

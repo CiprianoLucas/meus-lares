@@ -2,12 +2,10 @@ import mimetypes
 import os
 import zipfile
 
-import boto3
 import rarfile
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
-from storages.backends.s3boto3 import S3Boto3Storage
 from storages.backends.gcloud import GoogleCloudStorage
 
 ALLOWED_EXTENSIONS = [
@@ -77,7 +75,7 @@ def validate_compressed_contents(file):
                     )
 
 
-if settings.ENV not in ['production', 'storage']:
+if settings.ENV not in ["production", "storage"]:
 
     class PublicMediaStorage(FileSystemStorage):
         location = os.path.join(settings.BASE_DIR, "media", "public")
@@ -107,7 +105,9 @@ else:
 
     #         return s3_client.generate_presigned_url(
     #             "get_object",
-    #             Params={"Bucket": self.bucket_name, "Key": self._normalize_name(name)},
+    #             Params={
+    #               "Bucket": self.bucket_name,
+    #               "Key": self._normalize_name(name)},
     #             ExpiresIn=120,
     #         )
 
@@ -123,8 +123,7 @@ else:
             return name
 
         def url(self, name):
-            return settings.MEDIA_URL + self.location + '/' + name
-        
+            return settings.MEDIA_URL + self.location + "/" + name
 
     class PrivateMediaStorage(GoogleCloudStorage):
         bucket_name = settings.GS_BUCKET_MEDIA

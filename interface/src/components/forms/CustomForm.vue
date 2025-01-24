@@ -109,7 +109,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref, onBeforeMount} from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import { inputsProps } from '.'
 import Multiselect from 'vue-multiselect'
 import type { Input } from './interfaces'
@@ -139,7 +139,7 @@ onBeforeMount(() => {
             continue
         }
         let inputClass = 'mb-3 '
-        if(input.size === 'bit'){
+        if (input.size === 'bit') {
             inputClass += 'col-6 col-sm-4 col-md-2 col-lg-1'
         } else if (input.size === 'sm') {
             inputClass += 'col-12 col-sm-6 col-md-4 col-lg-3'

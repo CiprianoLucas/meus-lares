@@ -1,3 +1,0 @@
-DJANGO_SETTINGS_MODULE=meus_lares.settings
-
-@daily cd /app && /usr/local/bin/poetry run python meus_lares/daily_tasks.py

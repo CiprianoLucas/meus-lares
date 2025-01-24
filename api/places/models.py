@@ -3,6 +3,7 @@ from django.db import models
 from meus_lares.storages import PublicMediaStorage
 from soft_components import SoftModel
 
+
 class State(models.Model):
     acronym = models.CharField(max_length=2, primary_key=True)
     name = models.CharField(max_length=50, unique=True)
@@ -30,7 +31,10 @@ class Condominium(SoftModel):
     number = models.CharField(max_length=20, null=True)
     complement = models.CharField(max_length=255, null=True)
     profile_photo = models.ImageField(
-        upload_to="places/profile-photo/", blank=True, null=True, storage=PublicMediaStorage()
+        upload_to="places/profile-photo/",
+        blank=True,
+        null=True,
+        storage=PublicMediaStorage(),
     )
 
     def __str__(self):
@@ -61,12 +65,15 @@ class Apartment(SoftModel):
     class Meta:
         verbose_name = "Apartamento"
         verbose_name_plural = "Apartamentos"
-        
+
+
 class ParkingSpace(SoftModel):
     condominium = models.ForeignKey(Condominium, on_delete=models.CASCADE)
     identifier = models.CharField(max_length=255)
     complement = models.CharField(max_length=255, null=True, blank=True)
-    apartment = models.ForeignKey(Apartment, on_delete=models.DO_NOTHING, null=True, blank=True)
+    apartment = models.ForeignKey(
+        Apartment, on_delete=models.DO_NOTHING, null=True, blank=True
+    )
 
     def __str__(self):
         return f'"{self.identifier}" in "{self.condominium}"'
@@ -74,13 +81,16 @@ class ParkingSpace(SoftModel):
     class Meta:
         verbose_name = "Vaga de estacionamento"
         verbose_name_plural = "Vagas de estacionamento"
-        
+
+
 class SharedPlaces(SoftModel):
     condominium = models.ForeignKey(Condominium, on_delete=models.CASCADE)
     identifier = models.CharField(max_length=255)
     capacity = models.PositiveIntegerField(blank=True, null=True)
     is_reserveable = models.BooleanField(default=True)
-    clean_time = models.PositiveIntegerField(blank=True, null=True, help_text="Tempo para limpeza, em minutos")
+    clean_time = models.PositiveIntegerField(
+        blank=True, null=True, help_text="Tempo para limpeza, em minutos"
+    )
     complement = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):

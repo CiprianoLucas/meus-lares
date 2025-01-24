@@ -1,8 +1,13 @@
 <template>
     <form v-if="searchable" @submit.prevent="updateList()">
         <div class="input-group mb-3">
-            <input v-model="searchQuery" type="text" placeholder="Pesquisar..." class="form-control"
-                aria-label="Pesquisar" />
+            <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Pesquisar..."
+                class="form-control"
+                aria-label="Pesquisar"
+            />
             <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
                 <i class="bi bi-search"></i>
             </button>
@@ -26,8 +31,15 @@
                     <router-link :to="item['redirect']" class="text-decoration-none text-dark">
                         <div class="row g-0" @click="redirect(item)">
                             <div v-if="props.img" class="col-5">
-                                <img :src="item[props.img] ? item[props.img] : 'https://cdn-icons-png.flaticon.com/512/1066/1066153.png'"
-                                    class="img-fluid rounded-start" alt="...">
+                                <img
+                                    :src="
+                                        item[props.img]
+                                            ? item[props.img]
+                                            : 'https://cdn-icons-png.flaticon.com/512/1066/1066153.png'
+                                    "
+                                    class="img-fluid rounded-start"
+                                    alt="..."
+                                />
                             </div>
                             <div class="col">
                                 <div class="card-body">
@@ -36,13 +48,16 @@
                                         <div class="card-span">
                                             <span v-for="(v, k) in headers">
                                                 <small v-if="v !== null">
-                                                    <br>
+                                                    <br />
                                                     <strong v-if="v">
-                                                        <div class="mb-1" /> {{ v }}
+                                                        <div class="mb-1" />
+                                                        {{ v }}
                                                     </strong>
-                                                    <br v-if="v">
-                                                    <span v-if="item[k] === false || item[k] === true">
-                                                        {{ item[k]?'Sim':'Não' }}
+                                                    <br v-if="v" />
+                                                    <span
+                                                        v-if="item[k] === false || item[k] === true"
+                                                    >
+                                                        {{ item[k] ? 'Sim' : 'Não' }}
                                                     </span>
                                                     <span v-else>
                                                         {{ item[k] }}
@@ -128,10 +143,10 @@ function goPreviousPage() {
 
 function redirect(item: Item) {
     let url = '/' + props.redirect
-    props.params?.forEach(prop => {
-        url += ("/" + item[prop])
-    });
-    url += "/"
+    props.params?.forEach((prop) => {
+        url += '/' + item[prop]
+    })
+    url += '/'
     return url
 }
 
@@ -141,7 +156,7 @@ onMounted(() => {
 
 function updateList(force: boolean = false) {
     loading.value = true
-    let query = ""
+    let query = ''
 
     if (props.url.includes('?')) {
         query = `&page=${page.value}`
@@ -161,7 +176,7 @@ function updateList(force: boolean = false) {
             if (props.redirect) {
                 listData.value.forEach((item, index) => {
                     listData.value[index].redirect = redirect(item)
-                });
+                })
                 processData(listData.value)
             }
         })

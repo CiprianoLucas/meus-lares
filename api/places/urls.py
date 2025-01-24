@@ -3,14 +3,14 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (
     ApartmentOwnerView,
+    BulkApartmentCreateView,
+    BulkParkCreateView,
+    BulkSharedPlaceCreateView,
     CitiesView,
     CondominiumOwnerView,
     FullAddressView,
-    SharedPlacesView,
     ParkingView,
-    BulkApartmentCreateView,
-    BulkParkCreateView,
-    BulkSharedPlaceCreateView
+    SharedPlacesView,
 )
 
 router = DefaultRouter()
@@ -21,9 +21,19 @@ router.register(r"shared", SharedPlacesView, "shared")
 
 urlpatterns = [
     path("", include(router.urls)),
-    path('apartments/bulk-create/', BulkApartmentCreateView.as_view(), name='bulk-apartment-create'),
-    path('parks/bulk-create/', BulkParkCreateView.as_view(), name='bulk-apartment-create'),
-    path('shareds/bulk-create/', BulkSharedPlaceCreateView.as_view(), name='bulk-apartment-create'),
+    path(
+        "apartments/bulk-create/",
+        BulkApartmentCreateView.as_view(),
+        name="bulk-apartment-create",
+    ),
+    path(
+        "parks/bulk-create/", BulkParkCreateView.as_view(), name="bulk-apartment-create"
+    ),
+    path(
+        "shareds/bulk-create/",
+        BulkSharedPlaceCreateView.as_view(),
+        name="bulk-apartment-create",
+    ),
     path("cities/<str:uf>", CitiesView.as_view(), name="cities"),
     path("cep/<str:cep>", FullAddressView.as_view(), name="full-address-by-cep"),
 ]
