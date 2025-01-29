@@ -1,10 +1,10 @@
 from soft_components.views import SoftModelsViewSet
 
-from .models import CondoStaff, CondoTenant, Contract, PlaceReservation
+from .models import CondoStaff, CondoTenant, CondoTenantContract, PlaceReservation
 from .serializers import (
     CondoStaffSerializer,
     CondoTenantSerializer,
-    ContractSerializer,
+    CondoTenantContractSerializer,
     PlaceReservationSerializer,
 )
 
@@ -63,40 +63,19 @@ class CondoStaffView(SoftModelsViewSet):
         return relations
 
 
-class ContractTenantView(SoftModelsViewSet):
-    serializer_class = ContractSerializer
+class CondoTenantContractView(SoftModelsViewSet):
+    serializer_class = CondoTenantContractSerializer
 
     def get_queryset(self):
         user = self.request.user
 
-        contracts = Contract.objects.filter(content_type__model="condotenant")
+        contracts = CondoTenantContract.objects.filter(content_type__model="condotenant")
         user_contracts = [
             contract
             for contract in contracts
             if (
                 contract.related_object.user == user
                 or contract.related_object.apartment.condominium.condostaff_set.filter(
-                    user=user, role__in=["owner"]
-                ).exists()
-            )
-        ]
-
-        return user_contracts
-
-
-class ContractStaffView(SoftModelsViewSet):
-    serializer_class = ContractSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-
-        contracts = Contract.objects.filter(content_type__model="condostaff")
-        user_contracts = [
-            contract
-            for contract in contracts
-            if (
-                contract.related_object.user == user
-                or contract.related_object.condominium.condostaff_set.filter(
                     user=user, role__in=["owner"]
                 ).exists()
             )

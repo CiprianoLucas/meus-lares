@@ -13,6 +13,7 @@
                         :name="input.reference"
                         :id="`${input.reference}-input`"
                         :placeholder="input.placeholder"
+                        :disabled="input.disabled"
                         v-model="props.form[input.reference]"
                         class="form-control"
                         @input="verifyMask(input.mask, input.reference)"
@@ -26,6 +27,7 @@
                         v-model="props.form[input.reference]"
                         class="form-select"
                         aria-label="Default select example"
+                        :disabled="input.disabled"
                     >
                         <option :value="''">-----</option>
                         <option
@@ -48,6 +50,7 @@
                         :close-on-select="false"
                         :clear-on-select="false"
                         :preserve-search="true"
+                        :disabled="input.disabled"
                         placeholder="Pesquisar"
                         track-by="label"
                         label="label"
@@ -71,6 +74,7 @@
                         class="form-check-input"
                         type="checkbox"
                         :id="`${input.reference}-input`"
+                        :disabled="input.disabled"
                     />
                     <label :for="`${input.reference}-input`" class="form-check-label ms-2">{{
                         input.label
@@ -82,6 +86,7 @@
                             class="form-check-input"
                             :value="option.value"
                             type="radio"
+                            :disabled="input.disabled"
                             :name="`name-radio-${input.reference}`"
                             :id="`radio-${option.value}-${input.reference}`"
                             v-model="props.form[input.reference]"
@@ -101,6 +106,7 @@
                     <textarea
                         v-model="props.form[input.reference]"
                         class="form-control"
+                        :disabled="input.disabled"
                         aria-label="Default select example"
                     />
                 </div>

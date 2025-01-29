@@ -114,7 +114,7 @@ const navCollapse = ref<Collapse | null>(null)
 const router = useRouter()
 
 watch(
-    () => user.email,
+    () => user.nick,
     (newUsername) => {
         nick.value = newUsername
     }

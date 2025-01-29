@@ -1,6 +1,6 @@
 from django.db import models
 
-from relations.models import Contract
+from relations.models import CondoTenantContract
 from soft_components import SoftModel
 
 
@@ -26,7 +26,7 @@ class RecurringFee(SoftModel):
     payment_status = models.CharField(
         max_length=10, choices=PAYMENT_STATUS_CHOICES, default="waiting"
     )
-    contract = models.ForeignKey(Contract, on_delete=models.DO_NOTHING)
+    contract = models.ForeignKey(CondoTenantContract, on_delete=models.DO_NOTHING)
     value = models.FloatField()
     opening_day = models.DateField()
     due_date = models.DateField()
@@ -38,7 +38,7 @@ class RecurringFee(SoftModel):
 
 class BreachPenalty(SoftModel):
     name = models.CharField(max_length=50)
-    contract = models.ForeignKey(Contract, on_delete=models.DO_NOTHING)
+    contract = models.ForeignKey(CondoTenantContract, on_delete=models.DO_NOTHING)
     value = models.FloatField()
     is_percentage = models.BooleanField(
         default=False,
@@ -67,7 +67,7 @@ class FinePenalty(SoftModel):
         ("disputed", "Disputed"),
     ]
 
-    contract = models.ForeignKey(Contract, on_delete=models.DO_NOTHING)
+    contract = models.ForeignKey(CondoTenantContract, on_delete=models.DO_NOTHING)
     name = models.CharField(max_length=50)
     value = models.FloatField()
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")

@@ -50,11 +50,13 @@ app.watch(
 )
 
 async function updateCities(uf: string = '') {
+    app.loading(true, "Buscando cidades...")
     const { result } = (await app.api.getListCashed('/place/cities/' + uf)) as {
         result: [{ id: number; name: string; state: string }]
     }
     const options = result.map((item) => ({ value: item.id, label: item.name }))
     const cityInput = inputs.value.find((input) => input.reference === 'city')
+    app.loading(false)
     if (cityInput && cityInput.options) {
         cityInput.options = options
     }
@@ -71,6 +73,7 @@ async function verifyCep(cep: string = '') {
 }
 
 function registerCondominium() {
+    app.loading(true, "Cadastrando...")
     app.api
         .post('/place/condominium/', condominiumForm.value)
         .then(({ data }) => {
@@ -81,9 +84,11 @@ function registerCondominium() {
         .catch((error) => {
             app.popup('Erro!', app.resumeErrors(error), 'warning')
         })
+        .finally(()=>{app.loading(false)})
 }
 
 function updateCondominium() {
+    app.loading(true, "Salvando...")
     app.api
         .patch('/place/condominium/' + condominiumId.value + '/', condominiumForm.value)
         .then(({ data }) => {
@@ -94,6 +99,7 @@ function updateCondominium() {
         .catch((error) => {
             app.popup('Erro!', app.resumeErrors(error), 'warning')
         })
+        .finally(()=>{app.loading(false)})
 }
 
 function goBack() {
@@ -107,6 +113,7 @@ app.onMounted(async () => {
 })
 
 async function getCondominiumValues() {
+    app.loading(true, "Buscando dados...")
     app.api
         .get(`/place/condominium/${condominiumId.value}/`)
         .then(({ data }) => {
@@ -117,5 +124,6 @@ async function getCondominiumValues() {
         .catch(() => {
             app.popup('Erro!', 'Falha ao obter informações do condomínio', 'warning')
         })
+        .finally(()=>{app.loading(false)})
 }
 </script>

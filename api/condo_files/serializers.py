@@ -1,11 +1,11 @@
 from soft_components.serializers import softModelSerializer
 
-from .models import AptInspectImages, ContractFiles
+from .models import AptInspectImages, CondoTenantContractFiles
 
 
-class ContractsFilesSerializer(softModelSerializer):
+class CondoTenantConstractsFilesSerializer(softModelSerializer):
     class Meta:
-        model = ContractFiles
+        model = CondoTenantContractFiles
         fields = [
             "id",
             "contract",

@@ -4,16 +4,14 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     CondoStaffView,
     CondoTenantView,
-    ContractStaffView,
-    ContractTenantView,
+    CondoTenantContractView,
     PlaceReservationViewSet,
 )
 
 router = DefaultRouter()
 router.register(r"tenant", CondoTenantView, "tenant")
 router.register(r"staff", CondoStaffView, "staff")
-router.register(r"contract/tenant", ContractTenantView, "contract-tenant")
-router.register(r"contract/staff", ContractStaffView, "contract-staff")
+router.register(r"contract/tenant", CondoTenantContractView, "contract-tenant")
 router.register(r"reservate", PlaceReservationViewSet, "reservate")
 
 urlpatterns = [path("", include(router.urls))]

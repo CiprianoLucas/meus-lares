@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from soft_components.serializers import softModelSerializer
 
-from .models import CondoStaff, CondoTenant, Contract, PlaceReservation
+from .models import CondoStaff, CondoTenant, CondoTenantContract, PlaceReservation
 
 
 class CondoTenantSerializer(softModelSerializer):
@@ -88,9 +88,9 @@ class CondoStaffSerializer(softModelSerializer):
         return None
 
 
-class ContractSerializer(softModelSerializer):
+class CondoTenantContractSerializer(softModelSerializer):
     class Meta:
-        model = Contract
+        model = CondoTenantContract
         fields = [
             "id",
             "content_type",

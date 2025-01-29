@@ -32,6 +32,9 @@
                 title="user_fullname"
                 :headers="headersTenants"
             />
+            <router-link :to="'/morador/cadastro/?apartment=' + apartmentId" class="btn btn-primary mt-4 py-2 px-3 w-100" type="button">
+                Cadastrar morador
+            </router-link>
             <button class="btn btn-secondary mt-4 py-2 px-3 w-100" type="button">
                 Histórico de moradores
             </button>
@@ -66,7 +69,7 @@
 import app from '@/app'
 import type { Apartment } from '../interfaces'
 import { useRouter } from 'vue-router'
-import type { Tenant } from '@/modules/relations/interfaces'
+import type { Tenant } from '@/modules/tenant/interfaces'
 import ListCards from '@/components/tables/ListCards.vue'
 import ListTable from '@/components/tables/ListTable.vue'
 

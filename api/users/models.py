@@ -60,7 +60,35 @@ class User(AbstractUser):
     def clean(self):
         unique_email(self.email, self.id)
 
-    def save_history(self, *args, user=None, query_delete=False, **kwargs):
+    def sizeImgs(self, *args, **kwargs):
+        if self.profile_photo:
+            img = Image.open(self.profile_photo)
+
+            if img.mode == "RGBA":
+                img = img.convert("RGB")
+
+            max_size = 400
+            width, height = img.size
+
+            if width > height:
+                new_width = max_size
+                new_height = int((new_width / width) * height)
+            else:
+                new_height = max_size
+                new_width = int((new_height / height) * width)
+
+            img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+
+            image_io = BytesIO()
+            img.save(image_io, format="JPEG")
+            image_io.seek(0)
+
+            self.profile_photo.save(self.profile_photo.name, File(image_io), save=False)
+
+    def save(self, *args, user=None, query_delete=False, **kwargs):
+        
+        self.sizeImgs(self, *args, **kwargs)
+
         if self.pk:
             old_instance = type(self).objects.filter(pk=self.pk).first()
             if old_instance:
@@ -111,7 +139,7 @@ class User(AbstractUser):
             else:
                 created_at = self.created_at
                 validate_all_params(self)
-                super().save(*args, **kwargs)
+                super().save(*args, force_insert=False,  **kwargs)
                 if type(self).objects.filter(pk=self.pk) and created_at is not None:
                     self.history.append(
                         {
@@ -121,34 +149,6 @@ class User(AbstractUser):
                         }
                     )
 
-    def sizeImgs(self, *args, **kwargs):
-        if self.profile_photo:
-            img = Image.open(self.profile_photo)
-
-            if img.mode == "RGBA":
-                img = img.convert("RGB")
-
-            max_size = 400
-            width, height = img.size
-
-            if width > height:
-                new_width = max_size
-                new_height = int((new_width / width) * height)
-            else:
-                new_height = max_size
-                new_width = int((new_height / height) * width)
-
-            img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
-
-            image_io = BytesIO()
-            img.save(image_io, format="JPEG")
-            image_io.seek(0)
-
-            self.profile_photo.save(self.profile_photo.name, File(image_io), save=False)
-
-    def save(self, *args, user=None, query_delete=False, **kwargs):
-        self.sizeImgs(self, *args, **kwargs)
-        self.save_history(self, *args, user=user, query_delete=query_delete, **kwargs)
         super().save(*args, **kwargs)
 
     class Meta:

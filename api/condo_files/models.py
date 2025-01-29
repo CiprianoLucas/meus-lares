@@ -2,12 +2,12 @@ from django.db import models
 
 from condo_requests.models import CondoRequest
 from meus_lares.storages import PrivateMediaStorage, validate_file
-from relations.models import CondoTenant, Contract
+from relations.models import CondoTenant, CondoTenantContract
 from soft_components import SoftModel
 
 
-class ContractFiles(SoftModel):
-    contract = models.ForeignKey(Contract, on_delete=models.DO_NOTHING)
+class CondoTenantContractFiles(SoftModel):
+    contract = models.ForeignKey(CondoTenantContract, on_delete=models.DO_NOTHING)
     file = models.FileField(
         upload_to="relations/contracts/files",
         validators=[validate_file],

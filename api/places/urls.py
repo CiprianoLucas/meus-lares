@@ -11,6 +11,7 @@ from .views import (
     FullAddressView,
     ParkingView,
     SharedPlacesView,
+    ApartmentByCondominiumView
 )
 
 router = DefaultRouter()
@@ -34,6 +35,7 @@ urlpatterns = [
         BulkSharedPlaceCreateView.as_view(),
         name="bulk-apartment-create",
     ),
+    path("apartments-all/<uuid:condominium_id>", ApartmentByCondominiumView.as_view(), name="apartments-by-condominium"),
     path("cities/<str:uf>", CitiesView.as_view(), name="cities"),
     path("cep/<str:cep>", FullAddressView.as_view(), name="full-address-by-cep"),
 ]

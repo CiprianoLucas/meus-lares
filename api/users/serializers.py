@@ -7,7 +7,6 @@ from rest_framework import serializers
 
 from .models import User
 
-
 class CustomSignupSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     full_name = serializers.CharField(required=True)

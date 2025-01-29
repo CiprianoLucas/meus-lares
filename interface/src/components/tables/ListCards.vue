@@ -17,8 +17,8 @@
         </div>
     </form>
     <div>
-        <div v-if="listData.length === 0" class="alert alert-info text-center">
-            Nenhum disponível no momento.
+        <div v-if="listData.length === 0" class="alert alert-light text-center">
+            Nenhum registro encontrado.
         </div>
         <div v-else-if="loading" class="d-flex justify-content-center m-3">
             <div class="spinner-border text-secondary" role="status">
@@ -26,7 +26,7 @@
             </div>
         </div>
         <div v-else class="row">
-            <div v-for="(item, i) in listData" :key="i" class="col-12 col-md-6 col-lg-4">
+            <div v-for="(item, i) in listData" :key="i" class="col-12 col-md-6 col-xl-4">
                 <div class="card my-2 mx-1 p-0">
                     <router-link :to="item['redirect']" class="text-decoration-none text-dark">
                         <div class="row g-0" @click="redirect(item)">
@@ -202,7 +202,7 @@ const processData = (data: Item[]) => {
 
 <style scoped>
 .card-span {
-    font-size: 0.5rem;
+    font-size: 0.85rem;
     line-height: 1.25;
 }
 </style>

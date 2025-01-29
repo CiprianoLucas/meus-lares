@@ -166,6 +166,8 @@ function addPark() {
 
     listParksRegister.value.push(newPark)
 
+    app.popup("Acicionado", `estacionamento ${newPark.identifier}`, 'success', 1500)
+
     if (Number(parkForm.value.sufix)) {
         const newSufix = String(Number(parkForm.value.sufix) + 1)
         parkForm.value.sufix = newSufix

@@ -2,20 +2,20 @@ from django.contrib import admin
 
 from soft_components import SoftAdmin
 
-from .models import AptInspectImages, ContractFiles
+from .models import AptInspectImages, CondoTenantContractFiles
 
 
-class ConstractFilesAdmin(SoftAdmin):
+class CondoTenantConstractFilesAdmin(SoftAdmin):
     list_display = ("contract", "name", "file", "created_at")
-    list_filter = ("contract", "contract__content_type__model", "created_at")
-    search_fields = ("contract__content_type__model", "name")
+    list_filter = ("contract", "created_at")
+    search_fields = ("name",)
 
     class Meta:
         verbose_name = "Arquivo de contrato"
         verbose_name_plural = "Arquivos de contratos"
 
 
-admin.site.register(ContractFiles, ConstractFilesAdmin)
+admin.site.register(CondoTenantContractFiles, CondoTenantConstractFilesAdmin)
 
 
 class AptInspectImagesAdmin(SoftAdmin):

@@ -54,7 +54,6 @@ INSTALLED_APPS = [
     "bills.apps.BillsConfig",
     "notifications.apps.NotificationsConfig",
     "condo_requests.apps.CondoRequestsConfig",
-    # 'ai.apps.AiConfig',
     "storages",
 ]
 
@@ -167,47 +166,10 @@ ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = LOGOUT_REDIRECT_URL
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
-GOOGLE_CLOUD_PROJECT_ID = env("GOOGLE_CLOUD_PROJECT_ID")
-GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.path.join(BASE_DIR, ".gcloud", env("GOOGLE_APPLICATION_CREDENTIALS"))
-)
-
-
-GS_BUCKET_MEDIA = env("GS_BUCKET_MEDIA")
-GS_BUCKET_STATIC = env("GS_BUCKET_STATIC")
-
 DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 
-GS_STATIC_LOCATION = ""
-STATIC_URL = f"https://storage.googleapis.com/{GS_BUCKET_STATIC}/"
-
-GS_MEDIA_LOCATION = ""
-MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_MEDIA}/"
-
 GS_DEFAULT_ACL = None
-
-# AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
-# AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
-# AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
-# AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME")
-
-# AWS_S3_OBJECT_PARAMETERS = {
-#     "CacheControl": "max-age=86400",
-# }
-# AWS_S3_SIGNATURE_VERSION = "s3v4"
-# AWS_S3_FILE_OVERWRITE = False
-# AWS_DEFAULT_ACL = "public-read"
-# AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}"
-
-# AWS_STATIC_LOCATION = "static"
-# STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_STATIC_LOCATION}/"
-
-# AWS_MEDIA_LOCATION = "media/public"
-# MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_MEDIA_LOCATION}/"
-
-# AWS_PRIVATE_MEDIA_LOCATION = "media/private"
-# PRIVATE_MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_PRIVATE_MEDIA_LOCATION}/"
 
 ENV = env("ENV")
 
@@ -226,44 +188,20 @@ if ENV == "production":
     CORS_ALLOWED_ORIGINS = [URL_FRONT, URL_BACK]
     CORS_ORIGIN_WHITELIST = [URL_FRONT, URL_BACK]
 
-    # STORAGES = {
-    #     "default": {
-    #         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-    #         "OPTIONS": {
-    #             "access_key": AWS_ACCESS_KEY_ID,
-    #             "secret_key": AWS_SECRET_ACCESS_KEY,
-    #             "bucket_name": AWS_STORAGE_BUCKET_NAME,
-    #             "custom_domain": AWS_S3_CUSTOM_DOMAIN,
-    #             "default_acl": AWS_DEFAULT_ACL,
-    #             "object_parameters": AWS_S3_OBJECT_PARAMETERS,
-    #             "location": AWS_MEDIA_LOCATION,
-    #         },
-    #     },
-    #     "private": {
-    #         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-    #         "OPTIONS": {
-    #             "access_key": AWS_ACCESS_KEY_ID,
-    #             "secret_key": AWS_SECRET_ACCESS_KEY,
-    #             "bucket_name": AWS_STORAGE_BUCKET_NAME,
-    #             "custom_domain": AWS_S3_CUSTOM_DOMAIN,
-    #             "default_acl": "private",
-    #             "location": PRIVATE_MEDIA_URL,
-    #             "object_parameters": {
-    #                 "CacheControl": "max-age=86400",
-    #             },
-    #         },
-    #     },
-    #     "staticfiles": {
-    #         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-    #         "OPTIONS": {
-    #             "access_key": AWS_ACCESS_KEY_ID,
-    #             "secret_key": AWS_SECRET_ACCESS_KEY,
-    #             "bucket_name": AWS_STORAGE_BUCKET_NAME,
-    #             "default_acl": AWS_DEFAULT_ACL,
-    #             "object_parameters": AWS_S3_OBJECT_PARAMETERS,
-    #         },
-    #     },
-    # }
+    GOOGLE_CLOUD_PROJECT_ID = env("GOOGLE_CLOUD_PROJECT_ID")
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+        os.path.join(BASE_DIR, ".gcloud", env("GOOGLE_APPLICATION_CREDENTIALS"))
+    )
+
+
+    GS_BUCKET_MEDIA = env("GS_BUCKET_MEDIA")
+    GS_BUCKET_STATIC = env("GS_BUCKET_STATIC")
+
+    GS_STATIC_LOCATION = ""
+    STATIC_URL = f"https://storage.googleapis.com/{GS_BUCKET_STATIC}/"
+
+    GS_MEDIA_LOCATION = ""
+    MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_MEDIA}/"
 
     STORAGES = {
         "default": {
@@ -294,6 +232,22 @@ elif ENV == "storage":
     interface_port = env("INTERFACE_PORT")
 
     ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+
+    GOOGLE_CLOUD_PROJECT_ID = env("GOOGLE_CLOUD_PROJECT_ID")
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+        os.path.join(BASE_DIR, ".gcloud", env("GOOGLE_APPLICATION_CREDENTIALS"))
+    )
+
+
+    GS_BUCKET_MEDIA = env("GS_BUCKET_MEDIA")
+    GS_BUCKET_STATIC = env("GS_BUCKET_STATIC")
+
+    GS_STATIC_LOCATION = ""
+    STATIC_URL = f"https://storage.googleapis.com/{GS_BUCKET_STATIC}/"
+
+    GS_MEDIA_LOCATION = ""
+    MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_MEDIA}/"
+    
     STATIC_URL += "static/"
 
     DEBUG = True

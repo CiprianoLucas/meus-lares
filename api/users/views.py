@@ -13,7 +13,6 @@ from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from rest_framework.views import APIView
-
 from relations.models import CondoStaff, CondoTenant
 
 from .models import User
@@ -23,8 +22,29 @@ from .serializers import CustomSignupSerializer
 @api_view(["GET"])
 def get_info(request: HttpRequest):
     csrftoken = get_token(request)
-    response = {"csrftoken": csrftoken, "email": request.user.email}
+    response = {
+        "csrftoken": csrftoken, 
+        "email": request.user.email if request.user else ""
+        }
     return JsonResponse(response)
+
+
+class FindUserByEmailView(APIView):
+
+    def get(self, _, email: str):
+
+        user = User.objects.filter(email = email).first()
+        if not user:
+            return JsonResponse({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        name_split = user.full_name.split(' ')
+
+        response = {
+            "name": name_split[0] + ' ' + name_split[1][0:2] + "...",
+            "id": user.id,
+        }
+        return JsonResponse(response)
+
 
 
 class UserCreateView(generics.CreateAPIView):

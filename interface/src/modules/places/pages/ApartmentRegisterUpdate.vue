@@ -112,8 +112,8 @@ const inputs = app.ref<Input[]>([
     }
 ])
 const apartmentId = app.ref(app.routeParam('id'))
-if (!apartmentId) {
-    inputs.value.push({
+if (!apartmentId.value) {
+    inputs.value.splice(1, 0, {
         reference: 'sufix',
         label: 'Sufixo',
         size: 'bit',
@@ -153,6 +153,8 @@ function addApartment() {
     }
 
     listApartmentsRegister.value.push(newApartment)
+
+    app.popup("Acicionado", `apartamento ${newApartment.identifier}`, 'success', 1500)
 
     if (Number(apartmentForm.value.sufix)) {
         const newSufix = String(Number(apartmentForm.value.sufix) + 1)

@@ -45,7 +45,7 @@
         <text-input
             label="Senha:"
             :type="showPassword ? 'text' : 'password'"
-            buttomLabel="Show"
+            :buttomLabel="buttonShowPassword"
             :buttomFunction="changeShowPassword"
             :validators="[isPasswordValid]"
             id="password"
@@ -114,6 +114,7 @@ const hasSpecialChar = app.ref(false)
 const hasLowercase = app.ref(false)
 const registrando = app.ref(false)
 const showPassword = app.ref(false)
+const buttonShowPassword = app.ref('<i class="bi bi-eye"></i>')
 
 function changeShowPassword() {
     showPassword.value = !showPassword.value
@@ -230,6 +231,7 @@ function RegisterUser() {
         app.popup('Erro!', 'Senhas não conferem', 'warning', 2000)
         return
     }
+    app.loading(true, "Cadastrando...")
     app.api
         .post('/user/register/', userForm.value)
         .then(() => {
@@ -244,6 +246,9 @@ function RegisterUser() {
         .catch((error) => {
             app.popup('Erro!', app.resumeErrors(error), 'warning', 10000)
             registrando.value = false
+        })
+        .finally(()=>{
+            app.loading(false)
         })
 }
 </script>

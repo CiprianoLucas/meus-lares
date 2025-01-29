@@ -1,7 +1,3 @@
-from django.contrib.contenttypes.fields import (
-    GenericForeignKey,
-    GenericRelation,
-)
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -26,8 +22,8 @@ class CondoTenant(SoftModel):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     is_renter = models.BooleanField(default=False)
     is_responsible = models.BooleanField(default=False)
+    is_first_contact = models.BooleanField(default=False)
     notes = models.TextField(blank=True, null=True)
-    contracts = GenericRelation("Contract")
 
     @property
     def condominium(self):
@@ -63,18 +59,11 @@ class CondoStaff(SoftModel):
         verbose_name_plural = "Colaboradores do condomínio"
 
 
-class Contract(SoftModel):
-    content_type = models.ForeignKey(
-        ContentType, on_delete=models.CASCADE, validators=[contract_relation_validator]
-    )
-    object_id = models.UUIDField()
-    related_object = GenericForeignKey("content_type", "object_id")
+class CondoTenantContract(SoftModel):
+    tenant = models.ForeignKey(CondoTenant, on_delete=models.DO_NOTHING)
     start_date = models.DateField()
     end_date = models.DateField(blank=True, null=True)
     terms = models.TextField()
-
-    def __str__(self):
-        return f"{self.content_type.model}-{self.related_object}"
 
     class Meta:
         verbose_name = "Contrato"

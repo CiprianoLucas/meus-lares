@@ -7,6 +7,7 @@ from .views import (
     GoogleLogin,
     LoginView,
     UserCreateView,
+    FindUserByEmailView,
     get_info,
     logout_view,
     roles_view,
@@ -14,6 +15,7 @@ from .views import (
 
 urlpatterns = [
     path("info/", get_info, name="csrf"),
+    path("email/<str:email>", FindUserByEmailView.as_view(), name="find-user-by-email"),
     path("register/", UserCreateView.as_view(), name="user-register"),
     path("login/", LoginView.as_view(), name="account_login"),
     path("google-login/", GoogleLogin.as_view(), name="google_login_by_token"),

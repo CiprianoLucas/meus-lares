@@ -71,6 +71,28 @@ class ApartmentOwnerView(SoftModelsViewSet):
         apartments = self.search_sort(apartments)
 
         return apartments
+    
+class ApartmentByCondominiumView(APIView):
+
+    def get(self, request, condominium_id):
+        user = self.request.user
+
+        apartments = Apartment.objects.filter(
+            condominium__condostaff__user=user,
+            condominium__condostaff__role__in=["owner"],
+            condominium__id=condominium_id
+        ).distinct()
+
+        results = [{"id": apartment.id, "identifier": apartment.identifier} for apartment in apartments]
+
+        response = {
+            "results": results,
+            "count": len(results),
+            "next": None,
+            "previous": None
+        }
+
+        return Response(response)
 
 
 class BulkApartmentCreateView(APIView):
