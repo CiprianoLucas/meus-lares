@@ -19,7 +19,7 @@
             required
         />
         <text-input
-            label="Nome completo:"
+            label="Nome completo: (sem abreviatura)"
             type="text"
             id="full_name"
             v-model="userForm.full_name"

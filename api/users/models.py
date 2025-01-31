@@ -25,6 +25,14 @@ def validate_all_params(user):
 
 
 class User(AbstractUser):
+
+    VERIFIED_STATUS_CHOICES = [
+        ("verified", "Verified"),
+        ("pending", "Pending"),
+        ("in_progress", "In progress"),
+        ("rejected", "Rejected"),
+    ]
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     cpf = models.CharField(max_length=11)
     nick = models.CharField(
@@ -34,19 +42,32 @@ class User(AbstractUser):
     phone_number = models.CharField(max_length=15)
     full_name = models.CharField(max_length=255)
     birth = models.DateField()
+    verified_status = models.CharField(max_length=15, choices=VERIFIED_STATUS_CHOICES, default="pending")
     profile_photo = models.ImageField(
         upload_to="users/profile_photo/",
         blank=True,
         null=True,
         storage=PublicMediaStorage(),
     )
-    identity_photo = models.ImageField(
-        upload_to="users/identity_photo/",
+    self_photo = models.ImageField(
+        upload_to="users/document_photo/",
         blank=True,
         null=True,
         storage=PrivateMediaStorage(),
     )
-    document_photo = models.ImageField(
+    document_front_photo = models.ImageField(
+        upload_to="users/document_photo/",
+        blank=True,
+        null=True,
+        storage=PrivateMediaStorage(),
+    )
+    document_back_photo = models.ImageField(
+        upload_to="users/document_photo/",
+        blank=True,
+        null=True,
+        storage=PrivateMediaStorage(),
+    )
+    self_with_document_photo = models.ImageField(
         upload_to="users/document_photo/",
         blank=True,
         null=True,
@@ -87,8 +108,6 @@ class User(AbstractUser):
 
     def save(self, *args, user=None, query_delete=False, **kwargs):
         
-        self.sizeImgs(self, *args, **kwargs)
-
         if self.pk:
             old_instance = type(self).objects.filter(pk=self.pk).first()
             if old_instance:

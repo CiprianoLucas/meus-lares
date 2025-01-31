@@ -21,9 +21,8 @@ class CondoTenantSerializer(softModelSerializer):
             "user",
             "user_fullname",
             "user_identity_photo",
-            "is_renter",
+            "is_first_contact",
             "is_responsible",
-            "notes",
         ]
         extra_kwargs = {"id": {"read_only": True}}
 

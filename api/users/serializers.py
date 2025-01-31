@@ -6,6 +6,122 @@ from allauth.account.models import EmailAddress
 from rest_framework import serializers
 
 from .models import User
+from soft_components.serializers import softModelSerializer
+
+def validate_full_name(full_name: str):
+    if len(full_name.strip().split(" ")) < 2:
+        raise serializers.ValidationError({"full_name": "Insira o nome completo."})
+    return full_name
+
+def validate_phone_number(phone_number: str):
+    phone_number = "".join(re.findall(r"\d", str(phone_number)))
+    if len(phone_number) < 10:
+        raise serializers.ValidationError({"phone_number": "Número de telefone inválido."})
+    return phone_number
+
+def validate_cpf(cpf: str):
+    regex_cnpj = re.compile(r"^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$")
+
+    if bool(regex_cnpj.match(cpf)):
+        raise serializers.ValidationError({"cpf": "CPF inválido."})
+
+    cpf = ("".join(re.findall(r"\d", str(cpf)))).zfill(11)
+
+    if len(cpf) > 11 or len(set(cpf)) == 1:
+        raise serializers.ValidationError({"cpf": "CPF inválido."})
+
+    inteiros = list(map(int, cpf))
+    novo = inteiros[:9]
+
+    for _ in range(2):
+        r = sum([(len(novo) + 1 - i) * v for i, v in enumerate(novo)]) % 11
+        f = 11 - r if r > 1 else 0
+
+        novo.append(f)
+
+    if novo != inteiros:
+        raise serializers.ValidationError({"cpf": "CPF inválido."})
+
+    return cpf
+
+def validate_birth(birth: str):
+    day, month, year = map(int, birth.split("/"))
+    formatted_date = date(year, month, day)
+    if formatted_date >= date.today():
+        raise serializers.ValidationError(
+            "A data de nascimento deve ser anterior a hoje."
+        )
+
+    return formatted_date
+
+class UserSerializer(softModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "cpf",
+            "nick",
+            "email",
+            "phone_number",
+            "full_name",
+            "birth",
+            "verified_status",
+            "profile_photo",
+            "self_photo",
+            "document_front_photo",
+            "document_back_photo",
+            "self_with_document_photo",
+        ]
+        extra_kwargs = {
+            "id": {"read_only": True},
+            "self_photo": {"write_only": True},
+            "document_front_photo": {"write_only": True},
+            "document_back_photo": {"write_only": True},
+            "self_with_document_photo": {"write_only": True},
+            "verified_status": {"read_only": True},
+        }
+
+    def to_internal_value(self, initial_data):
+
+        data = initial_data.copy()
+    
+        if data.get("cpf", None):
+            data["cpf"] = validate_cpf(data["cpf"])
+        if data.get("email", None):
+            data["email"] = get_adapter().clean_email(data["email"])
+        if data.get("phone_number", None):
+            data["phone_number"] = validate_phone_number(data["phone_number"])
+        if data.get("birth", None):
+            data["birth"] = validate_birth(data["birth"])
+        if data.get("full_name", None):
+            data["full_name"] = validate_full_name(data["full_name"])
+
+        return super().to_internal_value(data)
+    
+    def update(self, instance: User, data):
+
+        if (instance.verified_status == 'verified' and 
+            any(key in [
+                'cpf', 
+                'email',
+                'phone_number',
+                'birth',
+                'full_name',
+                'self_photo',
+                'document_front_photo',
+                'document_back_photo',
+                'self_with_document_photo'] 
+            for key in data.keys())):
+            raise serializers.ValidationError({"error": "Não é possível alterar dados de identidade validados"})
+        
+        super().update(instance, data)
+
+        if (all(key in ['self_photo', 'document_front_photo', 'document_back_photo', 'self_with_document_photo'] for key in data.keys())):
+            instance.verified_status = 'in_progress'
+            instance.save()
+        
+        return instance
+    
 
 class CustomSignupSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
@@ -17,19 +133,10 @@ class CustomSignupSerializer(serializers.Serializer):
     nick = serializers.CharField(required=False)
 
     def validate_full_name(self, full_name: str):
-        if len(full_name.strip().split(" ")) < 2:
-            raise serializers.ValidationError("Insira o nome completo.")
-        return full_name
+        return validate_full_name(full_name)
 
     def validate_birth(self, birth: str):
-        day, month, year = map(int, birth.split("/"))
-        formatted_date = date(year, month, day)
-        if formatted_date >= date.today():
-            raise serializers.ValidationError(
-                "A data de nascimento deve ser anterior a hoje."
-            )
-
-        return formatted_date
+        return validate_birth(birth)
 
     def validate_email(self, email: str):
         return get_adapter().clean_email(email)
@@ -38,35 +145,10 @@ class CustomSignupSerializer(serializers.Serializer):
         return get_adapter().clean_password(password)
 
     def validate_phone_number(self, phone_number: str):
-        phone_number = "".join(re.findall(r"\d", str(phone_number)))
-        if len(phone_number) < 10:
-            raise serializers.ValidationError("Número de telefone inválido.")
-        return phone_number
+        return validate_phone_number(phone_number)
 
     def validate_cpf(self, cpf: str):
-        regex_cnpj = re.compile(r"^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$")
-
-        if bool(regex_cnpj.match(cpf)):
-            raise serializers.ValidationError("CPF inválido.")
-
-        cpf = ("".join(re.findall(r"\d", str(cpf)))).zfill(11)
-
-        if len(cpf) > 11 or len(set(cpf)) == 1:
-            raise serializers.ValidationError("CPF inválido.")
-
-        inteiros = list(map(int, cpf))
-        novo = inteiros[:9]
-
-        for _ in range(2):
-            r = sum([(len(novo) + 1 - i) * v for i, v in enumerate(novo)]) % 11
-            f = 11 - r if r > 1 else 0
-
-            novo.append(f)
-
-        if novo != inteiros:
-            raise serializers.ValidationError("CPF inválido.")
-
-        return cpf
+        return validate_cpf(cpf)
 
     def create(self, validated_data: dict):
         adapter = get_adapter()

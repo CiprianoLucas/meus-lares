@@ -29,11 +29,10 @@ class CondoTenantAdmin(SoftAdmin):
         "id",
         "apartment",
         "user",
-        "is_renter",
         "is_responsible",
         "apartment__condominium",
     )
-    list_filter = ("user", "is_renter", "is_responsible", "apartment__condominium")
+    list_filter = ("user", "is_responsible", "apartment__condominium")
     search_fields = (
         "apartment__identifier",
         "user__full_name",

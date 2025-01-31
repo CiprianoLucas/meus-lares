@@ -9,6 +9,15 @@ interface User {
     password?: string
     email?: string
     birth?: string
+    profile_photo?: string
+    verified_status?: "verified" | "pending" | "in_progress" | "rejected"
+}
+
+const verifiedStatusMap = {
+    verified: "Verificado",
+    pending: "Pendente",
+    in_progress: "Em andamento",
+    rejected: "Rejeitado",
 }
 
 const roleMap = {
@@ -18,4 +27,4 @@ const roleMap = {
 }
 
 export type { User, Role }
-export { roleMap }
+export { roleMap, verifiedStatusMap }

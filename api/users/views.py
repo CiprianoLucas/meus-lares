@@ -16,7 +16,9 @@ from rest_framework.views import APIView
 from relations.models import CondoStaff, CondoTenant
 
 from .models import User
-from .serializers import CustomSignupSerializer
+from .serializers import CustomSignupSerializer, UserSerializer
+
+from soft_components.views import SoftModelsViewSet
 
 
 @api_view(["GET"])
@@ -24,7 +26,8 @@ def get_info(request: HttpRequest):
     csrftoken = get_token(request)
     response = {
         "csrftoken": csrftoken, 
-        "email": request.user.email if request.user else ""
+        "id": request.user.id if request.user else "",
+        "nick": request.user.nick if request.user else ""
         }
     return JsonResponse(response)
 
@@ -45,7 +48,13 @@ class FindUserByEmailView(APIView):
         }
         return JsonResponse(response)
 
+class UserProfileView(SoftModelsViewSet):
+    serializer_class = UserSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        users = User.objects.filter(id=user.id).distinct()
+        return users
 
 class UserCreateView(generics.CreateAPIView):
     serializer_class = CustomSignupSerializer
@@ -96,7 +105,7 @@ class LoginView(APIView):
             if CondoTenant.objects.filter(user=user).exists():
                 roles.append("tenant")
 
-            response = {"nick": user.nick, "roles": roles, "email": user.email}
+            response = {"nick": user.nick, "roles": roles, "email": user.id}
 
             return JsonResponse(response)
 
@@ -152,6 +161,7 @@ class GoogleLogin(APIView):
                 "nick": user.nick,
                 "roles": roles,
                 "email": user.email,
+                "id": user.id,
             }
 
             return JsonResponse(response, status=status.HTTP_200_OK)

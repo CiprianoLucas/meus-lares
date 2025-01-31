@@ -22,6 +22,7 @@ class SoftModel(models.Model):
 
     def delete(self, *args, user=None, **kwargs):
         self.is_deleted = True
+        self.is_active = False
         self.save(user=user)
 
     def save(self, *args, user=None, query_delete=False, **kwargs):

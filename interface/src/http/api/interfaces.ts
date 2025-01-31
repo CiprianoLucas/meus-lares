@@ -2,7 +2,7 @@ import { type AxiosInstance } from 'axios'
 import type { Role } from '@/modules/user/interfaces'
 
 interface LoginResponse {
-    email: string
+    id: string
     nick: string
     role: Role
     roles: Role[]

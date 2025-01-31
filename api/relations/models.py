@@ -1,5 +1,7 @@
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
+from rest_framework import serializers
+from django.db.utils import IntegrityError
 from django.db import models
 
 from places.models import Apartment, Condominium, SharedPlaces
@@ -20,7 +22,6 @@ def contract_relation_validator(value: int | ContentType):
 class CondoTenant(SoftModel):
     apartment = models.ForeignKey(Apartment, on_delete=models.DO_NOTHING)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    is_renter = models.BooleanField(default=False)
     is_responsible = models.BooleanField(default=False)
     is_first_contact = models.BooleanField(default=False)
     notes = models.TextField(blank=True, null=True)
@@ -35,6 +36,13 @@ class CondoTenant(SoftModel):
     class Meta:
         verbose_name = "Morador"
         verbose_name_plural = "Moradores"
+        constraints = [
+            models.UniqueConstraint(
+                fields=['apartment', 'user'],
+                condition=models.Q(is_active=True),
+                name="unique_active_tenant_per_apartment"
+            )
+        ]
 
 
 class CondoStaff(SoftModel):

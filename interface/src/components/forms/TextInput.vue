@@ -1,20 +1,22 @@
 <template>
     <label v-if="label" :for="id" class="form-label">{{ label }}</label>
-    <div class="input-group mb-3">
-        <input
-            v-bind="$attrs"
-            v-model="localValue"
-            :class="`form-control ${!valid ? 'border-danger' : ''}`"
-            :id="id"
-            @input="input"
-            @change="change"
-        />
-        <span v-if="buttomLabel" class="input-group-text"
-            ><button class="btn m-0 p-0" @click="buttomFunction?.apply" v-html="buttomLabel"
-        /></span>
-    </div>
-    <div v-if="!valid && errorMessage" class="mt-2">
-        <span class="text-danger">{{ errorMessage }}</span>
+    <div class="mb-3">
+        <div class="input-group">
+            <input
+                v-bind="$attrs"
+                v-model="localValue"
+                :class="`form-control ${!valid ? 'border-danger' : ''}`"
+                :id="id"
+                @input="input"
+                @change="change"
+            />
+            <span v-if="buttomLabel" class="input-group-text"
+                ><button class="btn m-0 p-0" @click="buttomFunction?.apply" v-html="buttomLabel"
+            /></span>
+        </div>
+        <div v-if="!valid && errorMessage" class="mt-1">
+            <span class="text-danger">{{ errorMessage }}</span>
+        </div>
     </div>
 </template>
 
@@ -42,7 +44,7 @@ const valid = ref(true)
 const errorMessage = ref(true)
 
 const emit = defineEmits<{
-    (event: 'update:value', value: string): void
+    (event: 'update:modelValue', value?: string): void
 }>()
 
 function input() {
@@ -53,7 +55,8 @@ function change() {
     if (props.validators) {
         valid.value = true
         for (const validator of props.validators) {
-            const error = validator()
+            const error = validator(localValue)
+            emit('update:modelValue', localValue.value)
             if (error) {
                 valid.value = false
                 errorMessage.value = error !== true ? error : ''
@@ -67,7 +70,7 @@ function verifyMask() {
     if (props.mask) {
         const maskedValue = applyMask(props.mask, localValue.value)
         localValue.value = maskedValue
-        emit('update:value', maskedValue)
+        emit('update:modelValue', maskedValue)
     }
 }
 

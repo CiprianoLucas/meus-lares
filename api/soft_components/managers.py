@@ -17,7 +17,7 @@ class SoftDeleteQuerySet(models.QuerySet):
                 )
                 obj.save(update_fields=["history"], user=user, query_delete=True)
 
-        return self.update(is_deleted=True)
+        return self.update(is_deleted=True, is_active=False)
 
     def hard_delete(self):
         return super().delete()

@@ -27,7 +27,7 @@ const props = defineProps<{
     id: string
     optionLabel: string
     options: { [key: string]: string | number }[]
-    modelValue?: string | null | number
+    modelValue?: string | null | number | object
     label?: string
     buttomLabel?: string
     buttomFunction?: Function

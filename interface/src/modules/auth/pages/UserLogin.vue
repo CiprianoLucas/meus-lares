@@ -96,7 +96,7 @@ const handleGoogleLogin = (token: string) => {
                 })
                 return
             }
-            user.email = data.email
+            user.id = data.id
             user.roles = data.roles
             if (!user.roles.includes(user.role)) {
                 app.api.clearCash()

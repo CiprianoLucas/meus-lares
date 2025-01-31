@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import type { Role } from './interfaces'
 
 interface UserState {
-    email: string
+    id: string
     nick: string
     role: Role
     roles: Role[]
@@ -10,7 +10,7 @@ interface UserState {
 
 export const userStore = defineStore('user', {
     state: (): UserState => ({
-        email: '',
+        id: '',
         nick: '',
         role: '',
         roles: []

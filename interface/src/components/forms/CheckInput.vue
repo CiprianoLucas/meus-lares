@@ -2,14 +2,14 @@
     <div class="form-check">
         <input :id="id" class="form-check-input" type="checkbox" v-model="localValue" v-bind="$attrs" />
         <label v-if="label" :for="id" class="form-check-label">{{ label }}</label>
-        <button v-if="tooltip" ref="tooltipButton" class="btn btn-outline-secondary rounded-circle m-0 p-0 ms-2">
-        <i class="bi bi-question"></i></button>
+        <help-button v-if="helpTooltip || helpModal" :tooltip="helpTooltip" :modal="helpModal" :id="id"/>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, watch, defineProps, defineEmits, defineOptions, onMounted } from 'vue'
 import { Tooltip } from 'bootstrap'
+import HelpButton from '../PopUps/HelpButton.vue';
 
 defineOptions({
     inheritAttrs: false
@@ -19,6 +19,8 @@ const props = defineProps<{
     modelValue?: boolean
     label?: string
     tooltip?: string
+    helpTooltip?: string
+    helpModal?: string
 }>()
 
 

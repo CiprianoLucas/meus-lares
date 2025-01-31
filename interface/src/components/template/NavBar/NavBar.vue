@@ -3,13 +3,13 @@
         <div class="row align-items-center w-100">
             <div
                 class="col-12 d-flex align-items-center justify-content-center ms-2 py-3 border-bottom border-secondary"
-            >
+            ><router-link :to="homepage">
                 <img
                     src="/img/meuslares-logo.png"
                     alt="logo"
                     class="square-image"
-                    @click="homepage"
                 />
+            </router-link>
             </div>
             <div class="col-8 text-white">
                 <div v-if="!nick">
@@ -19,13 +19,15 @@
                         </div>
                     </div>
                 </div>
-                <div v-else-if="nick" class="row text-center">
-                    <div class="col-12 mb-0">
-                        <span class="fw-bold">{{ role }}</span>
-                    </div>
-                    <div class="col-12">
-                        <span class="text-white">{{ nick }}</span>
-                    </div>
+                <div v-else="nick" class="row text-center">
+                    <router-link to="/usuario" class="text-white text-decoration-none">
+                        <div class="col-12 mb-0">
+                            <span class="fw-bold">{{ role }}</span>
+                        </div>
+                        <div class="col-12">
+                            <span class="text-white">{{ nick }}</span>
+                        </div>
+                    </router-link>
                 </div>
             </div>
             <div class="col-2 d-flex justify-content-end my-2">
@@ -51,11 +53,11 @@
     <div id="main-nav" ref="mainNav">
         <div class="collapse bg-dark" id="navbarCollapse">
             <div class="pt-3">
-                <a class="text-white text-decoration-none" @click="homepage">
+                <router-link class="text-white text-decoration-none" :to="homepage">
                     <div class="d-flex mb-2 w-100 justify-content-center align-items-center">
                         <span>Página inicial</span>
                     </div>
-                </a>
+                </router-link>
             </div>
             <div v-if="!nick" class="pb-1">
                 <router-link
@@ -98,7 +100,7 @@
 
 <script setup lang="ts">
 import { userStore } from '@/modules/user/stores'
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue'
 import { api } from '@/http'
 import { Collapse } from 'bootstrap'
 import { roleMap } from '@/modules/user/interfaces'
@@ -132,23 +134,20 @@ async function logout() {
     await api.logout()
 }
 
-function homepage() {
-    if (!user.email) {
-        router.push('/')
-        return
+const homepage = computed(() => {
+    if (!user.id) {
+        return "/"
     }
     switch (user.role) {
         case 'owner':
-            router.push('/proprietario')
-            break
+            return '/proprietario'
         case 'tenant':
-            router.push('/morador')
-            break
+            return '/morador'
         case '':
-            router.push('/usuario/papel')
-            break
+            return '/usuario/papel'
     }
-}
+});
+
 onMounted(() => {
     document.addEventListener('click', handleClickOutside)
     const notification = document.getElementById('notificationCollapse')

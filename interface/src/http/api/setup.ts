@@ -36,9 +36,11 @@ function getCsrf() {
         api.defaults.headers.common['X-CSRFToken'] = data.csrftoken
         try {
             const user = userStore()
-            if (user.email != data.email) {
-                user.email = ''
+            if (user.id != data.id) {
+                user.id = ''
                 user.nick = ''
+            } else {
+                user.nick = data.nick
             }
         } catch {}
     })

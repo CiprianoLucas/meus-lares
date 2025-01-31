@@ -24,6 +24,10 @@ class CondoTenantView(SoftModelsViewSet):
         if apartment_id:
             relations = relations.filter(apartment__id=apartment_id)
 
+        is_active = query_params.get("is_active")
+        if is_active:
+            relations = relations.filter(is_active=True)
+
         return relations
 
 

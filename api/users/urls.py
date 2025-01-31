@@ -1,19 +1,23 @@
 from allauth.account import views
 from django.conf import settings
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 from django.views.generic.base import RedirectView
-
+from rest_framework.routers import DefaultRouter
 from .views import (
     GoogleLogin,
     LoginView,
     UserCreateView,
     FindUserByEmailView,
+    UserProfileView,
     get_info,
     logout_view,
     roles_view,
 )
+router = DefaultRouter()
+router.register(r"profile", UserProfileView, "profile")
 
 urlpatterns = [
+    path("", include(router.urls)),
     path("info/", get_info, name="csrf"),
     path("email/<str:email>", FindUserByEmailView.as_view(), name="find-user-by-email"),
     path("register/", UserCreateView.as_view(), name="user-register"),
