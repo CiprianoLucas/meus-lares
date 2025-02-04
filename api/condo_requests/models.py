@@ -1,5 +1,4 @@
 from django.db import models
-
 from places.models import Apartment, Condominium
 from soft_components import SoftModel
 from users.models import User

@@ -17,6 +17,9 @@ class SoftModelsViewSet(viewsets.ModelViewSet):
     sort: dict = {}
     request: Request
 
+    def perform_destroy(self, instance):
+        instance.delete(user=self.request.user)
+
     def search_sort(self, query):
 
         query_params = self.request.query_params

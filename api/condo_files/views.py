@@ -1,7 +1,8 @@
 from soft_components.views import SoftModelsViewSet
 
 from .models import AptInspectImages, CondoTenantContractFiles
-from .serializers import AptInspectImagesSerializer, CondoTenantConstractsFilesSerializer
+from .serializers import (AptInspectImagesSerializer,
+                          CondoTenantConstractsFilesSerializer)
 
 
 class CondoTenantContractsFilesView(SoftModelsViewSet):

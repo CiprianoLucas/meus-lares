@@ -1,12 +1,8 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import (
-    CondoStaffView,
-    CondoTenantView,
-    CondoTenantContractView,
-    PlaceReservationViewSet,
-)
+from .views import (CondoStaffView, CondoTenantContractView, CondoTenantView,
+                    PlaceReservationViewSet)
 
 router = DefaultRouter()
 router.register(r"tenant", CondoTenantView, "tenant")

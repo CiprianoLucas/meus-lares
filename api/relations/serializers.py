@@ -1,8 +1,8 @@
 from rest_framework import serializers
-
 from soft_components.serializers import softModelSerializer
 
-from .models import CondoStaff, CondoTenant, CondoTenantContract, PlaceReservation
+from .models import (CondoStaff, CondoTenant, CondoTenantContract,
+                     PlaceReservation)
 
 
 class CondoTenantSerializer(softModelSerializer):
@@ -36,8 +36,8 @@ class CondoTenantSerializer(softModelSerializer):
         return obj.user.full_name
 
     def get_user_identity_photo(self, obj: CondoTenant):
-        if obj.user.identity_photo:
-            return obj.user.identity_photo.storage.url(obj.user.identity_photo.name)
+        if obj.user.self_photo:
+            return obj.user.self_photo.storage.url(obj.user.self_photo.name)
         return None
 
 

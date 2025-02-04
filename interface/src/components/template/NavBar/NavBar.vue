@@ -3,13 +3,10 @@
         <div class="row align-items-center w-100">
             <div
                 class="col-12 d-flex align-items-center justify-content-center ms-2 py-3 border-bottom border-secondary"
-            ><router-link :to="homepage">
-                <img
-                    src="/img/meuslares-logo.png"
-                    alt="logo"
-                    class="square-image"
-                />
-            </router-link>
+            >
+                <router-link :to="homepage">
+                    <img src="/img/meuslares-logo.png" alt="logo" class="square-image" />
+                </router-link>
             </div>
             <div class="col-8 text-white">
                 <div v-if="!nick">
@@ -93,7 +90,7 @@
             </div>
         </div>
         <div class="collapse bg-dark text-white" id="notificationCollapse">
-            <div class="p-3">Notificações aqui</div>
+            <notifications-nav-bar />
         </div>
     </div>
 </template>
@@ -104,7 +101,7 @@ import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue'
 import { api } from '@/http'
 import { Collapse } from 'bootstrap'
 import { roleMap } from '@/modules/user/interfaces'
-import { useRouter } from 'vue-router'
+import NotificationsNavBar from './NotificationsNavBar.vue'
 
 const user = userStore()
 const nick = ref<string | null>(user.nick)
@@ -112,8 +109,6 @@ const role = ref<string | null>(roleMap[user.role])
 const mainNav = ref<HTMLElement | null>(null)
 const notificationCollapse = ref<Collapse | null>(null)
 const navCollapse = ref<Collapse | null>(null)
-
-const router = useRouter()
 
 watch(
     () => user.nick,
@@ -136,7 +131,7 @@ async function logout() {
 
 const homepage = computed(() => {
     if (!user.id) {
-        return "/"
+        return '/'
     }
     switch (user.role) {
         case 'owner':
@@ -146,7 +141,7 @@ const homepage = computed(() => {
         case '':
             return '/usuario/papel'
     }
-});
+})
 
 onMounted(() => {
     document.addEventListener('click', handleClickOutside)

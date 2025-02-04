@@ -1,9 +1,22 @@
 <template>
-    <label v-if="label" :for="id" class="form-label">{{ label }} <help-button v-if="helpTooltip || helpModal"
-            :tooltip="helpTooltip" :modal="helpModal" :id="id" /></label>
+    <label v-if="label" :for="id" class="form-label"
+        >{{ label }}
+        <help-button
+            v-if="helpTooltip || helpModal"
+            :tooltip="helpTooltip"
+            :modal="helpModal"
+            :id="id"
+    /></label>
     <div v-for="option in options" class="form-check">
-        <input class="form-check-input" :value="option[optionValue]" type="radio" v-bind="$attrs"
-            :name="`name-radio-${id}`" :id="`radio-${option[optionValue]}-${id}`" v-model="localValue" />
+        <input
+            class="form-check-input"
+            :value="option[optionValue]"
+            type="radio"
+            v-bind="$attrs"
+            :name="`name-radio-${id}`"
+            :id="`radio-${option[optionValue]}-${id}`"
+            v-model="localValue"
+        />
         <label class="form-check-label" :for="`radio-${option[optionValue]}-${id}`">
             {{ option[optionLabel] }}
         </label>
@@ -12,7 +25,7 @@
 
 <script lang="ts" setup>
 import { ref, watch, defineProps, defineEmits, defineOptions } from 'vue'
-import HelpButton from '../PopUps/HelpButton.vue';
+import HelpButton from '../PopUps/HelpButton.vue'
 
 defineOptions({
     inheritAttrs: false

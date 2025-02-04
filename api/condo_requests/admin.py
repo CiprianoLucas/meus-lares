@@ -1,6 +1,5 @@
-from django.contrib import admin
-
 from condo_files.models import RequestFiles
+from django.contrib import admin
 from soft_components import SoftAdmin, SoftInline
 
 from .models import CondoRequest

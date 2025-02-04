@@ -6,7 +6,7 @@
         <div v-if="!sharedId" class="d-flex justify-content-end py-2 border-bottom">
             <button @click="addSharedPlace" class="btn btn-secondary">Adicionar</button>
         </div>
-        <div class="p-2">
+        <div v-if="!sharedId" class="p-2">
             <p>
                 <small
                     >Os espaços compartilhados adicionados só serão cadastrados ao clicar em
@@ -16,6 +16,9 @@
         </div>
         <div class="d-flex justify-content-between my-3">
             <button @click="goBack" class="btn btn-secondary">Voltar</button>
+            <button v-if="sharedId" @click="excludeSharedPlace" class="btn btn-danger">
+                Excluir
+            </button>
             <button v-if="sharedId" @click="updateSharedPlace" class="btn btn-primary">
                 Salvar
             </button>
@@ -121,13 +124,6 @@ const inputs = app.ref<Input[]>([
         placeholder: 'Ex: Salão, Quadra'
     },
     {
-        reference: 'sufix',
-        label: 'Sufixo',
-        size: 'bit',
-        type: 'text',
-        placeholder: 'Ex: 101, 102, a1...'
-    },
-    {
         reference: 'capacity',
         label: 'Capacidade máxima',
         size: 'sm',
@@ -157,6 +153,16 @@ const inputs = app.ref<Input[]>([
 const sharedId = app.ref(app.routeParam('id'))
 const condominiumId = app.routeQuery('condominium')
 const complementModalBody = app.ref<SharedPlace>()
+
+if (!sharedId.value) {
+    inputs.value.splice(1, 0, {
+        reference: 'sufix',
+        label: 'Sufixo',
+        size: 'bit',
+        type: 'text',
+        placeholder: 'Ex: 101, 102, a1...'
+    })
+}
 
 const sharedForm = app.ref<{ [key: string]: string }>({
     identifier: '',
@@ -203,6 +209,23 @@ function addSharedPlace() {
     console.log(listSharedPlacesRegister.value)
 }
 
+function excludeSharedPlace() {
+    app.loading(true, 'Excluindo...')
+    app.api
+        .delete(`/place/shared/${sharedId.value}/`)
+        .then(() => {
+            app.popup('Excluido', 'Espaço compartilhado excluido com sucesso')
+            app.api.clearStartPath('/place/shared/?condominium=' + sharedForm.value.condominium)
+            router.push('/condominio/' + sharedForm.value.condominium)
+        })
+        .catch((error) => {
+            app.popup('Erro', app.resumeErrors(error), 'warning')
+        })
+        .finally(() => {
+            app.loading(false)
+        })
+}
+
 function deleteSharedPlace(i: number) {
     listSharedPlacesRegister.value.splice(i, 1)
 }
@@ -235,11 +258,11 @@ function registerSharedPlaces() {
 function updateSharedPlace() {
     app.loading(true, 'Atualizando...')
     app.api
-        .patch('/place/shared/' + sharedId.value + '/', sharedForm.value)
+        .patch(`/place/shared/${sharedId.value}/`, sharedForm.value)
         .then(({ data }) => {
             app.popup('Sucesso!', 'Informações do condomínio salvas', 'success')
-            app.api.removeListCash('/place/shared/')
-            router.push('/condominio/' + data.id)
+            app.api.removeListCash('/place/shared/?condominium=' + sharedForm.value.condominium)
+            router.push('/condominio/' + sharedForm.value.condominium)
         })
         .catch((error) => {
             app.popup('Erro!', app.resumeErrors(error), 'warning')

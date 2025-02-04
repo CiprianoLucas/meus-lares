@@ -46,7 +46,7 @@ const headers = app.ref({
 })
 
 const columnPath = app.ref({
-    identifier: 'estacionamento/:parkId',
+    identifier: 'estacionamento/edicao/:parkId',
     apartment_identifier: 'apartamento/:apartmentId'
 })
 

@@ -1,8 +1,7 @@
 import json
 
-from django.core.serializers.json import DjangoJSONEncoder
-
 from condo_requests.models import CondoRequest
+from django.core.serializers.json import DjangoJSONEncoder
 from users.models import User
 
 

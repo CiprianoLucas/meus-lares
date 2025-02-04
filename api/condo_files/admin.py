@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from soft_components import SoftAdmin
 
 from .models import AptInspectImages, CondoTenantContractFiles

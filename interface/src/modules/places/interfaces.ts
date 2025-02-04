@@ -19,6 +19,7 @@ interface Apartment {
     complement?: string
     tenant?: string
     tenant_name?: string
+    is_active?: boolean
 }
 
 interface Park {

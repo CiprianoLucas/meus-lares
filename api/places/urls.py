@@ -1,18 +1,11 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import (
-    ApartmentOwnerView,
-    BulkApartmentCreateView,
-    BulkParkCreateView,
-    BulkSharedPlaceCreateView,
-    CitiesView,
-    CondominiumOwnerView,
-    FullAddressView,
-    ParkingView,
-    SharedPlacesView,
-    ApartmentByCondominiumView
-)
+from .views import (ApartmentByCondominiumView, ApartmentOwnerView,
+                    BulkApartmentCreateView, BulkParkCreateView,
+                    BulkSharedPlaceCreateView, CitiesView,
+                    CondominiumOwnerView, FullAddressView, ParkingView,
+                    SharedPlacesView)
 
 router = DefaultRouter()
 router.register(r"condominium", CondominiumOwnerView, "condominium")
@@ -35,7 +28,11 @@ urlpatterns = [
         BulkSharedPlaceCreateView.as_view(),
         name="bulk-apartment-create",
     ),
-    path("apartments-all/<uuid:condominium_id>", ApartmentByCondominiumView.as_view(), name="apartments-by-condominium"),
+    path(
+        "apartments-all/<uuid:condominium_id>",
+        ApartmentByCondominiumView.as_view(),
+        name="apartments-by-condominium",
+    ),
     path("cities/<str:uf>", CitiesView.as_view(), name="cities"),
     path("cep/<str:cep>", FullAddressView.as_view(), name="full-address-by-cep"),
 ]

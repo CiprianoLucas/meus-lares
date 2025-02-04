@@ -56,7 +56,6 @@ function change() {
         valid.value = true
         for (const validator of props.validators) {
             const error = validator(localValue)
-            emit('update:modelValue', localValue.value)
             if (error) {
                 valid.value = false
                 errorMessage.value = error !== true ? error : ''
@@ -64,6 +63,7 @@ function change() {
             }
         }
     }
+    emit('update:modelValue', localValue.value)
 }
 
 function verifyMask() {

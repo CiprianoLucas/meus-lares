@@ -1,15 +1,26 @@
 <template>
     <div class="form-check">
-        <input :id="id" class="form-check-input" type="checkbox" v-model="localValue" v-bind="$attrs" />
+        <input
+            :id="id"
+            class="form-check-input"
+            type="checkbox"
+            v-model="localValue"
+            v-bind="$attrs"
+        />
         <label v-if="label" :for="id" class="form-check-label">{{ label }}</label>
-        <help-button v-if="helpTooltip || helpModal" :tooltip="helpTooltip" :modal="helpModal" :id="id"/>
+        <help-button
+            v-if="helpTooltip || helpModal"
+            :tooltip="helpTooltip"
+            :modal="helpModal"
+            :id="id"
+        />
     </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, watch, defineProps, defineEmits, defineOptions, onMounted } from 'vue'
 import { Tooltip } from 'bootstrap'
-import HelpButton from '../PopUps/HelpButton.vue';
+import HelpButton from '../PopUps/HelpButton.vue'
 
 defineOptions({
     inheritAttrs: false
@@ -22,7 +33,6 @@ const props = defineProps<{
     helpTooltip?: string
     helpModal?: string
 }>()
-
 
 const tooltipButton = ref<HTMLElement | null>(null)
 const localValue = ref(props.modelValue)
@@ -46,10 +56,9 @@ onMounted(() => {
     if (tooltipButton.value) {
         new Tooltip(tooltipButton.value, {
             title: props.tooltip,
-            placement: "top",
-            trigger: "hover",
+            placement: 'top',
+            trigger: 'hover'
         })
     }
 })
 </script>
-

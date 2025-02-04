@@ -10,14 +10,14 @@ interface User {
     email?: string
     birth?: string
     profile_photo?: string
-    verified_status?: "verified" | "pending" | "in_progress" | "rejected"
+    verified_status?: 'verified' | 'pending' | 'in_progress' | 'rejected'
 }
 
 const verifiedStatusMap = {
-    verified: "Verificado",
-    pending: "Pendente",
-    in_progress: "Em andamento",
-    rejected: "Rejeitado",
+    verified: 'Verificado',
+    pending: 'Pendente',
+    in_progress: 'Em andamento',
+    rejected: 'Rejeitado'
 }
 
 const roleMap = {

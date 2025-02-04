@@ -9,26 +9,25 @@ from django.http.request import HttpRequest
 from django.middleware.csrf import get_token
 from google.auth.transport import requests
 from google.oauth2 import id_token
+from relations.models import CondoStaff, CondoTenant
 from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from rest_framework.views import APIView
-from relations.models import CondoStaff, CondoTenant
+from soft_components.views import SoftModelsViewSet
 
 from .models import User
 from .serializers import CustomSignupSerializer, UserSerializer
-
-from soft_components.views import SoftModelsViewSet
 
 
 @api_view(["GET"])
 def get_info(request: HttpRequest):
     csrftoken = get_token(request)
     response = {
-        "csrftoken": csrftoken, 
-        "id": request.user.id if request.user else "",
-        "nick": request.user.nick if request.user else ""
-        }
+        "csrftoken": csrftoken,
+        "id": request.user.id if not request.user.is_anonymous else "",
+        "nick": request.user.nick if not request.user.is_anonymous else "",
+    }
     return JsonResponse(response)
 
 
@@ -36,17 +35,20 @@ class FindUserByEmailView(APIView):
 
     def get(self, _, email: str):
 
-        user = User.objects.filter(email = email).first()
+        user = User.objects.filter(email=email).first()
         if not user:
-            return JsonResponse({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-        
-        name_split = user.full_name.split(' ')
+            return JsonResponse(
+                {"error": "User not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        name_split = user.full_name.split(" ")
 
         response = {
-            "name": name_split[0] + ' ' + name_split[1][0:2] + "...",
+            "name": name_split[0] + " " + name_split[1][0:2] + "...",
             "id": user.id,
         }
         return JsonResponse(response)
+
 
 class UserProfileView(SoftModelsViewSet):
     serializer_class = UserSerializer
@@ -55,6 +57,7 @@ class UserProfileView(SoftModelsViewSet):
         user = self.request.user
         users = User.objects.filter(id=user.id).distinct()
         return users
+
 
 class UserCreateView(generics.CreateAPIView):
     serializer_class = CustomSignupSerializer

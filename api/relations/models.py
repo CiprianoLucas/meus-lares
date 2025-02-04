@@ -1,9 +1,6 @@
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
-from rest_framework import serializers
-from django.db.utils import IntegrityError
 from django.db import models
-
 from places.models import Apartment, Condominium, SharedPlaces
 from soft_components import SoftModel
 from users.models import User
@@ -38,9 +35,9 @@ class CondoTenant(SoftModel):
         verbose_name_plural = "Moradores"
         constraints = [
             models.UniqueConstraint(
-                fields=['apartment', 'user'],
+                fields=["apartment", "user"],
                 condition=models.Q(is_active=True),
-                name="unique_active_tenant_per_apartment"
+                name="unique_active_tenant_per_apartment",
             )
         ]
 

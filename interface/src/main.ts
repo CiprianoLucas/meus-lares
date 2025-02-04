@@ -5,7 +5,7 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { createApp } from 'vue'
 import App from '@/App.vue'
 import router from '@/router'
-import { Tooltip } from 'bootstrap';
+import { Tooltip } from 'bootstrap'
 
 const pinea = createPinia()
 pinea.use(piniaPluginPersistedstate)

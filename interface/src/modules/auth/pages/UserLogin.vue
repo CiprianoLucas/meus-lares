@@ -82,7 +82,7 @@ app.onMounted(() => {
 
 const handleGoogleLogin = (token: string) => {
     buttonDisabled.value = true
-    app.loading(true, "Entrando...")
+    app.loading(true, 'Entrando...')
     app.api
         .post('/user/google-login/', { access_token: token })
         .then(({ data }) => {
@@ -108,11 +108,13 @@ const handleGoogleLogin = (token: string) => {
             app.popup('Erro!', app.resumeErrors(error), 'warning')
             buttonDisabled.value = false
         })
-        .finally(()=>{app.loading(false)})
+        .finally(() => {
+            app.loading(false)
+        })
 }
 
 const login = () => {
-    app.loading(true, "Entrando...")
+    app.loading(true, 'Entrando...')
     buttonDisabled.value = true
     app.api
         .login(form.value)
@@ -123,7 +125,9 @@ const login = () => {
             app.popup('Erro!', app.resumeErrors(error), 'warning')
             buttonDisabled.value = false
         })
-        .finally(()=>{app.loading(false)})
+        .finally(() => {
+            app.loading(false)
+        })
 }
 
 const redirectRole = () => {

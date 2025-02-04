@@ -1,5 +1,4 @@
 from django.db import models
-
 from meus_lares.storages import PublicMediaStorage
 from places.models import Condominium
 from soft_components import SoftModel

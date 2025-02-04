@@ -1,12 +1,9 @@
 from soft_components.views import SoftModelsViewSet
 
-from .models import CondoStaff, CondoTenant, CondoTenantContract, PlaceReservation
-from .serializers import (
-    CondoStaffSerializer,
-    CondoTenantSerializer,
-    CondoTenantContractSerializer,
-    PlaceReservationSerializer,
-)
+from .models import (CondoStaff, CondoTenant, CondoTenantContract,
+                     PlaceReservation)
+from .serializers import (CondoStaffSerializer, CondoTenantContractSerializer,
+                          CondoTenantSerializer, PlaceReservationSerializer)
 
 
 class CondoTenantView(SoftModelsViewSet):
@@ -73,7 +70,9 @@ class CondoTenantContractView(SoftModelsViewSet):
     def get_queryset(self):
         user = self.request.user
 
-        contracts = CondoTenantContract.objects.filter(content_type__model="condotenant")
+        contracts = CondoTenantContract.objects.filter(
+            content_type__model="condotenant"
+        )
         user_contracts = [
             contract
             for contract in contracts

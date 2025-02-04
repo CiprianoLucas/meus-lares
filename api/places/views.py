@@ -4,22 +4,16 @@ from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
-
 from soft_components.views import SoftModelsViewSet
 
 from .models import Apartment, City, Condominium, ParkingSpace, SharedPlaces
-from .serializers import (
-    ApartmentSerializer,
-    BulkApartmentCreateSerializer,
-    BulkParkCreateSerializer,
-    BulkSharedPlacesCreateSerializer,
-    CitySerializer,
-    CondominiumsSerializer,
-    FullAddressSerializer,
-    ParkingSerializer,
-    SharedPlacesSerializer,
-)
+from .serializers import (ApartmentSerializer, BulkApartmentCreateSerializer,
+                          BulkParkCreateSerializer,
+                          BulkSharedPlacesCreateSerializer, CitySerializer,
+                          CondominiumsSerializer, FullAddressSerializer,
+                          ParkingSerializer, SharedPlacesSerializer)
 
 
 class CondominiumOwnerView(SoftModelsViewSet):
@@ -71,7 +65,36 @@ class ApartmentOwnerView(SoftModelsViewSet):
         apartments = self.search_sort(apartments)
 
         return apartments
-    
+
+    def perform_update(self, serializer):
+        instance = self.get_object()
+        data = self.request.data
+
+        if "is_active" in data and not data["is_active"]:
+            if instance.condotenant_set.filter(is_active=True).exists():
+                raise ValidationError(
+                    {
+                        "error": """Não é possível desativar.
+                        Existem moradores ativos neste apartamento."""
+                    }
+                )
+
+        serializer.save()
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        if instance.condotenant_set.filter(is_active=True).exists():
+            raise ValidationError(
+                {
+                    "error": """Não é possível excluir.
+                    Existem moradores ativos neste apartamento."""
+                }
+            )
+
+        return super().destroy(request, *args, **kwargs)
+
+
 class ApartmentByCondominiumView(APIView):
 
     def get(self, request, condominium_id):
@@ -80,16 +103,19 @@ class ApartmentByCondominiumView(APIView):
         apartments = Apartment.objects.filter(
             condominium__condostaff__user=user,
             condominium__condostaff__role__in=["owner"],
-            condominium__id=condominium_id
+            condominium__id=condominium_id,
         ).distinct()
 
-        results = [{"id": apartment.id, "identifier": apartment.identifier} for apartment in apartments]
+        results = [
+            {"id": apartment.id, "identifier": apartment.identifier}
+            for apartment in apartments
+        ]
 
         response = {
             "results": results,
             "count": len(results),
             "next": None,
-            "previous": None
+            "previous": None,
         }
 
         return Response(response)

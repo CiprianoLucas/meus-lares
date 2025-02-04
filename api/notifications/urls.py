@@ -5,6 +5,8 @@ from .views import NotificationView, UserNotificationView
 
 router = DefaultRouter()
 router.register(r"main", NotificationView, "notifications")
-router.register(r"user", UserNotificationView, "notifications-user")
 
-urlpatterns = [path("", include(router.urls))]
+urlpatterns = [
+    path("confirm/", UserNotificationView.as_view(), name="confirm-notification"),
+    path("", include(router.urls)),
+]

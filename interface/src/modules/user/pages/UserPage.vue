@@ -1,46 +1,39 @@
 <template>
     <div class="container mt-2">
         <h2 class="text-center mb-3">Meu usuário</h2>
-        <div class="border-bottom d-flex flex-column justify-content-center align-items-center py-2">
-            <img v-if="user?.profile_photo" :src="user.profile_photo" alt="foto de perfil do usuário" class="user-img"/>
+        <div
+            class="border-bottom d-flex flex-column justify-content-center align-items-center py-2"
+        >
+            <img
+                v-if="user?.profile_photo"
+                :src="user.profile_photo"
+                alt="foto de perfil do usuário"
+                class="user-img"
+            />
             <button @click="triggerFileInput" class="btn btn-secondary py-0 my-1">
                 <small>Alterar foto de perfil</small>
             </button>
             <input ref="fileInputRef" type="file" @change="photoChange" style="display: none" />
         </div>
         <div class="border-top py-3">
-            <user-page-documents :user="user" :update="getUserValues"/>
+            <user-page-documents :user="user" :update="getUserValues" />
         </div>
         <div class="border-top py-3">
-            <div class="d-flex justify-content-between pb-3">
-                <h3 class="p-0 m-0"> Contatos</h3>
-                <router-link to="/usuario/edicao/contatos"
-                    class="btn btn-secondary py-0"><small>Editar</small></router-link>
-            </div>
-            <div class="user-info-card">
-                <dl>
-                    <dt>Como quer ser chamado:</dt>
-                    <dd>{{ user?.nick }}</dd>
-                    <dt>Telefone:</dt>
-                    <dd>{{ user?.phone_number }}</dd>
-                    <dt>E-mail:</dt>
-                    <dd>{{ user?.email }}</dd>
-                </dl>
-            </div>
+            <user-page-contact :user="user" :update="getUserValues" />
         </div>
-
     </div>
 </template>
 
 <script lang="ts" setup>
 import app from '@/app'
-import { type User } from '../interfaces';
-import { userStore } from '../stores';
-import { formatCPF, formatDate, formatPhoneNumber } from '@/components/formaters';
-import UserPageDocuments from '../components/UserPageDocuments.vue';
+import { type User } from '../interfaces'
+import { userStore } from '../stores'
+import { formatCPF, formatDate, formatPhoneNumber } from '@/components/formaters'
+import UserPageDocuments from '../components/UserPageDocuments.vue'
+import UserPageContact from '../components/UserPageContact.vue'
 
 const userStoreValues = userStore()
-const user = app.ref<User>({id: userStoreValues.id})
+const user = app.ref<User>({ id: userStoreValues.id })
 const userImageInput = app.ref<File | null>(null)
 const fileInputRef = app.ref<HTMLInputElement | null>(null)
 

@@ -8,10 +8,9 @@ from django.db.models.fields import UUIDField
 from django.db.models.fields.files import FileField, ImageField
 from django.db.models.fields.related import ForeignKey
 from django.utils.timezone import now
+from meus_lares.storages import PrivateMediaStorage, PublicMediaStorage
 from PIL import Image
 from rest_framework import serializers
-
-from meus_lares.storages import PrivateMediaStorage, PublicMediaStorage
 from soft_components.managers import SoftUserManager
 
 
@@ -42,7 +41,9 @@ class User(AbstractUser):
     phone_number = models.CharField(max_length=15)
     full_name = models.CharField(max_length=255)
     birth = models.DateField()
-    verified_status = models.CharField(max_length=15, choices=VERIFIED_STATUS_CHOICES, default="pending")
+    verified_status = models.CharField(
+        max_length=15, choices=VERIFIED_STATUS_CHOICES, default="pending"
+    )
     profile_photo = models.ImageField(
         upload_to="users/profile_photo/",
         blank=True,
@@ -107,7 +108,7 @@ class User(AbstractUser):
             self.profile_photo.save(self.profile_photo.name, File(image_io), save=False)
 
     def save(self, *args, user=None, query_delete=False, **kwargs):
-        
+
         if self.pk:
             old_instance = type(self).objects.filter(pk=self.pk).first()
             if old_instance:
@@ -158,7 +159,7 @@ class User(AbstractUser):
             else:
                 created_at = self.created_at
                 validate_all_params(self)
-                super().save(*args, force_insert=False,  **kwargs)
+                super().save(*args, force_insert=False, **kwargs)
                 if type(self).objects.filter(pk=self.pk) and created_at is not None:
                     self.history.append(
                         {

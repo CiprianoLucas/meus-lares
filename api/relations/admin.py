@@ -1,12 +1,6 @@
 from django.contrib import admin
-from django.contrib.contenttypes.admin import GenericTabularInline
-
-from relations.models import (
-    CondoStaff,
-    CondoTenant,
-    CondoTenantContract,
-    PlaceReservation,
-)
+from relations.models import (CondoStaff, CondoTenant, CondoTenantContract,
+                              PlaceReservation)
 from soft_components import SoftAdmin, SoftInline
 
 

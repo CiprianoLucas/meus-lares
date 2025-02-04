@@ -1,5 +1,4 @@
 from django.db import models
-
 from relations.models import CondoTenantContract
 from soft_components import SoftModel
 

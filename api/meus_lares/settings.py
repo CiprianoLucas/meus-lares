@@ -193,7 +193,6 @@ if ENV == "production":
         os.path.join(BASE_DIR, ".gcloud", env("GOOGLE_APPLICATION_CREDENTIALS"))
     )
 
-
     GS_BUCKET_MEDIA = env("GS_BUCKET_MEDIA")
     GS_BUCKET_STATIC = env("GS_BUCKET_STATIC")
 
@@ -238,7 +237,6 @@ elif ENV == "storage":
         os.path.join(BASE_DIR, ".gcloud", env("GOOGLE_APPLICATION_CREDENTIALS"))
     )
 
-
     GS_BUCKET_MEDIA = env("GS_BUCKET_MEDIA")
     GS_BUCKET_STATIC = env("GS_BUCKET_STATIC")
 
@@ -247,7 +245,7 @@ elif ENV == "storage":
 
     GS_MEDIA_LOCATION = ""
     MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_MEDIA}/"
-    
+
     STATIC_URL += "static/"
 
     DEBUG = True

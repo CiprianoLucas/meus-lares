@@ -4,20 +4,25 @@ from datetime import date
 from allauth.account.adapter import get_adapter
 from allauth.account.models import EmailAddress
 from rest_framework import serializers
+from soft_components.serializers import softModelSerializer
 
 from .models import User
-from soft_components.serializers import softModelSerializer
+
 
 def validate_full_name(full_name: str):
     if len(full_name.strip().split(" ")) < 2:
         raise serializers.ValidationError({"full_name": "Insira o nome completo."})
     return full_name
 
+
 def validate_phone_number(phone_number: str):
     phone_number = "".join(re.findall(r"\d", str(phone_number)))
     if len(phone_number) < 10:
-        raise serializers.ValidationError({"phone_number": "Número de telefone inválido."})
+        raise serializers.ValidationError(
+            {"phone_number": "Número de telefone inválido."}
+        )
     return phone_number
+
 
 def validate_cpf(cpf: str):
     regex_cnpj = re.compile(r"^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$")
@@ -44,6 +49,7 @@ def validate_cpf(cpf: str):
 
     return cpf
 
+
 def validate_birth(birth: str):
     day, month, year = map(int, birth.split("/"))
     formatted_date = date(year, month, day)
@@ -53,6 +59,7 @@ def validate_birth(birth: str):
         )
 
     return formatted_date
+
 
 class UserSerializer(softModelSerializer):
     class Meta:
@@ -84,7 +91,7 @@ class UserSerializer(softModelSerializer):
     def to_internal_value(self, initial_data):
 
         data = initial_data.copy()
-    
+
         if data.get("cpf", None):
             data["cpf"] = validate_cpf(data["cpf"])
         if data.get("email", None):
@@ -97,31 +104,45 @@ class UserSerializer(softModelSerializer):
             data["full_name"] = validate_full_name(data["full_name"])
 
         return super().to_internal_value(data)
-    
+
     def update(self, instance: User, data):
 
-        if (instance.verified_status == 'verified' and 
-            any(key in [
-                'cpf', 
-                'email',
-                'phone_number',
-                'birth',
-                'full_name',
-                'self_photo',
-                'document_front_photo',
-                'document_back_photo',
-                'self_with_document_photo'] 
-            for key in data.keys())):
-            raise serializers.ValidationError({"error": "Não é possível alterar dados de identidade validados"})
-        
+        if instance.verified_status == "verified" and any(
+            key
+            in [
+                "cpf",
+                "email",
+                "phone_number",
+                "birth",
+                "full_name",
+                "self_photo",
+                "document_front_photo",
+                "document_back_photo",
+                "self_with_document_photo",
+            ]
+            for key in data.keys()
+        ):
+            raise serializers.ValidationError(
+                {"error": "Não é possível alterar dados de identidade validados"}
+            )
+
         super().update(instance, data)
 
-        if (all(key in ['self_photo', 'document_front_photo', 'document_back_photo', 'self_with_document_photo'] for key in data.keys())):
-            instance.verified_status = 'in_progress'
+        if all(
+            key
+            in [
+                "self_photo",
+                "document_front_photo",
+                "document_back_photo",
+                "self_with_document_photo",
+            ]
+            for key in data.keys()
+        ):
+            instance.verified_status = "in_progress"
             instance.save()
-        
+
         return instance
-    
+
 
 class CustomSignupSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)

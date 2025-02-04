@@ -1,11 +1,21 @@
 <template>
     <div :class="class">
-    <label v-if="!hideInput" for="formFile" class="form-label">{{label}}</label>
-    <button v-else @click="triggerFileInput" :class="classButtom?classButtom:'btn btn-secondary py-0 my-1'">
-        <small>{{ label }}</small>
-    </button>
-    <input ref="fileInputRef" :style="hideInput ? 'display: none' : ''" class="form-control" type="file" id="formFile" 
-        @change="fileChange">
+        <label v-if="!hideInput" for="formFile" class="form-label">{{ label }}</label>
+        <button
+            v-else
+            @click="triggerFileInput"
+            :class="classButtom ? classButtom : 'btn btn-secondary py-0 my-1'"
+        >
+            <small>{{ label }}</small>
+        </button>
+        <input
+            ref="fileInputRef"
+            :style="hideInput ? 'display: none' : ''"
+            class="form-control"
+            type="file"
+            id="formFile"
+            @change="fileChange"
+        />
     </div>
 </template>
 
@@ -37,13 +47,13 @@ async function fileChange(event: Event) {
     const file = target.files?.[0] || null
     localValue.value = file
 
-    emit("update:modelValue", file);
+    emit('update:modelValue', file)
 
     props.runWhenChange?.apply
 }
 
 const emit = defineEmits<{
-    (event: 'update:modelValue', value: File | null): void;
+    (event: 'update:modelValue', value: File | null): void
 }>()
 
 watch(

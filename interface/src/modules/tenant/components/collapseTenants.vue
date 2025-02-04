@@ -1,5 +1,5 @@
 <template>
-    <h5 class="text-center">Espaços compartilhados</h5>
+    <h5 class="text-center">Moradores</h5>
     <div class="d-flex justify-content-center my-2">
         <button class="btn btn-secondary py-2 px-3 w-100" type="button" @click="onChangeCollapse">
             {{ showCollapse ? 'Esconder' : 'Mostrar' }} Configuração
@@ -11,15 +11,16 @@
             <router-link
                 :to="'/espaco-compartilhado/cadastro/?condominium=' + condominiumId"
                 class="btn btn-primary"
-                >Cadastrar novos espaços compartilhados</router-link
+                >Cadastra novo Morador</router-link
             >
         </div>
-        <list-table
-            :url="'/place/shared/?condominium=' + condominiumId"
-            :headers="headers"
-            :column-path="columnPath"
-            :param-path="paramPath"
-            :start="showCollapse"
+        <list-cards
+            :url="'/relation/tenant/?is_active=true&apartment=' + apartmentId"
+            redirect=""
+            img="user_identity_photo"
+            :start="true"
+            title="user_fullname"
+            :headers="headersTenants"
         />
     </div>
 </template>
@@ -27,7 +28,7 @@
 <script setup lang="ts">
 import { Collapse } from 'bootstrap'
 import app from '@/app'
-import ListTable from '@/components/tables/ListTable.vue'
+import ListCards from '@/components/tables/ListCards.vue'
 
 const listHtml = app.ref<HTMLElement>()
 const showCollapse = app.ref<boolean>(false)

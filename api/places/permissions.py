@@ -1,7 +1,6 @@
+from relations.models import CondoTenant
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
-
-from relations.models import CondoTenant
 from soft_components.views import SoftModelsViewSet
 
 from .models import Apartment, Condominium

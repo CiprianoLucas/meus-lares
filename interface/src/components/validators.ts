@@ -1,4 +1,4 @@
-import type { Ref } from "vue"
+import type { Ref } from 'vue'
 
 function verifyDate(dateRef: Ref) {
     if (!dateRef.value) {
@@ -47,18 +47,19 @@ function verifyDate(dateRef: Ref) {
 
 function verifyCpf(cpfRef: Ref<string>): string | false {
     let cpf = cpfRef.value
-    cpf = cpf.replace(/\D/g, '');
+    cpf = cpf.replace(/\D/g, '')
     if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
-        return "CPF inválido";
+        return 'CPF inválido'
     }
-    const digits = cpf.split('').map(Number);
+    const digits = cpf.split('').map(Number)
     const calculateDigit = (factor: number) => {
-        const sum = digits.slice(0, factor - 1).reduce((acc, num, index) => acc + num * (factor - index), 0);
-        return (sum * 10) % 11 % 10;
-    };
-    const isValid = calculateDigit(10) === digits[9] && calculateDigit(11) === digits[10];
-    return isValid?false:"CPF inválido"
+        const sum = digits
+            .slice(0, factor - 1)
+            .reduce((acc, num, index) => acc + num * (factor - index), 0)
+        return ((sum * 10) % 11) % 10
+    }
+    const isValid = calculateDigit(10) === digits[9] && calculateDigit(11) === digits[10]
+    return isValid ? false : 'CPF inválido'
 }
 
-
-export {verifyDate, verifyCpf}
+export { verifyDate, verifyCpf }

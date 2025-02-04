@@ -2,8 +2,7 @@ export default [
     {
         path: '/usuario/', //don't forget insert in router folder
         name: 'pagina-usuario',
-        component: () =>
-            import(/* webpacjChunkName: "página do usuário" */ './pages/UserPage.vue'),
+        component: () => import(/* webpacjChunkName: "página do usuário" */ './pages/UserPage.vue'),
         meta: { requiresAuth: false }
     },
     {

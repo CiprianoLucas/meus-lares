@@ -1,18 +1,12 @@
-from datetime import datetime
-
+from django.utils.timezone import localtime
 from rest_framework import serializers
-
-from places.models import Condominium
 from soft_components.serializers import softModelSerializer
-from users.models import User
 
 from .models import Notification, UserNotification
 
 
 class NotificationSerializer(softModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(), required=False
-    )
+    confirmed_at = serializers.SerializerMethodField()
 
     class Meta:
         model = Notification
@@ -22,53 +16,18 @@ class NotificationSerializer(softModelSerializer):
             "description",
             "schedule",
             "url",
-            "condominium",
             "image",
-            "user",
+            "confirmed_at",
         ]
         extra_kwargs = {
             "id": {"read_only": True},
             "user": {"write_only": True, "required": False},
         }
 
-    def create(self, data):
-        user = data.pop("user", None)
-        notification: Notification = super().create(data)
-
-        if user:
-            user_notification = UserNotification(user=user, notification=notification)
-            user_notification.save()
-        elif notification.condominium:
-            users = Condominium.objects.filter(
-                apartment__condotenant__user=notification.condominium
-            )
-            notifications_obj = [
-                UserNotification(user=u, notification=notification) for u in users
-            ]
-            UserNotification.objects.bulk_create(notifications_obj)
-
-        return notification
-
-
-class UserNotificationSerializer(softModelSerializer):
-
-    class Meta:
-        model = UserNotification
-        fields = ["user", "notification", "confirmed_at"]
-        extra_kwargs = {
-            "user": {"read_only": True},
-            "notification": {"read_only": True},
-            "confirmed_at": {"read_only": True},
-        }
-
-    def update(self, instance: UserNotification, validated_data):
-        user = self.context["request"].user
-
-        if user != instance.user:
-            raise serializers.ValidationError(
-                {"notification": "Notificação não pertence ao usuário."}
-            )
-
-        instance.confirmed_at = datetime.now()
-        instance.save()
-        return instance
+    def get_confirmed_at(self, obj: Notification):
+        user_notification = UserNotification.objects.filter(notification=obj).first()
+        return (
+            localtime(user_notification.confirmed_at).isoformat()
+            if getattr(user_notification, "confirmed_at")
+            else None
+        )

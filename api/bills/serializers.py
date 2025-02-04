@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from soft_components.serializers import softModelSerializer
 
 from .models import BreachPenalty, FinePenalty, RecurringFee

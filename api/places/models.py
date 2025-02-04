@@ -1,5 +1,4 @@
 from django.db import models
-
 from meus_lares.storages import PublicMediaStorage
 from soft_components import SoftModel
 
@@ -61,6 +60,10 @@ class Apartment(SoftModel):
 
     def temporary_url(self):
         return self.profile_photo.url if self.profile_photo else None
+
+    def delete(self, *args, user=None, **kwargs):
+        ParkingSpace.objects.filter(apartment=self).update(apartment=None)
+        super().delete(*args, user=user, **kwargs)
 
     class Meta:
         verbose_name = "Apartamento"

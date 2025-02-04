@@ -32,7 +32,11 @@
                 title="user_fullname"
                 :headers="headersTenants"
             />
-            <router-link :to="'/morador/cadastro/?apartment=' + apartmentId" class="btn btn-primary mt-4 py-2 px-3 w-100" type="button">
+            <router-link
+                :to="'/morador/cadastro/?apartment=' + apartmentId"
+                class="btn btn-primary mt-4 py-2 px-3 w-100"
+                type="button"
+            >
                 Cadastrar morador
             </router-link>
             <button class="btn btn-secondary mt-4 py-2 px-3 w-100" type="button">
@@ -51,8 +55,10 @@
             />
         </div>
         <div class="d-flex justify-content-between border-bottom px-4 pt-2 pb-5">
-            <button class="btn btn-danger py-1">Excluir</button>
-            <button class="btn btn-warning py-1">Desativar</button>
+            <button @click="deleteApartment" class="btn btn-danger py-1">Excluir</button>
+            <button @click="onOffApartment" class="btn btn-warning py-1">
+                {{ apartment.is_active ? 'Desativar' : 'Ativar' }}
+            </button>
         </div>
     </div>
     <div v-else>
@@ -105,6 +111,40 @@ app.onMounted(async () => {
     await getTenants()
     app.loading(false)
 })
+
+function deleteApartment() {
+    app.loading(true)
+    app.api
+        .delete(`/place/apartment/${apartmentId.value}/`)
+        .then(() => {
+            app.api.clearStartPath('/place/apartment/?condominium=' + apartment.value.condominium)
+            app.api.clearStartPath('/place/park/?condominium=' + apartment.value.condominium)
+            app.popup('Excluido', 'Apartamento excluido com sucesso.')
+            router.push('/condominio/' + apartment.value.condominium)
+        })
+        .catch((error) => {
+            app.popup('Erro', app.resumeErrors(error), 'warning')
+        })
+        .finally(() => {
+            app.loading(false)
+        })
+}
+
+function onOffApartment() {
+    app.loading(true)
+    app.api
+        .patch(`/place/apartment/${apartmentId.value}/`, { is_active: !apartment.value.is_active })
+        .then(() => {
+            apartment.value.is_active = !apartment.value.is_active
+            app.popup('Atualizado', 'Apartamento atualizado com sucesso.')
+        })
+        .catch((error) => {
+            app.popup('Erro', app.resumeErrors(error), 'warning')
+        })
+        .finally(() => {
+            app.loading(false)
+        })
+}
 
 function goBack() {
     router.go(-1)

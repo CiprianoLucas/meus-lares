@@ -6,7 +6,7 @@
         <div v-if="!parkId" class="d-flex justify-content-end py-2 border-bottom">
             <button @click="addPark" class="btn btn-secondary">Adicionar</button>
         </div>
-        <div class="p-2">
+        <div v-if="!parkId" class="p-2">
             <p>
                 <small
                     >Os estacionamentos adicionados só serão cadastrados ao clicar em
@@ -16,6 +16,7 @@
         </div>
         <div class="d-flex justify-content-between my-3">
             <button @click="goBack" class="btn btn-secondary">Voltar</button>
+            <button v-if="parkId" @click="excludePark" class="btn btn-danger">Excluir</button>
             <button v-if="parkId" @click="updatePark" class="btn btn-primary">Salvar</button>
             <button v-else @click="registerParks" class="btn btn-primary">Cadastrar</button>
         </div>
@@ -106,13 +107,6 @@ const inputs = app.ref<Input[]>([
         placeholder: 'Ex: Vaga'
     },
     {
-        reference: 'sufix',
-        label: 'Sufixo',
-        size: 'bit',
-        type: 'text',
-        placeholder: 'Ex: 101, 102, a1...'
-    },
-    {
         reference: 'apartment',
         label: 'Apartamento (opcional)',
         options: apartmentList.value,
@@ -127,14 +121,25 @@ const inputs = app.ref<Input[]>([
     }
 ])
 const parkId = app.ref(app.routeParam('id'))
-const condominiumId = app.routeQuery('condominium')
+let condominiumId = String(app.routeQuery('condominium'))
 const complementModalBody = app.ref()
+
+if (!parkId.value) {
+    inputs.value.splice(1, 0, {
+        reference: 'sufix',
+        label: 'Sufixo',
+        size: 'bit',
+        type: 'text',
+        placeholder: 'Ex: 101, 102, a1...'
+    })
+}
 
 const parkForm = app.ref<{ [key: string]: string }>({
     identifier: '',
     sufix: '',
     apartment: '',
-    complement: ''
+    complement: '',
+    condominium: ''
 })
 
 const listParksRegister = app.ref<Park[]>([])
@@ -166,13 +171,30 @@ function addPark() {
 
     listParksRegister.value.push(newPark)
 
-    app.popup("Acicionado", `estacionamento ${newPark.identifier}`, 'success', 1500)
+    app.popup('Acicionado', `estacionamento ${newPark.identifier}`, 'success', 1500)
 
     if (Number(parkForm.value.sufix)) {
         const newSufix = String(Number(parkForm.value.sufix) + 1)
         parkForm.value.sufix = newSufix
     }
     console.log(listParksRegister.value)
+}
+
+function excludePark() {
+    app.loading(true, 'Excluindo...')
+    app.api
+        .delete(`/place/park/${parkId.value}/`)
+        .then(() => {
+            app.popup('Excluido', 'Estacionamento excluido com sucesso')
+            app.api.clearStartPath('/place/park/?condominium=' + condominiumId)
+            router.push('/condominio/' + condominiumId)
+        })
+        .catch((error) => {
+            app.popup('Erro', app.resumeErrors(error), 'warning')
+        })
+        .finally(() => {
+            app.loading(false)
+        })
 }
 
 function deletePark(i: number) {
@@ -209,9 +231,9 @@ function updatePark() {
     app.api
         .patch('/place/park/' + parkId.value + '/', parkForm.value)
         .then(({ data }) => {
-            app.popup('Sucesso!', 'Informações do condomínio salvas', 'success')
+            app.popup('Sucesso!', 'Informações do estacionamento salvas', 'success')
             app.api.removeListCash('/place/park/')
-            router.push('/condominio/' + data.id)
+            router.push('/condominio/' + parkForm.value.condominium)
         })
         .catch((error) => {
             app.popup('Erro!', app.resumeErrors(error), 'warning')
@@ -244,7 +266,6 @@ async function getApartments() {
                 }
                 return toSelect
             })
-
             apartmentList.value.splice(0, apartmentList.value.length, ...newApartmentList)
         })
         .catch(() => {
@@ -257,6 +278,8 @@ async function getParkValues() {
         .get(`/place/park/${parkId.value}/`)
         .then(({ data }) => {
             parkForm.value = data
+            condominiumId = data.condominium
+            getApartments()
         })
         .catch(() => {
             app.popup('Erro!', 'Falha ao obter informações do condomínio', 'warning')

@@ -231,7 +231,7 @@ function RegisterUser() {
         app.popup('Erro!', 'Senhas não conferem', 'warning', 2000)
         return
     }
-    app.loading(true, "Cadastrando...")
+    app.loading(true, 'Cadastrando...')
     app.api
         .post('/user/register/', userForm.value)
         .then(() => {
@@ -247,7 +247,7 @@ function RegisterUser() {
             app.popup('Erro!', app.resumeErrors(error), 'warning', 10000)
             registrando.value = false
         })
-        .finally(()=>{
+        .finally(() => {
             app.loading(false)
         })
 }
