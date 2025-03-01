@@ -2,12 +2,16 @@ from soft_components.views import SoftModelsViewSet
 
 from .models import (CondoStaff, CondoTenant, CondoTenantContract,
                      PlaceReservation)
-from .serializers import (CondoStaffSerializer, CondoTenantContractSerializer,
-                          CondoTenantSerializer, PlaceReservationSerializer)
+from .serializers import (CondoTenantContractSerializer,
+                          CondoTenantSerializerList, CondoTenantSerializer,PlaceReservationSerializer)
 
 
 class CondoTenantView(SoftModelsViewSet):
-    serializer_class = CondoTenantSerializer
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return CondoTenantSerializerList
+        return CondoTenantSerializer
 
     def get_queryset(self):
         user = self.request.user
@@ -25,44 +29,11 @@ class CondoTenantView(SoftModelsViewSet):
         if is_active:
             relations = relations.filter(is_active=True)
 
-        return relations
-
-
-class CondoStaffView(SoftModelsViewSet):
-    serializer_class = CondoStaffSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-
-        relations = CondoStaff.objects.filter(
-            condominium__condostaff__user=user, condominium__condostaff__role="owner"
-        ).distinct()
-
-        condominium = self.request.query_params.get("condominium")
-        condominium_name = self.request.query_params.get("condominium_name")
-        condominium_city = self.request.query_params.get("condominium_city")
-        condominium_state = self.request.query_params.get("condominium_state")
-        role = self.request.query_params.get("role")
-        user_fullname = self.request.query_params.get("user_fullname")
-        if condominium:
-            relations = relations.filter(condominium__id=condominium)
-        if condominium_name:
-            relations = relations.filter(condominium__name__icontains=condominium_name)
-        if condominium_city:
-            relations = relations.filter(
-                condominium__city__name__icontains=condominium_city
-            )
-        if condominium_state:
-            relations = relations.filter(
-                condominium__city__state__acronym__iexact=condominium_state
-            )
-        if role:
-            relations = relations.filter(role__iexact=role)
-        if user_fullname:
-            relations = relations.filter(user__full_name__icontains=user_fullname)
-
-        return relations
-
+        return relations.select_related(
+            "user", 
+            "apartment", 
+            "apartment__condominium"
+        )
 
 class CondoTenantContractView(SoftModelsViewSet):
     serializer_class = CondoTenantContractSerializer

@@ -42,7 +42,7 @@
             required
         />
     </div>
-    <div v-else class="user-info-card mb-3">
+    <div v-else class="mb-3">
         <dl>
             <dt>Nome completo:</dt>
             <dd>{{ user?.full_name }}</dd>
@@ -53,7 +53,6 @@
             <dt>Verificação de identidade:</dt>
             <dd>{{ verifiedStatusMap[user?.verified_status || 'pending'] }}</dd>
         </dl>
-        <div class="d-flex justify-content-center"></div>
     </div>
     <div v-if="['pending', 'rejected'].includes(user.verified_status || '') && !editMode">
         <div class="d-flex justify-content-center pb-3">

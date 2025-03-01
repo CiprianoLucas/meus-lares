@@ -5,87 +5,75 @@ from .models import (CondoStaff, CondoTenant, CondoTenantContract,
                      PlaceReservation)
 
 
-class CondoTenantSerializer(softModelSerializer):
-    user_fullname = serializers.SerializerMethodField()
-    user_identity_photo = serializers.SerializerMethodField()
-    apartment_identifier = serializers.SerializerMethodField()
-    condominium_name = serializers.SerializerMethodField()
+class CondoTenantSerializerList(softModelSerializer):
+    user = serializers.SerializerMethodField()
+    apartment = serializers.SerializerMethodField()
 
     class Meta:
         model = CondoTenant
         fields = [
             "id",
             "apartment",
-            "apartment_identifier",
-            "condominium_name",
-            "user",
-            "user_fullname",
-            "user_identity_photo",
+            "user"
             "is_first_contact",
             "is_responsible",
         ]
         extra_kwargs = {"id": {"read_only": True}}
 
-    def get_apartment_identifier(self, obj: CondoTenant):
-        return obj.apartment.identifier
+    def get_user(self, obj: CondoTenant):
+        user = obj.user
+        result = {
+            "full_name": user.full_name,
+            "self_photo": user.self_photo.url
+        }
+        return result
 
-    def get_condominium_name(self, obj: CondoTenant):
-        return obj.apartment.condominium.name
-
-    def get_user_fullname(self, obj: CondoTenant):
-        return obj.user.full_name
-
-    def get_user_identity_photo(self, obj: CondoTenant):
-        if obj.user.self_photo:
-            return obj.user.self_photo.storage.url(obj.user.self_photo.name)
-        return None
-
-
-class CondoStaffSerializer(softModelSerializer):
-    user_fullname = serializers.SerializerMethodField()
-    user_identity_photo = serializers.SerializerMethodField()
-    condominium_name = serializers.SerializerMethodField()
-    condominium_neighborhood = serializers.SerializerMethodField()
-    condominium_city = serializers.SerializerMethodField()
-    condominium_state = serializers.SerializerMethodField()
+    def get_apartment(self, obj: CondoTenant):
+        apartment = obj.apartment
+        result = {
+            "id": apartment.id,
+            "identifier": apartment.identifier,
+        }
+        return result
+    
+class CondoTenantSerializer(softModelSerializer):
+    user = serializers.SerializerMethodField()
+    apartment = serializers.SerializerMethodField()
 
     class Meta:
-        model = CondoStaff
+        model = CondoTenant
         fields = [
             "id",
-            "condominium",
-            "condominium_name",
-            "condominium_neighborhood",
-            "condominium_city",
-            "condominium_state",
+            "apartment",
             "user",
-            "user_fullname",
-            "user_identity_photo",
-            "role",
-            "notes",
+            "is_first_contact",
+            "is_responsible",
         ]
         extra_kwargs = {"id": {"read_only": True}}
 
-    def get_condominium_name(self, obj: CondoStaff):
-        return obj.condominium.name
+    def get_user(self, obj: CondoTenant):
+        user = obj.user
+        result = {
+            "full_name": user.full_name,
+            "nick": user.nick,
+            "cpf": user.cpf,
+            "phone_number": user.phone_number,
+            "email": user.email,
+            "birth": user.birth,
+            "verified_status": user.verified_status,
+            "self_photo": user.self_photo.url
+        }
+        return result
 
-    def get_condominium_neighborhood(self, obj: CondoStaff):
-        return obj.condominium.neighborhood
-
-    def get_condominium_city(self, obj: CondoStaff):
-        return obj.condominium.city.name
-
-    def get_condominium_state(self, obj: CondoStaff):
-        return obj.condominium.city.state.acronym
-
-    def get_user_fullname(self, obj: CondoStaff):
-        return obj.user.full_name
-
-    def get_user_identity_photo(self, obj: CondoStaff):
-        if obj.user.identity_photo:
-            return obj.user.identity_photo
-        return None
-
+    def get_apartment(self, obj: CondoTenant):
+        apartment = obj.apartment
+        result = {
+            "id": apartment.id,
+            "identifier": apartment.identifier,
+            "condoninium": apartment.condominium.id,
+            "condoninium_name": apartment.condominium.name,
+        }
+        return result
 
 class CondoTenantContractSerializer(softModelSerializer):
     class Meta:

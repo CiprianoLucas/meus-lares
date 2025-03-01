@@ -10,5 +10,6 @@ interface Tenant {
     is_responsible?: string
     notes?: string
     contracts?: string
+    is_active?: boolean
 }
 export type { Tenant }

@@ -51,7 +51,7 @@
             id="password"
             v-model="userForm.password"
             required
-            @input="checkPasswordStrength"
+            :input="checkPasswordStrength"
         />
         <div class="password-strength mt-2">
             <div :class="strengthPassword" class="password-strength-bar"></div>
@@ -79,7 +79,7 @@
         <div class="mb-3">
             <text-input
                 label="Repita a senha"
-                type="password"
+                :type="showPassword ? 'text' : 'password'"
                 id="repeatPassword"
                 v-model="repeatPassword"
                 required
@@ -98,9 +98,10 @@
 <script lang="ts" setup>
 import app from '@/app'
 import type { User } from '../interfaces'
-import { computed } from 'vue'
+import { computed, type Ref } from 'vue'
 import TextInput from '@/components/forms/TextInput.vue'
 import { useRouter } from 'vue-router'
+import { verifyDate } from '@/components/validators'
 
 const router = useRouter()
 const fullName = String(app.routeQuery('full_name') || '')
@@ -142,53 +143,8 @@ const userForm = app.ref<User>({
     birth: ''
 })
 
-function verifyDate() {
-    if (!userForm.value.birth) {
-        return
-    }
-    let dateString = userForm.value.birth
-    const thisYear = new Date().getFullYear()
-    if (dateString.length == 8) {
-        const verifyYearSliceString = dateString.slice(-2)
-        const verifyYearSlice = Number(verifyYearSliceString)
-        dateString = dateString.slice(0, -2)
-        const thisYearSlice = thisYear - 2000
-
-        if (verifyYearSlice >= thisYearSlice) {
-            dateString += '19' + verifyYearSliceString
-        } else {
-            dateString += '20' + verifyYearSliceString
-        }
-        userForm.value.birth = dateString
-    }
-    if (dateString.length != 10) {
-        return 'Data inválida'
-    }
-
-    const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/
-    const match = dateString.match(dateRegex)
-    if (!match) {
-        return false
-    }
-
-    const day = parseInt(match[1], 10)
-    const month = parseInt(match[2], 10)
-    const year = parseInt(match[3], 10)
-
-    if (year < 1900 || year >= thisYear) {
-        return false
-    }
-
-    const date = new Date(year, month - 1, day)
-
-    const is_date =
-        date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day
-
-    if (!is_date) return 'Data inválida'
-}
-
-function checkPasswordStrength() {
-    const password = userForm.value.password || ''
+function checkPasswordStrength(passwordString: string | null) {
+    const password = passwordString || ''
     let strength = 0
     const conditions = [
         /[a-z]/, // lowercase letters

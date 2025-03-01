@@ -15,11 +15,12 @@
             >
         </div>
         <list-cards
-            :url="'/relation/tenant/?is_active=true&apartment=' + apartmentId"
-            redirect=""
+            :url="'/relation/tenant/?condominium=' + condominiumId"
+            redirect="morador"
+            :params="['id']"
             img="user_identity_photo"
             :start="true"
-            title="user_fullname"
+            title="user_full_name"
             :headers="headersTenants"
         />
     </div>
@@ -33,23 +34,18 @@ import ListCards from '@/components/tables/ListCards.vue'
 const listHtml = app.ref<HTMLElement>()
 const showCollapse = app.ref<boolean>(false)
 const listCollapse = app.ref<Collapse | null>(null)
-const headers = app.ref({
-    id: null,
-    identifier: 'Identificador',
-    capacity: 'Capacidade'
-})
-
-const columnPath = app.ref({
-    identifier: 'espaco-compartilhado/edicao/:espaco'
-})
-
-const paramPath = app.ref({
-    ':espaco': 'id'
-})
 
 const props = defineProps<{
     condominiumId: string
 }>()
+
+const headersTenants = app.ref({
+    id: null,
+    user_full_name: null,
+    user_identity_photo: null,
+    is_renter: 'Aluguel:',
+    is_responsible: 'Responsável:'
+})
 
 function onChangeCollapse() {
     showCollapse.value = !showCollapse.value

@@ -26,7 +26,8 @@
             <h5 class="text-center mb-3">Moradores atuais</h5>
             <list-cards
                 :url="'/relation/tenant/?is_active=true&apartment=' + apartmentId"
-                redirect=""
+                redirect="morador"
+                :params="['id']"
                 img="user_identity_photo"
                 :start="true"
                 title="user_fullname"

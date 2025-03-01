@@ -30,6 +30,7 @@ defineOptions({
 const props = defineProps<{
     id: string
     modelValue?: string
+    input?: Function
     mask?: string
     label?: string
     buttomLabel?: string
@@ -49,6 +50,8 @@ const emit = defineEmits<{
 
 function input() {
     verifyMask()
+    props.input?.(localValue.value)
+    emit('update:modelValue', localValue.value)
 }
 
 function change() {

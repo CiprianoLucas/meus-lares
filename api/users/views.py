@@ -108,7 +108,7 @@ class LoginView(APIView):
             if CondoTenant.objects.filter(user=user).exists():
                 roles.append("tenant")
 
-            response = {"nick": user.nick, "roles": roles, "email": user.id}
+            response = {"nick": user.nick, "roles": roles, "id": user.id}
 
             return JsonResponse(response)
 

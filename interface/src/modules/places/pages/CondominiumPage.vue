@@ -38,9 +38,7 @@
             <collapse-shared-places :condominiumId="condominiumId" />
         </div>
         <div class="border-bottom px-4 pt-2 pb-5">
-            <div class="d-flex justify-content-center my-2">
-                <button class="btn btn-secondary py-2 px-3 w-100" type="button">Moradores</button>
-            </div>
+            <collapse-tenants :condominiumId="condominiumId" />
         </div>
         <div class="d-flex justify-content-center border-bottom px-4 pt-2 pb-5">
             <button class="btn btn-danger py-1">Excluir</button>
@@ -62,6 +60,7 @@ import type { Condominium } from '../interfaces'
 import collapseApartments from '../components/collapseApartments.vue'
 import collapseParks from '../components/collapseParks.vue'
 import collapseSharedPlaces from '../components/collapseSharedPlaces.vue'
+import collapseTenants from '@/modules/tenant/components/collapseTenants.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
