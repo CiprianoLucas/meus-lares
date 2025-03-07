@@ -111,7 +111,7 @@ const states = <Options[]>[
     }
 ]
 
-const inputsLabel: { [key: string]: string } = {
+const keysTranslates: { [key: string]: string } = {
     name: 'Nome',
     number: 'Número',
     street: 'Logradouro',
@@ -132,6 +132,12 @@ const inputsLabel: { [key: string]: string } = {
     password: 'Senha',
     error: 'Erro',
     birth: 'Data de nascimento'
+}
+
+const responsesTranslates: { [key: string]: { [key: string]: string } } = {
+    ptBr: {
+        "Invalid": 'Inválido',
+    }
 }
 
 const inputsProps = <Input[]>[
@@ -195,4 +201,4 @@ const inputsProps = <Input[]>[
     }
 ]
 
-export { inputsLabel, inputsProps, states }
+export { keysTranslates, inputsProps, states, responsesTranslates }

@@ -33,7 +33,7 @@
                     <tbody>
                         <tr v-for="(park, i) in listParksRegister" :key="i" scope="col">
                             <td>{{ park.identifier }}</td>
-                            <td>{{ park.apartment_identifier }}</td>
+                            <td>{{ park.apartment_details?.identifier }}</td>
                             <td>
                                 <div class="d-flex justify-content-end">
                                     <button
@@ -171,7 +171,7 @@ function addPark() {
 
     listParksRegister.value.push(newPark)
 
-    app.popup('Acicionado', `estacionamento ${newPark.identifier}`, 'success', 1500)
+    app.popup('Adicionado', `estacionamento ${newPark.identifier}`, 'success', 1500)
 
     if (Number(parkForm.value.sufix)) {
         const newSufix = String(Number(parkForm.value.sufix) + 1)

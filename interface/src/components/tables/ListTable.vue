@@ -166,7 +166,7 @@ function updateTable(force: boolean = false) {
 
     api.getListCashed<Item[]>(props.url + query, force, props.cashTime, props.url)
         .then(({ result, next, previous, count }) => {
-            listData.value = result
+            listData.value = flattenArray(result)
             nextPage.value = next
             previousPage.value = previous
             total.value = count
@@ -177,6 +177,24 @@ function updateTable(force: boolean = false) {
         .finally(() => {
             loading.value = false
         })
+}
+
+function flattenObject<T extends Record<string, any>>(obj: T, prefix = ''): Record<string, any> {
+    return Object.keys(obj).reduce((acc, key) => {
+        const newKey = prefix ? `${prefix}__${key}` : key;
+        const value = obj[key];
+
+        if (typeof value === 'object' && value !== null) {
+            Object.assign(acc, flattenObject(value, newKey));
+        } else {
+            acc[newKey] = value;
+        }
+        return acc;
+    }, {} as Record<string, any>);
+}
+
+function flattenArray<T extends Record<string, any>>(arr: T[]): Record<string, any>[] {
+    return arr.map(item => flattenObject(item));
 }
 </script>
 

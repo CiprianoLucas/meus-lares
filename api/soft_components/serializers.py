@@ -6,7 +6,7 @@ class softModelSerializer(serializers.ModelSerializer):
     def create(self, data):
         user = self.context["request"].user
         if not user:
-            raise AttributeError("User is not defined")
+            raise serializers.ValidationError("User is not defined")
 
         serializers.raise_errors_on_nested_writes("create", self, data)
 
@@ -25,7 +25,7 @@ class softModelSerializer(serializers.ModelSerializer):
     def update(self, instance, data):
         user = self.context["request"].user
         if not user:
-            raise AttributeError("User is not defined")
+            raise serializers.ValidationError("User is not defined")
 
         serializers.raise_errors_on_nested_writes("update", self, data)
         info = model_meta.get_field_info(instance)

@@ -2,7 +2,7 @@ import { createApp, h } from 'vue'
 import AlertPopup from './AlertPopup.vue'
 import type { typesBootstrap } from './interfaces'
 import { type AxiosError } from 'axios'
-import { inputsLabel } from '@/components/forms'
+import { keysTranslates, responsesTranslates } from '@/components/forms'
 
 const popup = (
     title: string,
@@ -29,7 +29,7 @@ const popup = (
     }, time + 1000)
 }
 
-const resumeErrors = (error: AxiosError, defaultMessage: string = 'Algo saiu errao') => {
+const resumeErrors = (error: AxiosError, defaultMessage: string = 'Algo saiu errado') => {
     let errorMessage = ''
     if (error.code == 'ERR_NETWORK') {
         return 'Falha ao se conectar com o servidor'
@@ -37,9 +37,9 @@ const resumeErrors = (error: AxiosError, defaultMessage: string = 'Algo saiu err
 
     if (error.response && error.response.data) {
         const data = error.response.data as { [key: string]: string }
-        Object.keys(inputsLabel).forEach((key) => {
+        Object.keys(keysTranslates).forEach((key) => {
             if (data[key]) {
-                errorMessage += `${inputsLabel[key]}: ${data[key]}<br>`
+                errorMessage += `${keysTranslates[key]}: ${responsesTranslates['ptBr'][data[key]]??data[key]}<br>`
             }
         })
     }

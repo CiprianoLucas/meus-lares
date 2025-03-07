@@ -154,7 +154,7 @@ function addApartment() {
 
     listApartmentsRegister.value.push(newApartment)
 
-    app.popup('Acicionado', `apartamento ${newApartment.identifier}`, 'success', 1500)
+    app.popup('Adicionado', `apartamento ${newApartment.identifier}`, 'success', 1500)
 
     if (Number(apartmentForm.value.sufix)) {
         const newSufix = String(Number(apartmentForm.value.sufix) + 1)

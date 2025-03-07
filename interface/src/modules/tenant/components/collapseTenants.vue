@@ -9,7 +9,7 @@
     <div class="collapse pt-3" ref="listHtml">
         <div class="d-flex justify-content-center mb-3 mt-2">
             <router-link
-                :to="'/espaco-compartilhado/cadastro/?condominium=' + condominiumId"
+                :to="'/morador/cadastro/?condominium=' + condominiumId"
                 class="btn btn-primary"
                 >Cadastra novo Morador</router-link
             >
@@ -18,9 +18,9 @@
             :url="'/relation/tenant/?condominium=' + condominiumId"
             redirect="morador"
             :params="['id']"
-            img="user_identity_photo"
-            :start="true"
-            title="user_full_name"
+            img="user_details__self_photo"
+            :start="showCollapse"
+            title="user_details__full_name"
             :headers="headersTenants"
         />
     </div>
@@ -40,11 +40,8 @@ const props = defineProps<{
 }>()
 
 const headersTenants = app.ref({
-    id: null,
-    user_full_name: null,
-    user_identity_photo: null,
-    is_renter: 'Aluguel:',
-    is_responsible: 'Responsável:'
+    apartment_details__identifier: 'Apartamento:',
+    is_first_contact: 'Locador:',
 })
 
 function onChangeCollapse() {

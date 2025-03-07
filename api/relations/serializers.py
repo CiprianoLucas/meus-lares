@@ -1,57 +1,71 @@
 from rest_framework import serializers
 from soft_components.serializers import softModelSerializer
 
-from .models import (CondoStaff, CondoTenant, CondoTenantContract,
+from .models import (CondoTenant, CondoTenantContract,
                      PlaceReservation)
 
 
 class CondoTenantSerializerList(softModelSerializer):
-    user = serializers.SerializerMethodField()
-    apartment = serializers.SerializerMethodField()
+    user_details = serializers.SerializerMethodField()
+    apartment_details = serializers.SerializerMethodField()
 
     class Meta:
         model = CondoTenant
         fields = [
             "id",
             "apartment",
-            "user"
+            "apartment_details",
+            "user",
+            "user_details",
             "is_first_contact",
             "is_responsible",
         ]
-        extra_kwargs = {"id": {"read_only": True}}
+        extra_kwargs = {
+            "id": {"read_only": True},
+            "apartment": {"write_only": True},
+            "user": {"write_only": True}
+        }
 
-    def get_user(self, obj: CondoTenant):
+    def get_user_details(self, obj: CondoTenant):
         user = obj.user
         result = {
             "full_name": user.full_name,
-            "self_photo": user.self_photo.url
+            "self_photo": user.self_photo.url if user.self_photo else None
         }
         return result
 
-    def get_apartment(self, obj: CondoTenant):
+    def get_apartment_details(self, obj: CondoTenant):
         apartment = obj.apartment
         result = {
             "id": apartment.id,
             "identifier": apartment.identifier,
+            "condominium_details": {
+                "name": apartment.condominium.name
+            }
         }
         return result
     
 class CondoTenantSerializer(softModelSerializer):
-    user = serializers.SerializerMethodField()
-    apartment = serializers.SerializerMethodField()
-
+    user_details = serializers.SerializerMethodField()
+    apartment_details = serializers.SerializerMethodField()
     class Meta:
         model = CondoTenant
         fields = [
             "id",
             "apartment",
+            "apartment_details",
             "user",
+            "user_details",
             "is_first_contact",
             "is_responsible",
         ]
-        extra_kwargs = {"id": {"read_only": True}}
+        extra_kwargs = {
+            "id": {"read_only": True},
+            "apartment": {"write_only": True},
+            "user": {"write_only": True}
+        }
 
-    def get_user(self, obj: CondoTenant):
+    def get_user_details(self, obj: CondoTenant):
         user = obj.user
         result = {
             "full_name": user.full_name,
@@ -65,13 +79,15 @@ class CondoTenantSerializer(softModelSerializer):
         }
         return result
 
-    def get_apartment(self, obj: CondoTenant):
+    def get_apartment_details(self, obj: CondoTenant):
         apartment = obj.apartment
         result = {
             "id": apartment.id,
             "identifier": apartment.identifier,
-            "condoninium": apartment.condominium.id,
-            "condoninium_name": apartment.condominium.name,
+            "condominium_details": {
+                "name": apartment.condominium.name,
+                "id": apartment.condominium.id
+            }
         }
         return result
 

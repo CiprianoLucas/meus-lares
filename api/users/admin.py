@@ -19,6 +19,7 @@ class UserAdmin(UD, SoftAdmin):
                     "document_front_photo",
                     "document_back_photo",
                     "self_with_document_photo",
+                    "verified_status",
                     "history",
                 )
             },
@@ -37,6 +38,7 @@ class UserAdmin(UD, SoftAdmin):
                     "document_front_photo",
                     "document_back_photo",
                     "self_with_document_photo",
+                    "verified_status",
                     "history",
                     "is_deleted",
                 )
@@ -58,6 +60,7 @@ class UserAdmin(UD, SoftAdmin):
                     "document_front_photo",
                     "document_back_photo",
                     "self_with_document_photo",
+                    "verified_status",
                     "birth",
                 )
             },

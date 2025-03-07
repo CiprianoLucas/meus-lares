@@ -33,7 +33,6 @@ const listHtml = app.ref<HTMLElement>()
 const showCollapse = app.ref<boolean>(false)
 const listCollapse = app.ref<Collapse | null>(null)
 const headers = app.ref({
-    id: null,
     identifier: 'Identificador',
     capacity: 'Capacidade'
 })

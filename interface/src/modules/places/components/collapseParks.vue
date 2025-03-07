@@ -38,21 +38,18 @@ const listHtml = app.ref<HTMLElement>()
 const showCollapse = app.ref<boolean>(false)
 const listCollapse = app.ref<Collapse | null>(null)
 const headers = app.ref({
-    apartment_id: null,
-    id: null,
-    apartment: null,
     identifier: 'Identificador',
-    apartment_identifier: 'Apartamento'
+    apartment_details__identifier: 'Apartamento',
 })
 
 const columnPath = app.ref({
     identifier: 'estacionamento/edicao/:parkId',
-    apartment_identifier: 'apartamento/:apartmentId'
+    apartment_details__identifier: 'apartamento/:apartmentId'
 })
 
 const paramPath = app.ref({
     ':parkId': 'id',
-    ':apartmentId': 'apartment'
+    ':apartmentId': 'apartment_details__id'
 })
 
 const props = defineProps<{

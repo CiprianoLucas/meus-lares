@@ -1,6 +1,6 @@
 from soft_components.views import SoftModelsViewSet
 
-from .models import (CondoStaff, CondoTenant, CondoTenantContract,
+from .models import (CondoTenant, CondoTenantContract,
                      PlaceReservation)
 from .serializers import (CondoTenantContractSerializer,
                           CondoTenantSerializerList, CondoTenantSerializer,PlaceReservationSerializer)

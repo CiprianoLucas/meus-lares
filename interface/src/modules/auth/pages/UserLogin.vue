@@ -122,10 +122,15 @@ const login = () => {
             redirectRole()
         })
         .catch((error) => {
-            app.popup('Erro!', app.resumeErrors(error), 'warning')
-            buttonDisabled.value = false
+            debugger
+            if (error.response.data.error == "Verify your e-mail"){
+                app.popup('Verifique seu e-mail!', "Vá até sua caixa de e-mail e autorize o cadastro.", 'warning')
+            } else {
+                app.popup('Erro!', app.resumeErrors(error), 'warning')
+            }
         })
         .finally(() => {
+            buttonDisabled.value = false
             app.loading(false)
         })
 }

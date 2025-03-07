@@ -28,9 +28,9 @@
                 :url="'/relation/tenant/?is_active=true&apartment=' + apartmentId"
                 redirect="morador"
                 :params="['id']"
-                img="user_identity_photo"
+                img="user_details__self_photo"
                 :start="true"
-                title="user_fullname"
+                title="user_details__full_name"
                 :headers="headersTenants"
             />
             <router-link
@@ -86,15 +86,12 @@ const apartment = app.ref<Apartment>({})
 const tenantsHistory = app.ref<Tenant[]>()
 
 const headersTenants = app.ref({
-    id: null,
-    user_fullname: null,
-    user_identity_photo: null,
-    is_renter: 'Aluguel:',
+    is_renter: 'Locador:',
+    is_first_contact: 'Contato principal',
     is_responsible: 'Responsável:'
 })
 
 const headersPark = app.ref({
-    id: null,
     identifier: 'Identificador'
 })
 

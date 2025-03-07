@@ -1,13 +1,14 @@
+import type { Apartment } from "../places/interfaces"
+import type { User } from "../user/interfaces"
+
 interface Tenant {
     apartment?: string
-    apartment_identifier?: string
-    condominium_name?: string
+    apartment_details?: Apartment
     user?: string
-    user_nick?: string
-    user_full_name?: string
-    user_profile_photo?: string
-    is_renter?: string
-    is_responsible?: string
+    user_details?: User
+    is_renter?: boolean
+    is_responsible?: boolean
+    is_first_contact?: boolean
     notes?: string
     contracts?: string
     is_active?: boolean

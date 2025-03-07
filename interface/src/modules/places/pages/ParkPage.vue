@@ -32,7 +32,7 @@
                     <tbody>
                         <tr v-for="(park, i) in listParksRegister" :key="i" scope="col">
                             <td>{{ park.identifier }}</td>
-                            <td>{{ park.apartment_identifier }}</td>
+                            <td>{{ park.apartment_details?.identifier }}</td>
                             <td>
                                 <div class="d-flex justify-content-end">
                                     <button

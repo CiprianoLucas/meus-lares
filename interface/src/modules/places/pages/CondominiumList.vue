@@ -25,10 +25,6 @@
 import app from '@/app'
 import ListCards from '@/components/tables/ListCards.vue'
 const headers = app.ref({
-    id: null,
-    name: null,
-    profile_photo: null,
-    url: null,
     street: '',
     city_name: '',
     state: ''

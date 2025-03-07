@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.serializers import ValidationError
+from rest_framework import serializers
 from rest_framework.views import APIView
 from soft_components.views import SoftModelsViewSet
 
@@ -72,10 +72,10 @@ class ApartmentOwnerView(SoftModelsViewSet):
 
         if "is_active" in data and not data["is_active"]:
             if instance.condotenant_set.filter(is_active=True).exists():
-                raise ValidationError(
+                raise serializers.ValidationError(
                     {
-                        "error": """Não é possível desativar.
-                        Existem moradores ativos neste apartamento."""
+                        """Cannot be deactivated.
+                        There are active residents in this apartment"""
                     }
                 )
 
@@ -85,10 +85,10 @@ class ApartmentOwnerView(SoftModelsViewSet):
         instance = self.get_object()
 
         if instance.condotenant_set.filter(is_active=True).exists():
-            raise ValidationError(
+            raise serializers.ValidationError(
                 {
-                    "error": """Não é possível excluir.
-                    Existem moradores ativos neste apartamento."""
+                    """Unable to delete.
+                    There are active residents in this apartment"""
                 }
             )
 

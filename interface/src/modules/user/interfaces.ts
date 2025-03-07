@@ -10,6 +10,7 @@ interface User {
     email?: string
     birth?: string
     profile_photo?: string
+    self_photo?: string
     verified_status?: 'verified' | 'pending' | 'in_progress' | 'rejected'
 }
 

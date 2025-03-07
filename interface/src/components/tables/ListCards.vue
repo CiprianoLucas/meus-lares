@@ -87,7 +87,7 @@
 
 <script lang="ts" setup>
 import { ref, watch, onMounted } from 'vue'
-import { inputsLabel } from '../forms'
+import { keysTranslates } from '../forms'
 import { api } from '@/http'
 import { popup } from '../PopUps'
 
@@ -107,7 +107,7 @@ const props = defineProps<{
     searchable?: boolean
 }>()
 
-const headers = ref(props.headers || inputsLabel)
+const headers = ref(props.headers || keysTranslates)
 const searchQuery = ref('')
 const listData = ref<Item[]>([])
 const previousPage = ref<string | null>(null)
@@ -116,12 +116,13 @@ const page = ref<number>(1)
 const total = ref<number>(0)
 const loading = ref<boolean>(false)
 const start = ref<boolean>(props.start)
-let firstUpdate = false
+let firstUpdate = true
 
 watch(
     () => props.start,
     () => {
         if (firstUpdate) {
+            firstUpdate = false
             updateList()
         }
     }
@@ -168,7 +169,7 @@ function updateList(force: boolean = false) {
 
     api.getListCashed<Item[]>(props.url + query, force, props.cashTime, props.url)
         .then(({ result, next, previous, count }) => {
-            listData.value = result
+            listData.value = flattenArray(result)
             nextPage.value = next
             previousPage.value = previous
             total.value = count
@@ -192,12 +193,31 @@ const processData = (data: Item[]) => {
     const keys = Object.keys(headers.value)
     if (listData.value.length > 0) {
         keys.forEach((element) => {
-            if (!listData.value[0]?.[element]) {
+            if (!listData.value[0]?.[element] === undefined) {
                 delete headers.value[element]
             }
         })
     }
 }
+
+function flattenObject<T extends Record<string, any>>(obj: T, prefix = ''): Record<string, any> {
+    return Object.keys(obj).reduce((acc, key) => {
+        const newKey = prefix ? `${prefix}__${key}` : key;
+        const value = obj[key];
+
+        if (typeof value === 'object' && value !== null) {
+            Object.assign(acc, flattenObject(value, newKey));
+        } else {
+            acc[newKey] = value;
+        }
+        return acc;
+    }, {} as Record<string, any>);
+}
+
+function flattenArray<T extends Record<string, any>>(arr: T[]): Record<string, any>[] {
+    return arr.map(item => flattenObject(item));
+}
+
 </script>
 
 <style scoped>

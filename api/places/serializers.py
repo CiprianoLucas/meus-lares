@@ -81,7 +81,7 @@ class BulkApartmentCreateSerializer(serializers.Serializer):
 
     def validate_condominium_id(self, value):
         if not Condominium.objects.filter(id=value).exists():
-            raise serializers.ValidationError({"error": "Condominium does not exist."})
+            raise serializers.ValidationError({"Condominium does not exist"})
         return value
 
     def create(self, validated_data):
@@ -103,7 +103,7 @@ class BulkApartmentCreateSerializer(serializers.Serializer):
 
 
 class ParkingSerializer(softModelSerializer):
-    apartment_identifier = serializers.SerializerMethodField()
+    apartment_details = serializers.SerializerMethodField()
 
     class Meta:
         model = ParkingSpace
@@ -112,8 +112,8 @@ class ParkingSerializer(softModelSerializer):
             "identifier",
             "complement",
             "apartment",
+            "apartment_details",
             "condominium",
-            "apartment_identifier",
         ]
         extra_kwargs = {
             "id": {"read_only": True},
@@ -123,9 +123,12 @@ class ParkingSerializer(softModelSerializer):
             "apartment_identifier": {"read_only": True},
         }
 
-    def get_apartment_identifier(self, obj: ParkingSpace):
+    def get_apartment_details(self, obj: ParkingSpace):
         if obj.apartment:
-            return obj.apartment.identifier
+            return {
+                "identifier": obj.apartment.identifier,
+                "id": obj.apartment.id
+            }
         return None
 
 
@@ -135,7 +138,7 @@ class BulkParkCreateSerializer(serializers.Serializer):
 
     def validate_condominium_id(self, value):
         if not Condominium.objects.filter(id=value).exists():
-            raise serializers.ValidationError({"error": "Condominium does not exist."})
+            raise serializers.ValidationError({"ondominium does not exist"})
         return value
 
     def create(self, validated_data):
@@ -185,7 +188,7 @@ class BulkSharedPlacesCreateSerializer(serializers.Serializer):
 
     def validate_condominium_id(self, value):
         if not Condominium.objects.filter(id=value).exists():
-            raise serializers.ValidationError({"error": "Condominium does not exist."})
+            raise serializers.ValidationError({"Condominium does not exist"})
         return value
 
     def create(self, validated_data):

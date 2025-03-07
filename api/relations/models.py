@@ -1,19 +1,9 @@
-from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ValidationError
+from rest_framework import serializers
+from django.utils.translation import gettext_lazy as _
 from django.db import models
 from places.models import Apartment, Condominium, SharedPlaces
 from soft_components import SoftModel
 from users.models import User
-
-
-def contract_relation_validator(value: int | ContentType):
-    if isinstance(value, ContentType):
-        value = value.id
-    allowed_models = {"condotenant", "condostaff"}
-    model = ContentType.objects.get(id=value)
-
-    if model.model not in allowed_models:
-        raise ValidationError("This model is not correct")
 
 
 class CondoTenant(SoftModel):
@@ -31,8 +21,8 @@ class CondoTenant(SoftModel):
         return f'tenant: "{self.user}" of {self.apartment}'
 
     class Meta:
-        verbose_name = "Morador"
-        verbose_name_plural = "Moradores"
+        verbose_name = _("Tenant")
+        verbose_name_plural = _("Tenants")
         constraints = [
             models.UniqueConstraint(
                 fields=["apartment", "user"],
@@ -95,7 +85,7 @@ class PlaceReservation(SoftModel):
             end_time__gt=self.start_time,
         )
         if conflit.exists():
-            raise ValidationError("This time is already booked.")
+            raise serializers.ValidationError("This time is already booked.")
         super().clean()
 
 

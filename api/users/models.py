@@ -16,7 +16,7 @@ from soft_components.managers import SoftUserManager
 
 def unique_email(value, id):
     if User.objects.filter(email=value).exclude(id=id).exists():
-        raise serializers.ValidationError({"error": "email is already in use"})
+        raise serializers.ValidationError({"email is already in use"})
 
 
 def validate_all_params(user):

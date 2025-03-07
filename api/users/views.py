@@ -98,7 +98,7 @@ class LoginView(APIView):
             if not email_address or not email_address.verified:
                 email_address.send_confirmation(request)
                 return JsonResponse(
-                    {"error": """Verifique seu e-mail."""},
+                    {"error": """Verify your e-mail"""},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 

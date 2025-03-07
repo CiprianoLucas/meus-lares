@@ -15,25 +15,25 @@ interface Condominium {
 interface Apartment {
     id?: string
     condominium?: string
+    condominium_details?: Condominium
     identifier?: string
     complement?: string
-    tenant?: string
-    tenant_name?: string
     is_active?: boolean
 }
 
 interface Park {
     id?: string
     condominium?: string
+    apartment?: string
+    condominium_details?: Condominium
+    apartment_details?: Apartment
     identifier?: string
     complement?: string
-    apartment?: string
-    apartment_identifier?: string
 }
 
 interface SharedPlace {
     id?: string
-    condominium?: string
+    condominium?: Condominium
     identifier?: string
     complement?: string
     capacity?: number

@@ -11,7 +11,7 @@ from .models import User
 
 def validate_full_name(full_name: str):
     if len(full_name.strip().split(" ")) < 2:
-        raise serializers.ValidationError({"full_name": "Insira o nome completo."})
+        raise serializers.ValidationError({"Insert your full name"})
     return full_name
 
 
@@ -19,7 +19,7 @@ def validate_phone_number(phone_number: str):
     phone_number = "".join(re.findall(r"\d", str(phone_number)))
     if len(phone_number) < 10:
         raise serializers.ValidationError(
-            {"phone_number": "Número de telefone inválido."}
+            {"Invalid"}
         )
     return phone_number
 
@@ -28,12 +28,12 @@ def validate_cpf(cpf: str):
     regex_cnpj = re.compile(r"^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$")
 
     if bool(regex_cnpj.match(cpf)):
-        raise serializers.ValidationError({"cpf": "CPF inválido."})
+        raise serializers.ValidationError("Invalid")
 
     cpf = ("".join(re.findall(r"\d", str(cpf)))).zfill(11)
 
     if len(cpf) > 11 or len(set(cpf)) == 1:
-        raise serializers.ValidationError({"cpf": "CPF inválido."})
+        raise serializers.ValidationError("Invalid")
 
     inteiros = list(map(int, cpf))
     novo = inteiros[:9]
@@ -45,7 +45,7 @@ def validate_cpf(cpf: str):
         novo.append(f)
 
     if novo != inteiros:
-        raise serializers.ValidationError({"cpf": "CPF inválido."})
+        raise serializers.ValidationError("Invalid")
 
     return cpf
 
@@ -55,7 +55,7 @@ def validate_birth(birth: str):
     formatted_date = date(year, month, day)
     if formatted_date >= date.today():
         raise serializers.ValidationError(
-            "A data de nascimento deve ser anterior a hoje."
+            "Date of birth must be before the current year"
         )
 
     return formatted_date
@@ -123,7 +123,7 @@ class UserSerializer(softModelSerializer):
             for key in data.keys()
         ):
             raise serializers.ValidationError(
-                {"error": "Não é possível alterar dados de identidade validados"}
+                {"error": "Cannot change validated identity data"}
             )
 
         super().update(instance, data)
