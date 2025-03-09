@@ -1,6 +1,6 @@
 import uuid
 from io import BytesIO
-
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractUser
 from django.core.files import File
 from django.db import models
@@ -12,11 +12,12 @@ from meus_lares.storages import PrivateMediaStorage, PublicMediaStorage
 from PIL import Image
 from rest_framework import serializers
 from soft_components.managers import SoftUserManager
+from django.utils.translation import gettext_lazy as _
 
 
 def unique_email(value, id):
     if User.objects.filter(email=value).exclude(id=id).exists():
-        raise serializers.ValidationError({"email is already in use"})
+        raise serializers.ValidationError(_("email is already in use"))
 
 
 def validate_all_params(user):
@@ -26,57 +27,63 @@ def validate_all_params(user):
 class User(AbstractUser):
 
     VERIFIED_STATUS_CHOICES = [
-        ("verified", "Verified"),
-        ("pending", "Pending"),
-        ("in_progress", "In progress"),
-        ("rejected", "Rejected"),
+        ("verified", _("Verified")),
+        ("pending", _("Pending")),
+        ("in_progress", _("In progress")),
+        ("rejected", _("Rejected")),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    cpf = models.CharField(max_length=11)
-    nick = models.CharField(
-        max_length=25,
-    )
-    email = models.EmailField()
-    phone_number = models.CharField(max_length=15)
-    full_name = models.CharField(max_length=255)
-    birth = models.DateField()
+    cpf = models.CharField(_("document number"), max_length=11)
+    nick = models.CharField(_("nick"), max_length=25)
+    email = models.EmailField(_("e-mail"))
+    phone_number = models.CharField(_("phone number"), max_length=15)
+    full_name = models.CharField(_("full name"), max_length=255)
+    birth = models.DateField(_("birth"))
     verified_status = models.CharField(
-        max_length=15, choices=VERIFIED_STATUS_CHOICES, default="pending"
+        _("verified status"),
+        max_length=15,
+        choices=VERIFIED_STATUS_CHOICES,
+        default="pending",
     )
     profile_photo = models.ImageField(
+        _("profile photo"),
         upload_to="users/profile_photo/",
         blank=True,
         null=True,
         storage=PublicMediaStorage(),
     )
     self_photo = models.ImageField(
+        _("selfie photo"),
         upload_to="users/document_photo/",
         blank=True,
         null=True,
         storage=PrivateMediaStorage(),
     )
     document_front_photo = models.ImageField(
+        _("front of document photo"),
         upload_to="users/document_photo/",
         blank=True,
         null=True,
         storage=PrivateMediaStorage(),
     )
     document_back_photo = models.ImageField(
+        _("back of document photo"),
         upload_to="users/document_photo/",
         blank=True,
         null=True,
         storage=PrivateMediaStorage(),
     )
     self_with_document_photo = models.ImageField(
+        _("selfie with document photo"),
         upload_to="users/document_photo/",
         blank=True,
         null=True,
         storage=PrivateMediaStorage(),
     )
-    is_deleted = models.BooleanField(default=False)
-    history = models.JSONField(default=list, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    is_deleted = models.BooleanField(_("is deleted"), default=False)
+    history = models.JSONField(_("history"), default=list, blank=True)
+    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
     objects = SoftUserManager()
 
     def clean(self):
@@ -172,8 +179,8 @@ class User(AbstractUser):
         super().save(*args, **kwargs)
 
     class Meta:
-        verbose_name = "Usuario"
-        verbose_name_plural = "Usuarios"
+        verbose_name = _("User")
+        verbose_name_plural = _("Users")
 
     def delete(self, *args, user=None, **kwargs):
         self.is_deleted = True

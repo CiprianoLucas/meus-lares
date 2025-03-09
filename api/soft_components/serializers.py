@@ -1,12 +1,12 @@
 from rest_framework import serializers
 from rest_framework.utils import model_meta
-
+from django.utils.translation import gettext_lazy as _
 
 class softModelSerializer(serializers.ModelSerializer):
     def create(self, data):
         user = self.context["request"].user
         if not user:
-            raise serializers.ValidationError("User is not defined")
+            raise serializers.ValidationError(_("User is not defined"))
 
         serializers.raise_errors_on_nested_writes("create", self, data)
 
@@ -25,7 +25,7 @@ class softModelSerializer(serializers.ModelSerializer):
     def update(self, instance, data):
         user = self.context["request"].user
         if not user:
-            raise serializers.ValidationError("User is not defined")
+            raise serializers.ValidationError(_("User is not defined"))
 
         serializers.raise_errors_on_nested_writes("update", self, data)
         info = model_meta.get_field_info(instance)

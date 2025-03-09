@@ -47,7 +47,6 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 to="contenttypes.contenttype",
-                validators=[relations.models.contract_relation_validator],
             ),
         ),
     ]

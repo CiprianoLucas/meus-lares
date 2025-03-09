@@ -1,6 +1,6 @@
 from django.contrib import admin
 from soft_components import SoftAdmin
-
+from django.utils.translation import gettext_lazy as _
 from .models import AptInspectImages, CondoTenantContractFiles
 
 
@@ -10,8 +10,8 @@ class CondoTenantConstractFilesAdmin(SoftAdmin):
     search_fields = ("name",)
 
     class Meta:
-        verbose_name = "Arquivo de contrato"
-        verbose_name_plural = "Arquivos de contratos"
+        verbose_name = _("Contract file")
+        verbose_name_plural = _("Contract files")
 
 
 admin.site.register(CondoTenantContractFiles, CondoTenantConstractFilesAdmin)
@@ -22,8 +22,8 @@ class AptInspectImagesAdmin(SoftAdmin):
     list_filter = ("tenant", "role", "created_at")
 
     class Meta:
-        verbose_name = "Arquivo de contrato"
-        verbose_name_plural = "Arquivos de contratos"
+        verbose_name = _("Instruction image")
+        verbose_name_plural = _("Instruction images")
 
 
 admin.site.register(AptInspectImages, AptInspectImagesAdmin)

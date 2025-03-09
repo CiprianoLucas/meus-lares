@@ -3,7 +3,7 @@ from soft_components.serializers import softModelSerializer
 
 from .models import (CondoTenant, CondoTenantContract,
                      PlaceReservation)
-
+from django.utils.translation import gettext_lazy as _
 
 class CondoTenantSerializerList(softModelSerializer):
     user_details = serializers.SerializerMethodField()
@@ -124,5 +124,5 @@ class PlaceReservationSerializer(serializers.ModelSerializer):
             place=place, date=date, start_time__lt=end_time, end_time__gt=start_time
         )
         if conflit.exists():
-            raise serializers.ValidationError("This time is already booked.")
+            raise serializers.ValidationError(_("This time is already booked"))
         return data

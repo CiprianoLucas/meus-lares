@@ -5,16 +5,16 @@ from django.db.models.fields import UUIDField
 from django.db.models.fields.files import FileField, ImageField
 from django.db.models.fields.related import ForeignKey
 from django.utils.timezone import now
-
+from django.utils.translation import gettext_lazy as _
 from .managers import SoftManager
 
 
 class SoftModel(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    is_deleted = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_active = models.BooleanField(default=True)
-    history = models.JSONField(default=list, blank=True)
+    is_deleted = models.BooleanField(_("is deleted"), default=False)
+    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
+    is_active = models.BooleanField(_("is active"), default=True)
+    history = models.JSONField(_("history"), default=list, blank=True)
     objects = SoftManager()
 
     class Meta:

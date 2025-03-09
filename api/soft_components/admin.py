@@ -1,5 +1,5 @@
 from django.contrib import admin
-
+from django.utils.translation import gettext_lazy as _
 from .models import SoftModel
 
 
@@ -24,10 +24,10 @@ class SoftAdmin(admin.ModelAdmin):
 
     def its_deleted(self, obj: SoftModel):
         if obj.is_deleted:
-            return "DELETED"
+            return _("DELETED")
         return ""
 
-    its_deleted.short_description = "is deleted"
+    its_deleted.short_description = _("is deleted")
 
     def get_list_display(self, request):
         list_display = list(super().get_list_display(request))

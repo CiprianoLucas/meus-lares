@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from django.utils.translation import gettext_lazy as _
 from django.apps import AppConfig
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_migrate
@@ -8,7 +8,7 @@ from django.db.models.signals import post_migrate
 class UserConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "users"
-    verbose_name = "usuários"
+    verbose_name = _("Users")
 
     def ready(self):
         post_migrate.connect(create_super_user_if_not_exists, sender=self)

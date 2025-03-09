@@ -44,7 +44,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-07 08:03-0300\n"
+"POT-Creation-Date: 2025-03-09 14:14-0300\n"
 "PO-Revision-Date: 2024-08-07 06:49+0000\n"
 "Last-Translator: Eduardo Felipe Castegnaro <eduardo@onsign.tv>, 2024\n"
 "Language-Team: Portuguese (Brazil) (http://app.transifex.com/django/django/"
@@ -54,6 +54,752 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: bills/admin.py:29 bills/models.py:38
+msgid "Payment recurrence"
+msgstr "Recorrência de pagamento"
+
+#: bills/admin.py:30
+msgid "Payment Recurrences"
+msgstr "Recorrências de Pagamento"
+
+#: bills/admin.py:42
+msgid "Breach of contract fine"
+msgstr "Multa por quebra de contrato"
+
+#: bills/admin.py:43
+msgid "Breach of contract fines"
+msgstr "Multas por quebra de contrato"
+
+#: bills/admin.py:55 bills/models.py:87
+msgid "Condominium fine"
+msgstr "Multa de condomínio"
+
+#: bills/admin.py:56 bills/models.py:88
+msgid "Condominium fines"
+msgstr "Multas de condomínio"
+
+#: bills/apps.py:7
+msgid "Installments and Fines"
+msgstr "Parcelas e Multas"
+
+#: bills/models.py:10
+msgid "Waiting"
+msgstr "Aguardando"
+
+#: bills/models.py:11 bills/models.py:69 condo_requests/models.py:26
+#: users/models.py:31
+msgid "Pending"
+msgstr "Pendente"
+
+#: bills/models.py:12 bills/models.py:70
+msgid "Paid"
+msgstr "Pago"
+
+#: bills/models.py:13
+msgid "Overdue"
+msgstr "Vencido"
+
+#: bills/models.py:14
+msgid "Paid with delay"
+msgstr "Pago com atraso"
+
+#: bills/models.py:15
+msgid "Cancelled"
+msgstr "Cancelado"
+
+#: bills/models.py:18 bills/models.py:43 bills/models.py:75
+#: condo_files/models.py:19 places/models.py:8 places/models.py:15
+#: places/models.py:23
+msgid "name"
+msgstr "nome"
+
+#: bills/models.py:20
+msgid "break penalizable"
+msgstr "quebra penalizável"
+
+#: bills/models.py:22
+msgid ""
+"It will be considered in the calculation of the fine for breach of contract"
+msgstr "Será considerado no cálculo da multa por quebra de contrato"
+
+#: bills/models.py:25
+msgid "delay penalizable"
+msgstr "atraso penalizável"
+
+#: bills/models.py:26
+msgid "Will charge a late payment fine"
+msgstr "Cobrará uma multa por pagamento atrasado"
+
+#: bills/models.py:29
+msgid "payment status"
+msgstr "status do pagamento"
+
+#: bills/models.py:32 bills/models.py:44 bills/models.py:74
+#: condo_files/models.py:11
+msgid "contract"
+msgstr "contrato"
+
+#: bills/models.py:33 bills/models.py:45 bills/models.py:76
+msgid "value"
+msgstr "valor"
+
+#: bills/models.py:34
+msgid "opening day"
+msgstr "data de abertura"
+
+#: bills/models.py:35
+msgid "due date"
+msgstr "data de vencimento"
+
+#: bills/models.py:39
+msgid "Payment recurrences"
+msgstr "Recorrências de pagamento"
+
+#: bills/models.py:47
+msgid "is percentage"
+msgstr "é percentual"
+
+#: bills/models.py:49
+msgid "It will multiply and add the pending recurrences"
+msgstr "Multiplicará e somará as recorrências pendentes"
+
+#: bills/models.py:53
+msgid "Resident's breach of contract fine"
+msgstr "Multa por quebra de contrato do morador"
+
+#: bills/models.py:54
+msgid "Resident's contract breach fines"
+msgstr "Multas por quebra de contrato do morador"
+
+#: bills/models.py:59
+msgid "Delay in payment"
+msgstr "Atraso no pagamento"
+
+#: bills/models.py:60
+msgid "Excessive Noise"
+msgstr "Ruído excessivo"
+
+#: bills/models.py:61
+msgid "Illegal Parking"
+msgstr "Estacionamento ilegal"
+
+#: bills/models.py:62
+msgid "Safety Violation"
+msgstr "Violação de segurança"
+
+#: bills/models.py:63
+msgid "Improper Disposal of Trash"
+msgstr "Descarte inadequado de lixo"
+
+#: bills/models.py:64
+msgid "General Rule Violation"
+msgstr "Violação de regra geral"
+
+#: bills/models.py:65
+msgid "Damaged infrastructure"
+msgstr "Infraestrutura danificada"
+
+#: bills/models.py:66 condo_requests/models.py:12
+msgid "Others"
+msgstr "Outros"
+
+#: bills/models.py:71
+msgid "Disputed"
+msgstr "Em disputa"
+
+#: bills/models.py:77 condo_requests/models.py:62
+msgid "status"
+msgstr "status"
+
+#: bills/models.py:79
+msgid "infraction type"
+msgstr "tipo de infração"
+
+#: bills/models.py:84 condo_requests/models.py:59 notifications/models.py:11
+msgid "description"
+msgstr "descrição"
+
+#: condo_files/admin.py:13 condo_files/models.py:22
+msgid "Contract file"
+msgstr "Arquivo de contrato"
+
+#: condo_files/admin.py:14 condo_files/models.py:23
+msgid "Contract files"
+msgstr "Arquivos de contrato"
+
+#: condo_files/admin.py:25
+msgid "Instruction image"
+msgstr "Imagem de instrução"
+
+#: condo_files/admin.py:26
+msgid "Instruction images"
+msgstr "Imagens de instrução"
+
+#: condo_files/apps.py:7
+msgid "Files"
+msgstr "Arquivos"
+
+#: condo_files/models.py:14 condo_files/models.py:44
+#: venv/lib/python3.12/site-packages/click/types.py:822
+msgid "file"
+msgstr "arquivo"
+
+#: condo_files/models.py:27
+msgid "In"
+msgstr "Entrada"
+
+#: condo_files/models.py:27
+msgid "Out"
+msgstr "Saída"
+
+#: condo_files/models.py:27
+msgid "Inspect"
+msgstr "Inspecionar"
+
+#: condo_files/models.py:30 relations/models.py:58 relations/models.py:70
+msgid "tenant"
+msgstr "inquilino"
+
+#: condo_files/models.py:33 notifications/models.py:23
+msgid "image"
+msgstr "imagem"
+
+#: condo_files/models.py:35 relations/models.py:46
+msgid "role"
+msgstr "papel"
+
+#: condo_files/models.py:38
+msgid "Apartment Inspection Image"
+msgstr "Imagem de inspeção de apartamento"
+
+#: condo_files/models.py:39
+msgid "Apartment Inspection Images"
+msgstr "Imagens de inspeção de apartamentos"
+
+#: condo_files/models.py:47
+msgid "request"
+msgstr "solicitação"
+
+#: condo_files/models.py:51
+msgid "Request file"
+msgstr "Arquivo de solicitação"
+
+#: condo_files/models.py:52
+msgid "Request files"
+msgstr "Arquivos de solicitação"
+
+#: condo_requests/admin.py:34 condo_requests/models.py:69
+msgid "Request"
+msgstr "Solicitação"
+
+#: condo_requests/admin.py:35 condo_requests/apps.py:7
+#: condo_requests/models.py:70
+msgid "Requests"
+msgstr "Solicitações"
+
+#: condo_requests/models.py:10
+msgid "Complaint"
+msgstr "Reclamação"
+
+#: condo_requests/models.py:11
+msgid "Repair"
+msgstr "Reparo"
+
+#: condo_requests/models.py:13
+msgid "Reservation"
+msgstr "Reserva"
+
+#: condo_requests/models.py:14
+msgid "Payment Issue"
+msgstr "Problema de pagamento"
+
+#: condo_requests/models.py:15
+msgid "Noise Complaint"
+msgstr "Reclamação de ruído"
+
+#: condo_requests/models.py:16
+msgid "Security Issue"
+msgstr "Problema de segurança"
+
+#: condo_requests/models.py:17
+msgid "Lost and Found"
+msgstr "Achados e perdidos"
+
+#: condo_requests/models.py:18
+msgid "Visitor Authorization"
+msgstr "Autorização de visitante"
+
+#: condo_requests/models.py:19
+msgid "Package Delivery"
+msgstr "Entrega de pacote"
+
+#: condo_requests/models.py:20
+msgid "Suggestion"
+msgstr "Sugestão"
+
+#: condo_requests/models.py:21
+msgid "Event"
+msgstr "Evento"
+
+#: condo_requests/models.py:22
+msgid "Billing Question"
+msgstr "Dúvida de cobrança"
+
+#: condo_requests/models.py:23
+msgid "Vehicle"
+msgstr "Veículo"
+
+#: condo_requests/models.py:27
+msgid "In Progress"
+msgstr "Em andamento"
+
+#: condo_requests/models.py:28
+msgid "Completed"
+msgstr "Concluído"
+
+#: condo_requests/models.py:29
+msgid "Canceled"
+msgstr "Cancelado"
+
+#: condo_requests/models.py:30
+msgid "Awaiting Payment"
+msgstr "Aguardando pagamento"
+
+#: condo_requests/models.py:31 users/models.py:33
+msgid "Rejected"
+msgstr "Rejeitado"
+
+#: condo_requests/models.py:32
+msgid "Awaiting Feedback"
+msgstr "Aguardando feedback"
+
+#: condo_requests/models.py:36
+msgid "requester"
+msgstr "solicitante"
+
+#: condo_requests/models.py:42
+msgid "guardian"
+msgstr "responsável"
+
+#: condo_requests/models.py:49 notifications/models.py:16 places/models.py:52
+#: places/models.py:76 places/models.py:92 relations/models.py:44
+msgid "condominium"
+msgstr "condomínio"
+
+#: condo_requests/models.py:53 places/models.py:80 relations/models.py:10
+msgid "apartment"
+msgstr "apartamento"
+
+#: condo_requests/models.py:58 notifications/models.py:10
+msgid "title"
+msgstr "título"
+
+#: condo_requests/models.py:60
+msgid "observations"
+msgstr "observações"
+
+#: condo_requests/models.py:61
+msgid "type"
+msgstr "tipo"
+
+#: condo_requests/models.py:63
+msgid "anonymous"
+msgstr "anônimo"
+
+#: meus_lares/storages.py:44
+msgid "Extension not allowed: "
+msgstr "Extensão não permitida: "
+
+#: meus_lares/storages.py:48
+msgid "Invalid MIME-Type: "
+msgstr "Tipo MIME inválido: "
+
+#: meus_lares/storages.py:51
+msgid "Invalid file name"
+msgstr "Nome de arquivo inválido"
+
+#: meus_lares/storages.py:55
+msgid "The maximum size allowed is 20 MB"
+msgstr "O tamanho máximo permitido é 20 MB"
+
+#: meus_lares/storages.py:66
+msgid "Malicious file detected in ZIP: "
+msgstr "Arquivo malicioso detectado no ZIP: "
+
+#: meus_lares/storages.py:74
+msgid "Malicious file detected in RAR: "
+msgstr "Arquivo malicioso detectado no RAR: "
+
+#: notifications/admin.py:17 notifications/models.py:36
+msgid "Notification"
+msgstr "Notificação"
+
+#: notifications/admin.py:18 notifications/apps.py:7 notifications/models.py:37
+msgid "Notifications"
+msgstr "Notificações"
+
+#: notifications/models.py:12
+msgid "schedule"
+msgstr "agendamento"
+
+#: notifications/models.py:13
+msgid "url"
+msgstr "url"
+
+#: notifications/models.py:46
+msgid "User notification"
+msgstr "Notificação do usuário"
+
+#: notifications/models.py:47
+msgid "User notifications"
+msgstr "Notificações dos usuários"
+
+#: places/admin.py:38 places/models.py:47
+msgid "Condominium"
+msgstr "Condomínio"
+
+#: places/admin.py:39 places/models.py:48
+msgid "Condominiums"
+msgstr "Condomínios"
+
+#: places/admin.py:47 places/admin.py:66
+msgid "No photo"
+msgstr "Sem foto"
+
+#: places/admin.py:49 places/admin.py:68
+msgid "Photo"
+msgstr "Foto"
+
+#: places/admin.py:57 places/models.py:71
+msgid "Apartment"
+msgstr "Apartamento"
+
+#: places/admin.py:58 places/models.py:72
+msgid "Apartments"
+msgstr "Apartamentos"
+
+#: places/admin.py:75 places/models.py:87 places/models.py:88
+msgid "Parking space"
+msgstr "Vaga de estacionamento"
+
+#: places/admin.py:76
+msgid "Parking spaces"
+msgstr "Vagas de estacionamento"
+
+#: places/models.py:7
+msgid "acronym"
+msgstr "sigla"
+
+#: places/models.py:16
+msgid "state"
+msgstr "estado"
+
+#: places/models.py:24
+msgid "cep"
+msgstr "CEP"
+
+#: places/models.py:26
+msgid "city"
+msgstr "cidade"
+
+#: places/models.py:28
+msgid "neighborhood"
+msgstr "bairro"
+
+#: places/models.py:29
+msgid "street"
+msgstr "rua"
+
+#: places/models.py:30
+msgid "number"
+msgstr "número"
+
+#: places/models.py:31 places/models.py:58 places/models.py:78
+#: places/models.py:100
+msgid "complement"
+msgstr "complemento"
+
+#: places/models.py:33 places/models.py:55 users/models.py:50
+msgid "profile photo"
+msgstr "foto de perfil"
+
+#: places/models.py:53 places/models.py:77 places/models.py:93
+msgid "identifier"
+msgstr "identificador"
+
+#: places/models.py:94
+msgid "capacity"
+msgstr "capacidade"
+
+#: places/models.py:95
+msgid "is reserveable"
+msgstr "é reservável"
+
+#: places/models.py:97
+msgid "clean time"
+msgstr "tempo de limpeza"
+
+#: places/models.py:98
+msgid "Cleaning time, in minutes"
+msgstr "Tempo de limpeza, em minutos"
+
+#: places/models.py:106
+msgid "Shared space"
+msgstr "Espaço compartilhado"
+
+#: places/models.py:107
+msgid "Shared spaces"
+msgstr "Espaços compartilhados"
+
+#: places/serializers.py:84 places/serializers.py:141 places/serializers.py:191
+msgid "Condominium does not exist"
+msgstr "O condomínio não existe"
+
+#: places/views.py:76 places/views.py:86
+msgid "There are active residents in this apartment"
+msgstr "Há moradores ativos neste apartamento"
+
+#: relations/admin.py:17 relations/models.py:53 relations/models.py:54
+msgid "Condominium staff"
+msgstr "Equipe do condomínio"
+
+#: relations/admin.py:18
+msgid "Condominium staffs"
+msgstr "Equipes do condomínio"
+
+#: relations/admin.py:38 relations/models.py:24
+msgid "Tenant"
+msgstr "Inquilino"
+
+#: relations/admin.py:39 relations/models.py:25
+msgid "Tenants"
+msgstr "Inquilinos"
+
+#: relations/admin.py:57 relations/models.py:76
+msgid "Space reservation"
+msgstr "Reserva de espaço"
+
+#: relations/admin.py:58
+msgid "Space Reservations"
+msgstr "Reservas de espaço"
+
+#: relations/apps.py:7
+msgid "Relations"
+msgstr "Relações"
+
+#: relations/models.py:11 relations/models.py:45 relations/models.py:93
+msgid "user"
+msgstr "usuário"
+
+#: relations/models.py:12
+msgid "is responsible"
+msgstr "é responsável"
+
+#: relations/models.py:13
+msgid "is first contact"
+msgstr "é o primeiro contato"
+
+#: relations/models.py:14 relations/models.py:47
+msgid "notes"
+msgstr "observações"
+
+#: relations/models.py:37
+msgid "Owner"
+msgstr "Proprietário"
+
+#: relations/models.py:38
+msgid "Manager"
+msgstr "Gerente"
+
+#: relations/models.py:39
+msgid "Vigilant"
+msgstr "Vigilante"
+
+#: relations/models.py:40
+msgid "Doorman"
+msgstr "Portador"
+
+#: relations/models.py:41
+msgid "Caretaker"
+msgstr "Zelador"
+
+#: relations/models.py:42
+msgid "Cleaner"
+msgstr "Faxineiro"
+
+#: relations/models.py:59
+msgid "start date"
+msgstr "data de início"
+
+#: relations/models.py:60
+msgid "end date"
+msgstr "data de término"
+
+#: relations/models.py:61
+msgid "terms"
+msgstr "termos"
+
+#: relations/models.py:64
+msgid "Contract"
+msgstr "Contrato"
+
+#: relations/models.py:65
+msgid "Contracts"
+msgstr "Contratos"
+
+#: relations/models.py:69
+msgid "place"
+msgstr "local"
+
+#: relations/models.py:71
+msgid "date"
+msgstr "data"
+
+#: relations/models.py:72
+msgid "start time"
+msgstr "hora de início"
+
+#: relations/models.py:73
+msgid "end time"
+msgstr "hora de término"
+
+#: relations/models.py:77
+msgid "Space reservations"
+msgstr "Reservas de espaço"
+
+#: relations/models.py:88 relations/serializers.py:127
+msgid "This time is already booked"
+msgstr "Este horário já está reservado"
+
+#: relations/models.py:94
+msgid "plate"
+msgstr "placa"
+
+#: relations/models.py:95
+msgid "brand"
+msgstr "marca"
+
+#: relations/models.py:96
+msgid "model"
+msgstr "modelo"
+
+#: relations/models.py:97
+msgid "color"
+msgstr "cor"
+
+#: relations/models.py:103
+msgid "Car"
+msgstr "Carro"
+
+#: relations/models.py:104
+msgid "Cars"
+msgstr "Carros"
+
+#: soft_components/admin.py:27
+msgid "DELETED"
+msgstr "EXCLUÍDO"
+
+#: soft_components/admin.py:30 soft_components/models.py:14 users/models.py:84
+msgid "is deleted"
+msgstr "foi removido"
+
+#: soft_components/models.py:15 users/models.py:86
+msgid "created at"
+msgstr "criado em"
+
+#: soft_components/models.py:16
+msgid "is active"
+msgstr "está ativo"
+
+#: soft_components/models.py:17 users/models.py:85
+msgid "history"
+msgstr "histórico"
+
+#: soft_components/serializers.py:9 soft_components/serializers.py:28
+msgid "User is not defined"
+msgstr "Usuário não definido"
+
+#: users/apps.py:11 users/models.py:183
+msgid "Users"
+msgstr "Usuários"
+
+#: users/models.py:20
+msgid "email is already in use"
+msgstr "e-mail já está em uso"
+
+#: users/models.py:30
+msgid "Verified"
+msgstr "Verificado"
+
+#: users/models.py:32
+msgid "In progress"
+msgstr "Em andamento"
+
+#: users/models.py:37
+msgid "document number"
+msgstr "número do documento"
+
+#: users/models.py:38
+msgid "nick"
+msgstr "apelido"
+
+#: users/models.py:39
+msgid "e-mail"
+msgstr "e-mail"
+
+#: users/models.py:40
+msgid "phone number"
+msgstr "número de telefone"
+
+#: users/models.py:41
+msgid "full name"
+msgstr "nome completo"
+
+#: users/models.py:42
+msgid "birth"
+msgstr "data de nascimento"
+
+#: users/models.py:44
+msgid "verified status"
+msgstr "status de verificação"
+
+#: users/models.py:57
+msgid "selfie photo"
+msgstr "foto de selfie"
+
+#: users/models.py:64
+msgid "front of document photo"
+msgstr "foto da frente do documento"
+
+#: users/models.py:71
+msgid "back of document photo"
+msgstr "foto do verso do documento"
+
+#: users/models.py:78
+msgid "selfie with document photo"
+msgstr "selfie com foto do documento"
+
+#: users/models.py:182
+msgid "User"
+msgstr "Usuário"
+
+#: users/serializers.py:14
+msgid "Insert your full name"
+msgstr "Insira seu nome completo"
+
+#: users/serializers.py:21 users/serializers.py:29 users/serializers.py:34
+#: users/serializers.py:46
+msgid "Invalid"
+msgstr "Inválido"
+
+#: users/serializers.py:56
+msgid "Date of birth must be before the current year"
+msgstr "A data de nascimento deve ser anterior ao ano atual"
+
+#: users/serializers.py:124
+msgid "Cannot change validated identity data"
+msgstr "Não é possível alterar dados de identidade validados"
 
 #: venv/lib/python3.12/site-packages/click/_termui_impl.py:518
 #, python-brace-format
@@ -302,10 +1048,6 @@ msgstr "Valor %(value)r não é uma opção válida."
 #| msgid "“%(value)s” is not a valid UUID."
 msgid "{value!r} is not a valid UUID."
 msgstr "O valor “%(value)s” não é um UUID válido"
-
-#: venv/lib/python3.12/site-packages/click/types.py:822
-msgid "file"
-msgstr ""
 
 #: venv/lib/python3.12/site-packages/click/types.py:824
 msgid "directory"
@@ -1720,6 +2462,9 @@ msgstr ""
 msgid "Unable to connect to qpid with SASL mechanism %s"
 msgstr ""
 
+#~ msgid "deleted"
+#~ msgstr "foi removido"
+
 #~ msgid "Afrikaans"
 #~ msgstr "Africânder"
 
@@ -1764,9 +2509,6 @@ msgstr ""
 
 #~ msgid "Danish"
 #~ msgstr "Dinamarquês"
-
-#~ msgid "German"
-#~ msgstr "Alemão"
 
 #~ msgid "Lower Sorbian"
 #~ msgstr "Sorábio Baixo"

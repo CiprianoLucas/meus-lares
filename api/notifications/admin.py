@@ -1,6 +1,6 @@
 from django.contrib import admin
 from soft_components import SoftAdmin
-
+from django.utils.translation import gettext_lazy as _
 from .models import Notification, UserNotification
 
 
@@ -14,8 +14,8 @@ class NotificationAdmin(SoftAdmin):
     list_display = ("id", "title", "schedule", "condominium")
     list_filter = ("schedule", "condominium")
     search_fields = ("id", "title", "condominium__name", "schedule")
-    verbose_name = "Notificação"
-    verbose_name_plural = "Notificações"
+    verbose_name = _("Notification")
+    verbose_name_plural = _("Notifications")
     inlines = [UserNotificationInline]
 
 

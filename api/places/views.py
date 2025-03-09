@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework.views import APIView
 from soft_components.views import SoftModelsViewSet
-
+from django.utils.translation import gettext_lazy as _
 from .models import Apartment, City, Condominium, ParkingSpace, SharedPlaces
 from .serializers import (ApartmentSerializer, BulkApartmentCreateSerializer,
                           BulkParkCreateSerializer,
@@ -72,12 +72,9 @@ class ApartmentOwnerView(SoftModelsViewSet):
 
         if "is_active" in data and not data["is_active"]:
             if instance.condotenant_set.filter(is_active=True).exists():
-                raise serializers.ValidationError(
-                    {
-                        """Cannot be deactivated.
-                        There are active residents in this apartment"""
-                    }
-                )
+                raise serializers.ValidationError(_(
+                    "There are active residents in this apartment"
+                ))
 
         serializer.save()
 
@@ -85,12 +82,9 @@ class ApartmentOwnerView(SoftModelsViewSet):
         instance = self.get_object()
 
         if instance.condotenant_set.filter(is_active=True).exists():
-            raise serializers.ValidationError(
-                {
-                    """Unable to delete.
-                    There are active residents in this apartment"""
-                }
-            )
+            raise serializers.ValidationError(_(
+                "There are active residents in this apartment"
+            ))
 
         return super().destroy(request, *args, **kwargs)
 

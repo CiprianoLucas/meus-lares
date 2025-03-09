@@ -1,5 +1,6 @@
 from django.contrib import admin
 from soft_components import SoftAdmin
+from django.utils.translation import gettext_lazy as _
 
 from .models import BreachPenalty, FinePenalty, RecurringFee
 
@@ -25,8 +26,8 @@ class RecurringFeeAdmin(SoftAdmin):
     search_fields = ("value", "name")
 
     class Meta:
-        verbose_name = "Recorrência de pagamento"
-        verbose_name_plural = "Recorrências de pagamento"
+        verbose_name = _("Payment recurrence")
+        verbose_name_plural = _("Payment Recurrences")
 
 
 admin.site.register(RecurringFee, RecurringFeeAdmin)
@@ -38,8 +39,8 @@ class BreachPenaltyAdmin(SoftAdmin):
     search_fields = ("value", "name")
 
     class Meta:
-        verbose_name = "Multa de quebra de contrato"
-        verbose_name_plural = "Multas de quebra de contrato"
+        verbose_name = _("Breach of contract fine")
+        verbose_name_plural = _("Breach of contract fines")
 
 
 admin.site.register(BreachPenalty, BreachPenaltyAdmin)
@@ -51,8 +52,8 @@ class FinePenaltyAdmin(SoftAdmin):
     search_fields = ("value", "name")
 
     class Meta:
-        verbose_name = "Multa de condomínio"
-        verbose_name_plural = "Multas de condomínio"
+        verbose_name = _("Condominium fine")
+        verbose_name_plural = _("Condominium fines")
 
 
 admin.site.register(FinePenalty, FinePenaltyAdmin)

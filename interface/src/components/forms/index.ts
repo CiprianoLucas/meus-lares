@@ -130,14 +130,9 @@ const keysTranslates: { [key: string]: string } = {
     phone_number: 'Telefone',
     full_name: 'Nome completo',
     password: 'Senha',
+    birth: 'Data de nascimento',
     error: 'Erro',
-    birth: 'Data de nascimento'
-}
-
-const responsesTranslates: { [key: string]: { [key: string]: string } } = {
-    ptBr: {
-        "Invalid": 'Inválido',
-    }
+    detail: 'Detalhes'
 }
 
 const inputsProps = <Input[]>[
@@ -201,4 +196,4 @@ const inputsProps = <Input[]>[
     }
 ]
 
-export { keysTranslates, inputsProps, states, responsesTranslates }
+export { keysTranslates, inputsProps, states }

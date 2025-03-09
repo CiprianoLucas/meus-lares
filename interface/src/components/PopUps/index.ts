@@ -2,7 +2,7 @@ import { createApp, h } from 'vue'
 import AlertPopup from './AlertPopup.vue'
 import type { typesBootstrap } from './interfaces'
 import { type AxiosError } from 'axios'
-import { keysTranslates, responsesTranslates } from '@/components/forms'
+import { keysTranslates } from '@/components/forms'
 
 const popup = (
     title: string,
@@ -39,7 +39,7 @@ const resumeErrors = (error: AxiosError, defaultMessage: string = 'Algo saiu err
         const data = error.response.data as { [key: string]: string }
         Object.keys(keysTranslates).forEach((key) => {
             if (data[key]) {
-                errorMessage += `${keysTranslates[key]}: ${responsesTranslates['ptBr'][data[key]]??data[key]}<br>`
+                errorMessage += `${keysTranslates[key]}: ${data[key]}<br>`
             }
         })
     }

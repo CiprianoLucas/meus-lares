@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from relations.models import CondoStaff, CondoTenant
 from soft_components import SoftAdmin, SoftInline
-
+from django.utils.translation import gettext_lazy as _
 from .models import Apartment, Condominium, ParkingSpace
 
 
@@ -35,8 +35,8 @@ class CondominiumsAdmin(SoftAdmin):
     inlines = [CondoStaffInline, ApartmentsInline]
 
     class Meta:
-        verbose_name = "Condomínio"
-        verbose_name_plural = "Condomínios"
+        verbose_name = _("Condominium")
+        verbose_name_plural = _("Condominiums")
 
     def profile_photo_url(self, obj):
         if obj.temporary_url():
@@ -44,9 +44,9 @@ class CondominiumsAdmin(SoftAdmin):
                 f"""<a href="{obj.temporary_url()}"><img src="{obj.temporary_url()}"
                 alt="Foto de perfil" width="50" height="50"></a>"""
             )
-        return "Sem foto"
+        return _("No photo")
 
-    profile_photo_url.short_description = "Foto"
+    profile_photo_url.short_description = _("Photo")
 
 
 class ApartmentsAdmin(SoftAdmin):
@@ -54,8 +54,8 @@ class ApartmentsAdmin(SoftAdmin):
     list_filter = ("id", "condominium", "identifier", "is_active")
     search_fields = ("id", "condominium__name", "identifier", "is_active")
     inlines = [CondoTenantInline]
-    verbose_name = "Apartamento"
-    verbose_name_plural = "Apartamentos"
+    verbose_name = _("Apartment")
+    verbose_name_plural = _("Apartments")
 
     def profile_photo_url(self, obj):
         if obj.temporary_url():
@@ -63,17 +63,17 @@ class ApartmentsAdmin(SoftAdmin):
                 f"""<a href="{obj.temporary_url()}"><img src="{obj.temporary_url()}"
                 alt="Foto de perfil" width="50" height="50"></a>"""
             )
-        return "Sem foto"
+        return _("No photo")
 
-    profile_photo_url.short_description = "Foto"
+    profile_photo_url.short_description = _("Photo")
 
 
 class ParkingSpaceAdmin(SoftAdmin):
     list_display = ("id", "condominium", "identifier", "apartment")
     list_filter = ("condominium", "apartment")
     search_fields = ("id", "condominium__name", "identifier", "apartment__identifier")
-    verbose_name = "Vaga de estacionamento"
-    verbose_name_plural = "Vagas de estacionamento"
+    verbose_name = _("Parking space")
+    verbose_name_plural = _("Parking spaces")
 
 
 admin.site.register(ParkingSpace, ParkingSpaceAdmin)

@@ -1,7 +1,7 @@
 import mimetypes
 import os
 import zipfile
-
+from django.utils.translation import gettext_lazy as _
 import rarfile
 from django.conf import settings
 from rest_framework import serializers
@@ -41,18 +41,18 @@ ALLOWED_MIME_TYPES = [
 def validate_file(file):
     ext = os.path.splitext(file.name)[1].lower()
     if ext not in ALLOWED_EXTENSIONS:
-        raise serializers.ValidationError(f"Extension not allowed: {ext}")
+        raise serializers.ValidationError(_("Extension not allowed: ") + ext)
 
-    mime_type, _ = mimetypes.guess_type(file.name)
+    mime_type, no_use = mimetypes.guess_type(file.name)
     if mime_type not in ALLOWED_MIME_TYPES:
-        raise serializers.ValidationError(f"Invalid MIME-Type: {mime_type}")
+        raise serializers.ValidationError(_("Invalid MIME-Type: ") + mime_type)
 
     if ".." in file.name or "/" in file.name:
-        raise serializers.ValidationError("Invalid file name")
+        raise serializers.ValidationError(_("Invalid file name"))
 
     max_size = 20 * 1024 * 1024
     if file.size > max_size:
-        raise serializers.ValidationError("The maximum size allowed is 20 MB")
+        raise serializers.ValidationError(_("The maximum size allowed is 20 MB"))
 
     validate_compressed_contents(file)
 
@@ -62,17 +62,17 @@ def validate_compressed_contents(file):
         with zipfile.ZipFile(file, "r") as zip_ref:
             for file_name in zip_ref.namelist():
                 if file_name.endswith((".exe", ".bat", ".sh", ".php", ".js")):
-                    raise serializers.ValidationError(
-                        f"Malicious file detected in ZIP: {file_name}"
-                    )
+                    raise serializers.ValidationError(_(
+                        "Malicious file detected in ZIP: " + file_name
+                    ))
 
     if rarfile.is_rarfile(file):
         with rarfile.RarFile(file, "r") as rar_ref:
             for file_name in rar_ref.namelist():
                 if file_name.endswith((".exe", ".bat", ".sh", ".php", ".js")):
-                    raise serializers.ValidationError(
-                        f"Malicious file detected in RAR: {file_name}"
-                    )
+                    raise serializers.ValidationError(_(
+                        "Malicious file detected in RAR: " + file_name
+                    ))
 
 
 if settings.ENV not in ["production", "storage"]:

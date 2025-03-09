@@ -1,5 +1,5 @@
 import re
-
+from django.utils.translation import gettext_lazy as _
 from relations.models import CondoStaff
 from rest_framework import serializers
 from soft_components.serializers import softModelSerializer
@@ -81,7 +81,7 @@ class BulkApartmentCreateSerializer(serializers.Serializer):
 
     def validate_condominium_id(self, value):
         if not Condominium.objects.filter(id=value).exists():
-            raise serializers.ValidationError({"Condominium does not exist"})
+            raise serializers.ValidationError(_("Condominium does not exist"))
         return value
 
     def create(self, validated_data):
@@ -138,7 +138,7 @@ class BulkParkCreateSerializer(serializers.Serializer):
 
     def validate_condominium_id(self, value):
         if not Condominium.objects.filter(id=value).exists():
-            raise serializers.ValidationError({"ondominium does not exist"})
+            raise serializers.ValidationError(_("Condominium does not exist"))
         return value
 
     def create(self, validated_data):
@@ -188,7 +188,7 @@ class BulkSharedPlacesCreateSerializer(serializers.Serializer):
 
     def validate_condominium_id(self, value):
         if not Condominium.objects.filter(id=value).exists():
-            raise serializers.ValidationError({"Condominium does not exist"})
+            raise serializers.ValidationError(_("Condominium does not exist"))
         return value
 
     def create(self, validated_data):

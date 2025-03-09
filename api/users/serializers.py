@@ -5,22 +5,20 @@ from allauth.account.adapter import get_adapter
 from allauth.account.models import EmailAddress
 from rest_framework import serializers
 from soft_components.serializers import softModelSerializer
-
+from django.utils.translation import gettext_lazy as _
 from .models import User
 
 
 def validate_full_name(full_name: str):
     if len(full_name.strip().split(" ")) < 2:
-        raise serializers.ValidationError({"Insert your full name"})
+        raise serializers.ValidationError(_("Insert your full name"))
     return full_name
 
 
 def validate_phone_number(phone_number: str):
     phone_number = "".join(re.findall(r"\d", str(phone_number)))
     if len(phone_number) < 10:
-        raise serializers.ValidationError(
-            {"Invalid"}
-        )
+        raise serializers.ValidationError(_("Invalid"))
     return phone_number
 
 
@@ -28,12 +26,12 @@ def validate_cpf(cpf: str):
     regex_cnpj = re.compile(r"^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$")
 
     if bool(regex_cnpj.match(cpf)):
-        raise serializers.ValidationError("Invalid")
+        raise serializers.ValidationError(_("Invalid"))
 
     cpf = ("".join(re.findall(r"\d", str(cpf)))).zfill(11)
 
     if len(cpf) > 11 or len(set(cpf)) == 1:
-        raise serializers.ValidationError("Invalid")
+        raise serializers.ValidationError(_("Invalid"))
 
     inteiros = list(map(int, cpf))
     novo = inteiros[:9]
@@ -45,7 +43,7 @@ def validate_cpf(cpf: str):
         novo.append(f)
 
     if novo != inteiros:
-        raise serializers.ValidationError("Invalid")
+        raise serializers.ValidationError(_("Invalid"))
 
     return cpf
 
@@ -54,9 +52,9 @@ def validate_birth(birth: str):
     day, month, year = map(int, birth.split("/"))
     formatted_date = date(year, month, day)
     if formatted_date >= date.today():
-        raise serializers.ValidationError(
+        raise serializers.ValidationError(_(
             "Date of birth must be before the current year"
-        )
+        ))
 
     return formatted_date
 
@@ -122,9 +120,9 @@ class UserSerializer(softModelSerializer):
             ]
             for key in data.keys()
         ):
-            raise serializers.ValidationError(
-                {"error": "Cannot change validated identity data"}
-            )
+            raise serializers.ValidationError(_(
+                "Cannot change validated identity data"
+            ))
 
         super().update(instance, data)
 

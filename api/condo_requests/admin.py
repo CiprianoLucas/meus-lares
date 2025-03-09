@@ -1,7 +1,7 @@
 from condo_files.models import RequestFiles
 from django.contrib import admin
 from soft_components import SoftAdmin, SoftInline
-
+from django.utils.translation import gettext_lazy as _
 from .models import CondoRequest
 
 
@@ -31,8 +31,8 @@ class RequestAdmin(SoftAdmin):
         "apartment__identfier",
         "title",
     )
-    verbose_name = "Requisição"
-    verbose_name_plural = "Requisições"
+    verbose_name = _("Request")
+    verbose_name_plural = _("Requests")
     inlines = [RequestFilesInline]
 
 

@@ -2,7 +2,7 @@ from django.contrib import admin
 from relations.models import (CondoStaff, CondoTenant, CondoTenantContract,
                               PlaceReservation)
 from soft_components import SoftAdmin, SoftInline
-
+from django.utils.translation import gettext_lazy as _
 
 class CondoTenantConstractsInline(SoftInline):
     model = CondoTenantContract
@@ -14,8 +14,8 @@ class CondoStaffAdmin(SoftAdmin):
     search_fields = ("condominium__name", "user__full_name", "role")
 
     class Meta:
-        verbose_name = "Colaborador do condomínio"
-        verbose_name_plural = "Colaboradores do condomínio"
+        verbose_name = _("Condominium staff")
+        verbose_name_plural = _("Condominium staffs")
 
 
 class CondoTenantAdmin(SoftAdmin):
@@ -35,8 +35,8 @@ class CondoTenantAdmin(SoftAdmin):
     inlines = [CondoTenantConstractsInline]
 
     class Meta:
-        verbose_name = "Morador"
-        verbose_name_plural = "Moradores"
+        verbose_name = _("Tenant")
+        verbose_name_plural = _("Tenants")
 
 
 class CondoTenantContractAdmin(SoftAdmin):
@@ -54,8 +54,8 @@ class PlaceReservationAdmin(SoftAdmin):
     )
 
     class Meta:
-        verbose_name = "Reserva de espaço"
-        verbose_name_plural = "Reservas de espaços"
+        verbose_name = _("Space reservation")
+        verbose_name_plural = _("Space Reservations")
 
 
 admin.site.register(PlaceReservation, PlaceReservationAdmin)
