@@ -1,11 +1,12 @@
 import mimetypes
 import os
 import zipfile
-from django.utils.translation import gettext_lazy as _
+
 import rarfile
 from django.conf import settings
-from rest_framework import serializers
 from django.core.files.storage import FileSystemStorage
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
 from storages.backends.gcloud import GoogleCloudStorage
 
 ALLOWED_EXTENSIONS = [
@@ -62,17 +63,17 @@ def validate_compressed_contents(file):
         with zipfile.ZipFile(file, "r") as zip_ref:
             for file_name in zip_ref.namelist():
                 if file_name.endswith((".exe", ".bat", ".sh", ".php", ".js")):
-                    raise serializers.ValidationError(_(
-                        "Malicious file detected in ZIP: " + file_name
-                    ))
+                    raise serializers.ValidationError(
+                        _("Malicious file detected in ZIP: " + file_name)
+                    )
 
     if rarfile.is_rarfile(file):
         with rarfile.RarFile(file, "r") as rar_ref:
             for file_name in rar_ref.namelist():
                 if file_name.endswith((".exe", ".bat", ".sh", ".php", ".js")):
-                    raise serializers.ValidationError(_(
-                        "Malicious file detected in RAR: " + file_name
-                    ))
+                    raise serializers.ValidationError(
+                        _("Malicious file detected in RAR: " + file_name)
+                    )
 
 
 if settings.ENV not in ["production", "storage"]:

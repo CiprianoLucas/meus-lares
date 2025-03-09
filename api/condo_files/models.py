@@ -1,9 +1,10 @@
-from condo_requests.models import CondoRequest
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+
+from condo_requests.models import CondoRequest
 from meus_lares.storages import PrivateMediaStorage, validate_file
 from relations.models import CondoTenant, CondoTenantContract
 from soft_components import SoftModel
-from django.utils.translation import gettext_lazy as _
 
 
 class CondoTenantContractFiles(SoftModel):

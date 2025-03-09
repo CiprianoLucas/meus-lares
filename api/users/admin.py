@@ -1,11 +1,18 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as UD
-from soft_components.admin import SoftAdmin
 from django.utils.translation import gettext_lazy as _
+
+from soft_components.admin import SoftAdmin
+
 from .models import User
 
 
 class UserAdmin(UD, SoftAdmin):
+
+    class Meta:
+        verbose_name = _("User")
+        verbose_name_plural = _("Users")
+
     fieldsets = UD.fieldsets + (
         (
             None,

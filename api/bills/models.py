@@ -1,7 +1,8 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+
 from relations.models import CondoTenantContract
 from soft_components import SoftModel
-from django.utils.translation import gettext_lazy as _
 
 
 class RecurringFee(SoftModel):
@@ -19,17 +20,25 @@ class RecurringFee(SoftModel):
     break_penalizable = models.BooleanField(
         _("break penalizable"),
         default=False,
-        help_text=_("It will be considered in the calculation of the fine for breach of contract"),
+        help_text=_(
+            "It will be considered in the calculation of the "
+            "fine for breach of contract"
+        ),
     )
     delay_penalizable = models.BooleanField(
         _("delay penalizable"),
-        default=False, help_text=_("Will charge a late payment fine")
+        default=False,
+        help_text=_("Will charge a late payment fine"),
     )
     payment_status = models.CharField(
         _("payment status"),
-        max_length=10, choices=PAYMENT_STATUS_CHOICES, default="waiting"
+        max_length=10,
+        choices=PAYMENT_STATUS_CHOICES,
+        default="waiting",
     )
-    contract = models.ForeignKey(CondoTenantContract, verbose_name=_("contract"), on_delete=models.DO_NOTHING)
+    contract = models.ForeignKey(
+        CondoTenantContract, verbose_name=_("contract"), on_delete=models.DO_NOTHING
+    )
     value = models.FloatField(_("value"))
     opening_day = models.DateField(_("opening day"))
     due_date = models.DateField(_("due date"))
@@ -41,7 +50,9 @@ class RecurringFee(SoftModel):
 
 class BreachPenalty(SoftModel):
     name = models.CharField(_("name"), max_length=50)
-    contract = models.ForeignKey(CondoTenantContract, verbose_name=_("contract"), on_delete=models.DO_NOTHING)
+    contract = models.ForeignKey(
+        CondoTenantContract, verbose_name=_("contract"), on_delete=models.DO_NOTHING
+    )
     value = models.FloatField(_("value"))
     is_percentage = models.BooleanField(
         _("is percentage"),
@@ -71,17 +82,25 @@ class FinePenalty(SoftModel):
         ("disputed", _("Disputed")),
     ]
 
-    contract = models.ForeignKey(CondoTenantContract, verbose_name=_("contract"), on_delete=models.DO_NOTHING)
-    name = models.CharField(_("name"),max_length=50)
-    value = models.FloatField(_("value"),)
-    status = models.CharField(_("status"),max_length=10, choices=STATUS_CHOICES, default="pending")
+    contract = models.ForeignKey(
+        CondoTenantContract, verbose_name=_("contract"), on_delete=models.DO_NOTHING
+    )
+    name = models.CharField(_("name"), max_length=50)
+    value = models.FloatField(
+        _("value"),
+    )
+    status = models.CharField(
+        _("status"), max_length=10, choices=STATUS_CHOICES, default="pending"
+    )
     infraction_type = models.CharField(
         _("infraction type"),
         max_length=20,
         choices=INFRACTION_CHOICES,
         default="break_rules",
     )
-    description = models.TextField(_("description"),)
+    description = models.TextField(
+        _("description"),
+    )
 
     class Meta:
         verbose_name = _("Condominium fine")

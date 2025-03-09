@@ -1,8 +1,9 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+
 from places.models import Apartment, Condominium
 from soft_components import SoftModel
 from users.models import User
-from django.utils.translation import gettext_lazy as _
 
 
 class CondoRequest(SoftModel):

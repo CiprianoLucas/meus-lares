@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.views import APIView
+
 from soft_components.views import SoftModelsViewSet
 
 from .models import Notification, UserNotification

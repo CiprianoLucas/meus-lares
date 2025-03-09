@@ -1,7 +1,9 @@
 import re
+
 from django.utils.translation import gettext_lazy as _
-from relations.models import CondoStaff
 from rest_framework import serializers
+
+from relations.models import CondoStaff
 from soft_components.serializers import softModelSerializer
 
 from .models import Apartment, City, Condominium, ParkingSpace, SharedPlaces
@@ -125,10 +127,7 @@ class ParkingSerializer(softModelSerializer):
 
     def get_apartment_details(self, obj: ParkingSpace):
         if obj.apartment:
-            return {
-                "identifier": obj.apartment.identifier,
-                "id": obj.apartment.id
-            }
+            return {"identifier": obj.apartment.identifier, "id": obj.apartment.id}
         return None
 
 

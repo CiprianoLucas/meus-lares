@@ -2,8 +2,9 @@
 
 import uuid
 
-import meus_lares.storages
 from django.db import migrations, models
+
+import meus_lares.storages
 
 
 class Migration(migrations.Migration):

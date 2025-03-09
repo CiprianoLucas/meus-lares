@@ -1,6 +1,6 @@
 import uuid
 from io import BytesIO
-from django.utils.translation import gettext_lazy as _
+
 from django.contrib.auth.models import AbstractUser
 from django.core.files import File
 from django.db import models
@@ -8,11 +8,12 @@ from django.db.models.fields import UUIDField
 from django.db.models.fields.files import FileField, ImageField
 from django.db.models.fields.related import ForeignKey
 from django.utils.timezone import now
-from meus_lares.storages import PrivateMediaStorage, PublicMediaStorage
+from django.utils.translation import gettext_lazy as _
 from PIL import Image
 from rest_framework import serializers
+
+from meus_lares.storages import PrivateMediaStorage, PublicMediaStorage
 from soft_components.managers import SoftUserManager
-from django.utils.translation import gettext_lazy as _
 
 
 def unique_email(value, id):

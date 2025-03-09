@@ -4,9 +4,16 @@ from django.urls import include, path, re_path
 from django.views.generic.base import RedirectView
 from rest_framework.routers import DefaultRouter
 
-from .views import (FindUserByEmailView, GoogleLogin, LoginView,
-                    UserCreateView, UserProfileView, get_info, logout_view,
-                    roles_view)
+from .views import (
+    FindUserByEmailView,
+    GoogleLogin,
+    LoginView,
+    UserCreateView,
+    UserProfileView,
+    get_info,
+    logout_view,
+    roles_view,
+)
 
 router = DefaultRouter()
 router.register(r"profile", UserProfileView, "profile")

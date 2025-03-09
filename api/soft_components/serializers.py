@@ -1,6 +1,7 @@
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.utils import model_meta
-from django.utils.translation import gettext_lazy as _
+
 
 class softModelSerializer(serializers.ModelSerializer):
     def create(self, data):

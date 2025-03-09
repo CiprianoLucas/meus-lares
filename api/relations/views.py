@@ -1,9 +1,12 @@
 from soft_components.views import SoftModelsViewSet
 
-from .models import (CondoTenant, CondoTenantContract,
-                     PlaceReservation)
-from .serializers import (CondoTenantContractSerializer,
-                          CondoTenantSerializerList, CondoTenantSerializer,PlaceReservationSerializer)
+from .models import CondoTenant, CondoTenantContract, PlaceReservation
+from .serializers import (
+    CondoTenantContractSerializer,
+    CondoTenantSerializer,
+    CondoTenantSerializerList,
+    PlaceReservationSerializer,
+)
 
 
 class CondoTenantView(SoftModelsViewSet):
@@ -29,11 +32,8 @@ class CondoTenantView(SoftModelsViewSet):
         if is_active:
             relations = relations.filter(is_active=True)
 
-        return relations.select_related(
-            "user", 
-            "apartment", 
-            "apartment__condominium"
-        )
+        return relations.select_related("user", "apartment", "apartment__condominium")
+
 
 class CondoTenantContractView(SoftModelsViewSet):
     serializer_class = CondoTenantContractSerializer

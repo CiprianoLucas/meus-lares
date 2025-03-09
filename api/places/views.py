@@ -1,19 +1,26 @@
 import httpx
 from django.db.models import Q
-from rest_framework import status
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import serializers
 from rest_framework.views import APIView
+
 from soft_components.views import SoftModelsViewSet
-from django.utils.translation import gettext_lazy as _
+
 from .models import Apartment, City, Condominium, ParkingSpace, SharedPlaces
-from .serializers import (ApartmentSerializer, BulkApartmentCreateSerializer,
-                          BulkParkCreateSerializer,
-                          BulkSharedPlacesCreateSerializer, CitySerializer,
-                          CondominiumsSerializer, FullAddressSerializer,
-                          ParkingSerializer, SharedPlacesSerializer)
+from .serializers import (
+    ApartmentSerializer,
+    BulkApartmentCreateSerializer,
+    BulkParkCreateSerializer,
+    BulkSharedPlacesCreateSerializer,
+    CitySerializer,
+    CondominiumsSerializer,
+    FullAddressSerializer,
+    ParkingSerializer,
+    SharedPlacesSerializer,
+)
 
 
 class CondominiumOwnerView(SoftModelsViewSet):
@@ -72,9 +79,9 @@ class ApartmentOwnerView(SoftModelsViewSet):
 
         if "is_active" in data and not data["is_active"]:
             if instance.condotenant_set.filter(is_active=True).exists():
-                raise serializers.ValidationError(_(
-                    "There are active residents in this apartment"
-                ))
+                raise serializers.ValidationError(
+                    _("There are active residents in this apartment")
+                )
 
         serializer.save()
 
@@ -82,9 +89,9 @@ class ApartmentOwnerView(SoftModelsViewSet):
         instance = self.get_object()
 
         if instance.condotenant_set.filter(is_active=True).exists():
-            raise serializers.ValidationError(_(
-                "There are active residents in this apartment"
-            ))
+            raise serializers.ValidationError(
+                _("There are active residents in this apartment")
+            )
 
         return super().destroy(request, *args, **kwargs)
 

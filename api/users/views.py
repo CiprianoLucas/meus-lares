@@ -9,11 +9,12 @@ from django.http.request import HttpRequest
 from django.middleware.csrf import get_token
 from google.auth.transport import requests
 from google.oauth2 import id_token
-from relations.models import CondoStaff, CondoTenant
 from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from rest_framework.views import APIView
+
+from relations.models import CondoStaff, CondoTenant
 from soft_components.views import SoftModelsViewSet
 
 from .models import User

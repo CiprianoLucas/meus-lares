@@ -1,6 +1,7 @@
 from django.contrib import admin
-from soft_components import SoftAdmin
 from django.utils.translation import gettext_lazy as _
+
+from soft_components import SoftAdmin
 
 from .models import BreachPenalty, FinePenalty, RecurringFee
 

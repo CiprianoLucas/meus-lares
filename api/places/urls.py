@@ -1,11 +1,18 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import (ApartmentByCondominiumView, ApartmentOwnerView,
-                    BulkApartmentCreateView, BulkParkCreateView,
-                    BulkSharedPlaceCreateView, CitiesView,
-                    CondominiumOwnerView, FullAddressView, ParkingView,
-                    SharedPlacesView)
+from .views import (
+    ApartmentByCondominiumView,
+    ApartmentOwnerView,
+    BulkApartmentCreateView,
+    BulkParkCreateView,
+    BulkSharedPlaceCreateView,
+    CitiesView,
+    CondominiumOwnerView,
+    FullAddressView,
+    ParkingView,
+    SharedPlacesView,
+)
 
 router = DefaultRouter()
 router.register(r"condominium", CondominiumOwnerView, "condominium")

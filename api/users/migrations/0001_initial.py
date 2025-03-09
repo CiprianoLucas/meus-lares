@@ -4,9 +4,10 @@ import uuid
 
 import django.contrib.auth.validators
 import django.utils.timezone
+from django.db import migrations, models
+
 import meus_lares.storages
 import soft_components.managers
-from django.db import migrations, models
 
 
 class Migration(migrations.Migration):

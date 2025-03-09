@@ -1,9 +1,10 @@
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
+
 from soft_components.serializers import softModelSerializer
 
-from .models import (CondoTenant, CondoTenantContract,
-                     PlaceReservation)
-from django.utils.translation import gettext_lazy as _
+from .models import CondoTenant, CondoTenantContract, PlaceReservation
+
 
 class CondoTenantSerializerList(softModelSerializer):
     user_details = serializers.SerializerMethodField()
@@ -23,14 +24,14 @@ class CondoTenantSerializerList(softModelSerializer):
         extra_kwargs = {
             "id": {"read_only": True},
             "apartment": {"write_only": True},
-            "user": {"write_only": True}
+            "user": {"write_only": True},
         }
 
     def get_user_details(self, obj: CondoTenant):
         user = obj.user
         result = {
             "full_name": user.full_name,
-            "self_photo": user.self_photo.url if user.self_photo else None
+            "self_photo": user.self_photo.url if user.self_photo else None,
         }
         return result
 
@@ -39,15 +40,15 @@ class CondoTenantSerializerList(softModelSerializer):
         result = {
             "id": apartment.id,
             "identifier": apartment.identifier,
-            "condominium_details": {
-                "name": apartment.condominium.name
-            }
+            "condominium_details": {"name": apartment.condominium.name},
         }
         return result
-    
+
+
 class CondoTenantSerializer(softModelSerializer):
     user_details = serializers.SerializerMethodField()
     apartment_details = serializers.SerializerMethodField()
+
     class Meta:
         model = CondoTenant
         fields = [
@@ -62,7 +63,7 @@ class CondoTenantSerializer(softModelSerializer):
         extra_kwargs = {
             "id": {"read_only": True},
             "apartment": {"write_only": True},
-            "user": {"write_only": True}
+            "user": {"write_only": True},
         }
 
     def get_user_details(self, obj: CondoTenant):
@@ -75,7 +76,7 @@ class CondoTenantSerializer(softModelSerializer):
             "email": user.email,
             "birth": user.birth,
             "verified_status": user.verified_status,
-            "self_photo": user.self_photo.url
+            "self_photo": user.self_photo.url,
         }
         return result
 
@@ -86,10 +87,11 @@ class CondoTenantSerializer(softModelSerializer):
             "identifier": apartment.identifier,
             "condominium_details": {
                 "name": apartment.condominium.name,
-                "id": apartment.condominium.id
-            }
+                "id": apartment.condominium.id,
+            },
         }
         return result
+
 
 class CondoTenantContractSerializer(softModelSerializer):
     class Meta:

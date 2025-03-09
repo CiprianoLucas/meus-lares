@@ -44,7 +44,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-09 14:14-0300\n"
+"POT-Creation-Date: 2025-03-09 16:10-0300\n"
 "PO-Revision-Date: 2024-08-07 06:49+0000\n"
 "Last-Translator: Eduardo Felipe Castegnaro <eduardo@onsign.tv>, 2024\n"
 "Language-Team: Portuguese (Brazil) (http://app.transifex.com/django/django/"
@@ -257,7 +257,7 @@ msgstr "Saída"
 msgid "Inspect"
 msgstr "Inspecionar"
 
-#: condo_files/models.py:30 relations/models.py:58 relations/models.py:70
+#: condo_files/models.py:30 relations/models.py:59 relations/models.py:71
 msgid "tenant"
 msgstr "inquilino"
 
@@ -383,11 +383,11 @@ msgid "guardian"
 msgstr "responsável"
 
 #: condo_requests/models.py:49 notifications/models.py:16 places/models.py:52
-#: places/models.py:76 places/models.py:92 relations/models.py:44
+#: places/models.py:77 places/models.py:94 relations/models.py:44
 msgid "condominium"
 msgstr "condomínio"
 
-#: condo_requests/models.py:53 places/models.py:80 relations/models.py:10
+#: condo_requests/models.py:53 places/models.py:81 relations/models.py:9
 msgid "apartment"
 msgstr "apartamento"
 
@@ -447,6 +447,19 @@ msgstr "agendamento"
 msgid "url"
 msgstr "url"
 
+#: notifications/models.py:41 relations/models.py:10 relations/models.py:45
+#: relations/models.py:94
+msgid "user"
+msgstr "usuário"
+
+#: notifications/models.py:42
+msgid "notification"
+msgstr "Notificação"
+
+#: notifications/models.py:43
+msgid "confirmed at"
+msgstr "confirmado em"
+
 #: notifications/models.py:46
 msgid "User notification"
 msgstr "Notificação do usuário"
@@ -455,7 +468,7 @@ msgstr "Notificação do usuário"
 msgid "User notifications"
 msgstr "Notificações dos usuários"
 
-#: places/admin.py:38 places/models.py:47
+#: places/admin.py:38 places/models.py:47 relations/admin.py:25
 msgid "Condominium"
 msgstr "Condomínio"
 
@@ -471,21 +484,25 @@ msgstr "Sem foto"
 msgid "Photo"
 msgstr "Foto"
 
-#: places/admin.py:57 places/models.py:71
+#: places/admin.py:57 places/models.py:72
 msgid "Apartment"
 msgstr "Apartamento"
 
-#: places/admin.py:58 places/models.py:72
+#: places/admin.py:58 places/models.py:73
 msgid "Apartments"
 msgstr "Apartamentos"
 
-#: places/admin.py:75 places/models.py:87 places/models.py:88
+#: places/admin.py:75 places/models.py:89 places/models.py:90
 msgid "Parking space"
 msgstr "Vaga de estacionamento"
 
 #: places/admin.py:76
 msgid "Parking spaces"
 msgstr "Vagas de estacionamento"
+
+#: places/apps.py:13
+msgid "Places"
+msgstr "Local"
 
 #: places/models.py:7
 msgid "acronym"
@@ -515,8 +532,8 @@ msgstr "rua"
 msgid "number"
 msgstr "número"
 
-#: places/models.py:31 places/models.py:58 places/models.py:78
-#: places/models.py:100
+#: places/models.py:31 places/models.py:58 places/models.py:79
+#: places/models.py:102
 msgid "complement"
 msgstr "complemento"
 
@@ -524,31 +541,35 @@ msgstr "complemento"
 msgid "profile photo"
 msgstr "foto de perfil"
 
-#: places/models.py:53 places/models.py:77 places/models.py:93
+#: places/models.py:53 places/models.py:78 places/models.py:95
 msgid "identifier"
 msgstr "identificador"
 
-#: places/models.py:94
+#: places/models.py:61 places/models.py:85 places/models.py:105
+msgid "in"
+msgstr "no(a)"
+
+#: places/models.py:96
 msgid "capacity"
 msgstr "capacidade"
 
-#: places/models.py:95
+#: places/models.py:97
 msgid "is reserveable"
 msgstr "é reservável"
 
-#: places/models.py:97
+#: places/models.py:99
 msgid "clean time"
 msgstr "tempo de limpeza"
 
-#: places/models.py:98
+#: places/models.py:100
 msgid "Cleaning time, in minutes"
 msgstr "Tempo de limpeza, em minutos"
 
-#: places/models.py:106
+#: places/models.py:109
 msgid "Shared space"
 msgstr "Espaço compartilhado"
 
-#: places/models.py:107
+#: places/models.py:110
 msgid "Shared spaces"
 msgstr "Espaços compartilhados"
 
@@ -560,7 +581,7 @@ msgstr "O condomínio não existe"
 msgid "There are active residents in this apartment"
 msgstr "Há moradores ativos neste apartamento"
 
-#: relations/admin.py:17 relations/models.py:53 relations/models.py:54
+#: relations/admin.py:17 relations/models.py:54 relations/models.py:55
 msgid "Condominium staff"
 msgstr "Equipe do condomínio"
 
@@ -568,19 +589,19 @@ msgstr "Equipe do condomínio"
 msgid "Condominium staffs"
 msgstr "Equipes do condomínio"
 
-#: relations/admin.py:38 relations/models.py:24
+#: relations/admin.py:45 relations/models.py:24
 msgid "Tenant"
 msgstr "Inquilino"
 
-#: relations/admin.py:39 relations/models.py:25
+#: relations/admin.py:46 relations/models.py:25
 msgid "Tenants"
 msgstr "Inquilinos"
 
-#: relations/admin.py:57 relations/models.py:76
+#: relations/admin.py:64 relations/models.py:77
 msgid "Space reservation"
 msgstr "Reserva de espaço"
 
-#: relations/admin.py:58
+#: relations/admin.py:65
 msgid "Space Reservations"
 msgstr "Reservas de espaço"
 
@@ -588,21 +609,21 @@ msgstr "Reservas de espaço"
 msgid "Relations"
 msgstr "Relações"
 
-#: relations/models.py:11 relations/models.py:45 relations/models.py:93
-msgid "user"
-msgstr "usuário"
-
-#: relations/models.py:12
+#: relations/models.py:11
 msgid "is responsible"
 msgstr "é responsável"
 
-#: relations/models.py:13
+#: relations/models.py:12
 msgid "is first contact"
 msgstr "é o primeiro contato"
 
-#: relations/models.py:14 relations/models.py:47
+#: relations/models.py:13 relations/models.py:47
 msgid "notes"
 msgstr "observações"
+
+#: relations/models.py:20 relations/models.py:50
+msgid "of"
+msgstr "do(a)"
 
 #: relations/models.py:37
 msgid "Owner"
@@ -628,71 +649,71 @@ msgstr "Zelador"
 msgid "Cleaner"
 msgstr "Faxineiro"
 
-#: relations/models.py:59
+#: relations/models.py:60
 msgid "start date"
 msgstr "data de início"
 
-#: relations/models.py:60
+#: relations/models.py:61
 msgid "end date"
 msgstr "data de término"
 
-#: relations/models.py:61
+#: relations/models.py:62
 msgid "terms"
 msgstr "termos"
 
-#: relations/models.py:64
+#: relations/models.py:65
 msgid "Contract"
 msgstr "Contrato"
 
-#: relations/models.py:65
+#: relations/models.py:66
 msgid "Contracts"
 msgstr "Contratos"
 
-#: relations/models.py:69
+#: relations/models.py:70
 msgid "place"
 msgstr "local"
 
-#: relations/models.py:71
+#: relations/models.py:72
 msgid "date"
 msgstr "data"
 
-#: relations/models.py:72
+#: relations/models.py:73
 msgid "start time"
 msgstr "hora de início"
 
-#: relations/models.py:73
+#: relations/models.py:74
 msgid "end time"
 msgstr "hora de término"
 
-#: relations/models.py:77
+#: relations/models.py:78
 msgid "Space reservations"
 msgstr "Reservas de espaço"
 
-#: relations/models.py:88 relations/serializers.py:127
+#: relations/models.py:89 relations/serializers.py:127
 msgid "This time is already booked"
 msgstr "Este horário já está reservado"
 
-#: relations/models.py:94
+#: relations/models.py:95
 msgid "plate"
 msgstr "placa"
 
-#: relations/models.py:95
+#: relations/models.py:96
 msgid "brand"
 msgstr "marca"
 
-#: relations/models.py:96
+#: relations/models.py:97
 msgid "model"
 msgstr "modelo"
 
-#: relations/models.py:97
+#: relations/models.py:98
 msgid "color"
 msgstr "cor"
 
-#: relations/models.py:103
+#: relations/models.py:104
 msgid "Car"
 msgstr "Carro"
 
-#: relations/models.py:104
+#: relations/models.py:105
 msgid "Cars"
 msgstr "Carros"
 
@@ -720,7 +741,11 @@ msgstr "histórico"
 msgid "User is not defined"
 msgstr "Usuário não definido"
 
-#: users/apps.py:11 users/models.py:183
+#: users/admin.py:11 users/models.py:182
+msgid "User"
+msgstr "Usuário"
+
+#: users/admin.py:12 users/apps.py:11 users/models.py:183
 msgid "Users"
 msgstr "Usuários"
 
@@ -779,10 +804,6 @@ msgstr "foto do verso do documento"
 #: users/models.py:78
 msgid "selfie with document photo"
 msgstr "selfie com foto do documento"
-
-#: users/models.py:182
-msgid "User"
-msgstr "Usuário"
 
 #: users/serializers.py:14
 msgid "Insert your full name"

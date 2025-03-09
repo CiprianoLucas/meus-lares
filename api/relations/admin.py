@@ -1,8 +1,14 @@
 from django.contrib import admin
-from relations.models import (CondoStaff, CondoTenant, CondoTenantContract,
-                              PlaceReservation)
-from soft_components import SoftAdmin, SoftInline
 from django.utils.translation import gettext_lazy as _
+
+from relations.models import (
+    CondoStaff,
+    CondoTenant,
+    CondoTenantContract,
+    PlaceReservation,
+)
+from soft_components import SoftAdmin, SoftInline
+
 
 class CondoTenantConstractsInline(SoftInline):
     model = CondoTenantContract
@@ -19,12 +25,18 @@ class CondoStaffAdmin(SoftAdmin):
 
 
 class CondoTenantAdmin(SoftAdmin):
+
+    def condominium(self, obj: CondoTenant):
+        return obj.apartment.condominium if obj.apartment else None
+
+    condominium.short_description = _("Condominium")
+
     list_display = (
         "id",
         "apartment",
         "user",
         "is_responsible",
-        "apartment__condominium",
+        "condominium",
     )
     list_filter = ("user", "is_responsible", "apartment__condominium")
     search_fields = (
@@ -32,6 +44,7 @@ class CondoTenantAdmin(SoftAdmin):
         "user__full_name",
         "apartment__condominium__name",
     )
+
     inlines = [CondoTenantConstractsInline]
 
     class Meta:

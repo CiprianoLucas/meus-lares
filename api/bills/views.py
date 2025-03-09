@@ -1,10 +1,14 @@
 from django.db.models import Q
 from rest_framework.decorators import api_view
+
 from soft_components.views import SoftModelsViewSet
 
 from .models import BreachPenalty, FinePenalty, RecurringFee
-from .serializers import (BreachPenaltySerializer, FinePenaltySerializer,
-                          RecurringFeeSerializer)
+from .serializers import (
+    BreachPenaltySerializer,
+    FinePenaltySerializer,
+    RecurringFeeSerializer,
+)
 
 
 class BreachPenaltyView(SoftModelsViewSet):

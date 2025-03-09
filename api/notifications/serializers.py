@@ -1,5 +1,6 @@
 from django.utils.timezone import localtime
 from rest_framework import serializers
+
 from soft_components.serializers import softModelSerializer
 
 from .models import Notification, UserNotification

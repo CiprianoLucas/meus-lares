@@ -3,9 +3,11 @@ from datetime import date
 
 from allauth.account.adapter import get_adapter
 from allauth.account.models import EmailAddress
-from rest_framework import serializers
-from soft_components.serializers import softModelSerializer
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+
+from soft_components.serializers import softModelSerializer
+
 from .models import User
 
 
@@ -36,7 +38,7 @@ def validate_cpf(cpf: str):
     inteiros = list(map(int, cpf))
     novo = inteiros[:9]
 
-    for _ in range(2):
+    for not_use in range(2):
         r = sum([(len(novo) + 1 - i) * v for i, v in enumerate(novo)]) % 11
         f = 11 - r if r > 1 else 0
 
@@ -52,9 +54,9 @@ def validate_birth(birth: str):
     day, month, year = map(int, birth.split("/"))
     formatted_date = date(year, month, day)
     if formatted_date >= date.today():
-        raise serializers.ValidationError(_(
-            "Date of birth must be before the current year"
-        ))
+        raise serializers.ValidationError(
+            _("Date of birth must be before the current year")
+        )
 
     return formatted_date
 
@@ -120,9 +122,9 @@ class UserSerializer(softModelSerializer):
             ]
             for key in data.keys()
         ):
-            raise serializers.ValidationError(_(
-                "Cannot change validated identity data"
-            ))
+            raise serializers.ValidationError(
+                _("Cannot change validated identity data")
+            )
 
         super().update(instance, data)
 

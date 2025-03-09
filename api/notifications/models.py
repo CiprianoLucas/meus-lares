@@ -1,9 +1,10 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+
 from meus_lares.storages import PublicMediaStorage
 from places.models import Condominium
 from soft_components import SoftModel
 from users.models import User
-from django.utils.translation import gettext_lazy as _
 
 
 class Notification(SoftModel):
@@ -38,9 +39,11 @@ class Notification(SoftModel):
 
 
 class UserNotification(models.Model):
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    notification = models.ForeignKey(Notification, on_delete=models.DO_NOTHING)
-    confirmed_at = models.DateTimeField(null=True, blank=True)
+    user = models.ForeignKey(User, verbose_name=_("user"), on_delete=models.DO_NOTHING)
+    notification = models.ForeignKey(
+        Notification, verbose_name=_("notification"), on_delete=models.DO_NOTHING
+    )
+    confirmed_at = models.DateTimeField(_("confirmed at"), null=True, blank=True)
 
     class Meta:
         verbose_name = _("User notification")

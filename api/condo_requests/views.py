@@ -1,5 +1,6 @@
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
+
 from soft_components.views import SoftModelsViewSet
 
 from .models import CondoRequest

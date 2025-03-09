@@ -1,5 +1,6 @@
-from condo_files.models import RequestFiles
 from rest_framework import serializers
+
+from condo_files.models import RequestFiles
 from soft_components.serializers import softModelSerializer
 
 from .models import CondoRequest
