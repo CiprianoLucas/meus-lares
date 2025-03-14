@@ -7,7 +7,7 @@ authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.11"
 annotated-types = "0.7.0"
 anyio = "4.4.0"
 asgiref = "3.8.1"

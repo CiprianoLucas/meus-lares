@@ -5,12 +5,13 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { createApp } from 'vue'
 import App from '@/App.vue'
 import router from '@/router'
-import { Tooltip } from 'bootstrap'
+import i18n from '@/i18n'
 
-const pinea = createPinia()
-pinea.use(piniaPluginPersistedstate)
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
 
 const app = createApp(App)
-app.use(pinea)
+app.use(pinia)
 app.use(router)
+app.use(i18n)
 app.mount('#app')

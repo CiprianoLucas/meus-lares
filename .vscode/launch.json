@@ -9,6 +9,7 @@
                 "runserver", "9000"
             ],
             "django": true,
+            "justMyCode": true,  
             "autoStartBrowser": false,
             "program": "${workspaceFolder}/api/manage.py",
             "env": {

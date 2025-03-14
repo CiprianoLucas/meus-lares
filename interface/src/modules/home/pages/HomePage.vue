@@ -1,8 +1,8 @@
 <template>
     <div class="container mt-5">
-        <h1 class="text-center">Bem-vindo ao Sistema de Gestão de Condomínios</h1>
+        <h1 class="text-center">{{ $t("homepage_title") }}</h1>
         <p class="text-center">
-            Gerencie seus chamados de manutenção e reclamação de forma simples e eficiente.
+            {{ $t("homepage_description") }}
         </p>
     </div>
 </template>

@@ -69,6 +69,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+    "meus_lares.middleware.HeaderLanguageMiddleware",
 ]
 
 
@@ -133,6 +135,7 @@ APPEND_SLASH = False
 USE_I18N = True
 
 USE_TZ = True
+
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
