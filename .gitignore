@@ -12,6 +12,7 @@ venv/
 *.venv
 api/.gcloud/*
 !api/.gcloud/credencial.md
+*ed25519
 
 # Python
 __pycache__
