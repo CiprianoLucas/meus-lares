@@ -7,7 +7,6 @@ set +a
 
 # Carregar credenciais
 export SSH_PRIVATE_KEY="$(cat id_ed25519)"
-export GCLOUD_CREDENCIAL="$(cat api/$GOOGLE_APPLICATION_CREDENTIALS)"
 
 # Criar a instância no Google Cloud
 gcloud compute instances create $INSTANCE_NAME \
@@ -24,10 +23,13 @@ gcloud compute instances create $INSTANCE_NAME \
         sudo -u app bash -c \"
             # Configuração SSH para clonar repositório privado
             mkdir -p /home/app/.ssh
-            echo \"$SSH_PRIVATE_KEY\" | tee /home/app/.ssh/id_ed25519 > /dev/null
+            chmod 700 /home/app/.ssh
+            echo -e \"$SSH_PRIVATE_KEY\" | tr -d \"\r\" > /home/app/.ssh/id_ed25519
             chmod 600 /home/app/.ssh/id_ed25519
-            echo -e \"Host github.com\n    IdentityFile /home/app/.ssh/id_ed25519\n    StrictHostKeyChecking no\" | tee /home/app/.ssh/config > /dev/null
+            echo -e \"Host github.com\n    IdentityFile /home/app/.ssh/id_ed25519\n    StrictHostKeyChecking no\" > /home/app/.ssh/config
             chmod 600 /home/app/.ssh/config
+            eval \"\$(ssh-agent -s)\"
+            ssh-add /home/app/.ssh/id_ed25519
 
             # Clonar repositório
             git clone git@github.com:CiprianoLucas/meus-lares.git /home/app/meus-lares
@@ -78,7 +80,6 @@ gcloud compute instances create $INSTANCE_NAME \
             # Docker
             IS_DOCKER=$IS_DOCKER
 EOF
-            echo '$GCLOUD_CREDENCIAL' | tee /home/app/meus-lares/api/$GOOGLE_APPLICATION_CREDENTIALS > /dev/null
         \"
 
         # Criar serviço systemd para rodar Django com Gunicorn
@@ -107,7 +108,7 @@ EOF
         sudo tee /etc/nginx/sites-available/meus-lares > /dev/null <<EOF
         server {
             listen 80;
-            server_name $URL_BACK;
+            server_name $HOST_BACK;
 
             return 301 https://\$host\$request_uri;
 
@@ -136,7 +137,7 @@ EOF
         sudo systemctl restart nginx
 
         # Configurar HTTPS com Let's Encrypt
-        sudo certbot --nginx --non-interactive --agree-tos --redirect -d $URL_BACK -m $EMAIL_HOST_USER
+        sudo certbot --nginx --non-interactive --agree-tos --redirect -d $HOST_BACK -m $EMAIL_HOST_USER
         sudo systemctl restart nginx
     " \
     --maintenance-policy=MIGRATE \
