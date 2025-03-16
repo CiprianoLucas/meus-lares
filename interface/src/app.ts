@@ -3,6 +3,7 @@ import { popup, resumeErrors } from '@/components/PopUps'
 import { api } from '@/http'
 import { ref, onMounted, watch, onBeforeMount } from 'vue'
 import { loagingPageStore } from './components/template/Loading/stores'
+import { delay } from './components/handlers'
 
 const app = {
     api: api,
@@ -15,6 +16,7 @@ const app = {
     onBeforeMount: onBeforeMount,
     popup: popup,
     resumeErrors: resumeErrors,
-    watch: watch
+    watch: watch,
+    delay: delay
 }
 export default app

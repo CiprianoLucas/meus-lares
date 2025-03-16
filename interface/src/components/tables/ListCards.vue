@@ -17,13 +17,13 @@
         </div>
     </form>
     <div>
-        <div v-if="listData.length === 0" class="alert alert-light text-center">
-            Nenhum registro encontrado.
-        </div>
-        <div v-else-if="loading" class="d-flex justify-content-center m-3">
+        <div v-if="loading" class="alert alert-light text-center">
             <div class="spinner-border text-secondary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
+        </div>
+        <div v-else-if="listData.length === 0" class="d-flex justify-content-center m-3">
+            Nenhum registro encontrado.
         </div>
         <div v-else class="row">
             <div v-for="(item, i) in listData" :key="i" class="col-12 col-md-6 col-xl-4">

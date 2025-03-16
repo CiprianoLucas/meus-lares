@@ -1,5 +1,11 @@
 {
     "version": "0.2.0",
+    "compounds": [
+        {
+            "name": "Run Django + Vite",
+            "configurations": ["Python Debugger: Django", "Run Vite Dev"]
+        }
+    ],
     "configurations": [
         {
             "name": "Python Debugger: Django",
@@ -16,6 +22,16 @@
                 "PYTHONPATH": "${workspaceFolder}/.env"
             },
             "python": "${workspaceFolder}/api/venv/bin/python"
+        },
+        {
+            "name": "Run Vite Dev",
+            "type": "node-terminal",
+            "request": "launch",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/.env"
+            },
+            "command": "[ -n \"$URL_BACK\" ] && echo \"VITE_API_URL=$URL_BACK\" > .env.development; [ -n \"$GOOGLE_CLIENT_ID\" ] && echo \"VITE_GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID\" >> .env.development; npm run dev",
+            "cwd": "${workspaceFolder}/interface"
         }
     ]
 }

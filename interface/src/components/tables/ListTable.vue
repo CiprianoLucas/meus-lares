@@ -12,13 +12,13 @@
                 </button>
             </div>
         </form>
-        <div v-if="listData.length === 0" class="alert alert-light text-center">
-            Nenhum registro encontrado.
-        </div>
-        <div v-else-if="loading" class="d-flex justify-content-center m-3">
+        <div v-if="loading" class="alert alert-light text-center">
             <div class="spinner-border text-secondary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
+        </div>
+        <div v-else-if="listData.length === 0" class="d-flex justify-content-center m-3">
+            Nenhum registro encontrado.
         </div>
         <div v-else class="table-responsive">
             <table class="table table-striped">
@@ -153,7 +153,6 @@ onMounted(() => {
 function updateTable(force: boolean = false) {
     loading.value = true
     let query = ""
-
     if (props.url.includes('?')) {
         query = `&page=${page.value}`
     } else {
