@@ -181,6 +181,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+GOOGLE_APPLICATION_CREDENTIALS = env("GOOGLE_APPLICATION_CREDENTIALS", default=None)
 
 GS_DEFAULT_ACL = None
 
@@ -201,12 +202,12 @@ if ENV == "production":
     CORS_ALLOWED_ORIGINS = [URL_FRONT, URL_BACK]
     CORS_ORIGIN_WHITELIST = [URL_FRONT, URL_BACK]
 
-    GOOGLE_APPLICATION_CREDENTIALS = env("GOOGLE_APPLICATION_CREDENTIALS", default=None)
+    GOOGLE_APPLICATION_CREDENTIALS = env("GOOGLE_APPLICATION_CREDENTIALS")
 
     GOOGLE_CLOUD_PROJECT_ID = env("GOOGLE_CLOUD_PROJECT_ID")
     GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-        os.path.join(BASE_DIR, ".gcloud", env("GOOGLE_APPLICATION_CREDENTIALS"))
-    ) if GOOGLE_APPLICATION_CREDENTIALS else None
+        os.path.join(BASE_DIR, ".gcloud", GOOGLE_APPLICATION_CREDENTIALS)
+    )
 
     GS_BUCKET_MEDIA = env("GS_BUCKET_MEDIA")
     GS_BUCKET_STATIC = env("GS_BUCKET_STATIC")
