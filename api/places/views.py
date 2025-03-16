@@ -217,7 +217,7 @@ class CitiesView(APIView):
     pagination_class = CitiesStatesPagination
 
     def get(self, request, uf: str):
-        cities = City.objects.filter(state__acronym=uf)
+        cities = City.objects.filter(state__acronym=uf).select_related("state")
         paginator = self.pagination_class()
         paginated_cities = paginator.paginate_queryset(cities, request, view=self)
         serializer = self.serializer_class(paginated_cities, many=True)

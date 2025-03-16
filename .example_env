@@ -1,5 +1,12 @@
+#Machine
+STATIC_IP=0.0.0.0
+ZONE=us-east1-b
+MACHINE_TYPE=e2-micro
+INSTANCE_NAME=meus-lares
+N_WORKERS=1
 # Django
 ENV=develop
+HOST_BACK=localhost:9000
 URL_BACK=http://localhost:9000
 URL_FRONT=http://localhost:9001
 SECRET_KEY=my_secret_key

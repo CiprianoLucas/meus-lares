@@ -16,7 +16,7 @@ class State(models.Model):
 class City(models.Model):
     name = models.CharField(_("name"), max_length=50)
     state = models.ForeignKey(
-        State, verbose_name=_("state"), on_delete=models.CASCADE, to_field="acronym"
+        State, verbose_name=_("state"), on_delete=models.CASCADE, to_field="acronym", db_index=True
     )
 
     def __str__(self):

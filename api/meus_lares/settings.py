@@ -20,7 +20,13 @@ from google.oauth2 import service_account
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR.parent, ".env"))
+
+env_path = BASE_DIR / ".env"
+
+if env_path.exists():
+    env.read_env(env_path)
+else:
+    env_path = BASE_DIR.parent / ".env"
 
 IS_DOCKER = env("IS_DOCKER") == "True"
 

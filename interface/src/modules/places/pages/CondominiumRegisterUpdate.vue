@@ -50,25 +50,42 @@ app.watch(
 )
 
 async function updateCities(uf: string = '') {
-    app.loading(true, 'Buscando cidades...')
-    const { result } = (await app.api.getListCashed('/place/cities/' + uf)) as {
-        result: [{ id: number; name: string; state: string }]
-    }
-    const options = result.map((item) => ({ value: item.id, label: item.name }))
-    const cityInput = inputs.value.find((input) => input.reference === 'city')
+    app.loading(true, 'Buscando endereço...')
+    app.api
+        .getListCashed<{ id: number; name: string; state: string }[]>('/place/cities/' + uf)
+        .then(({ result }) => {
+            const options = result.map((item) => ({ value: item.id, label: item.name }))
+            const cityInput = inputs.value.find((input) => input.reference === 'city')
+            if (cityInput && cityInput.options) {
+                cityInput.options = options
+            }
+        })
+        .catch((error) => {
+            app.popup('Erro!', app.resumeErrors(error, "Cidades não foram atualizadas"), 'warning')
+        })
+        .finally(() => {
+            app.loading(false)
+        })
     app.loading(false)
-    if (cityInput && cityInput.options) {
-        cityInput.options = options
-    }
 }
 
 async function verifyCep(cep: string = '') {
     if (cep.length === 9) {
-        const { data } = await app.api.get('/place/cep/' + cep)
-        condominiumForm.value.city = data.city
-        condominiumForm.value.state = data.state
-        condominiumForm.value.neighborhood = data.neighborhood
-        condominiumForm.value.street = data.street
+        app.loading(true, 'Buscando endereço...')
+        app.api
+            .get('/place/cep/' + cep)
+            .then(({ data }) => {
+                condominiumForm.value.city = data.city
+                condominiumForm.value.state = data.state
+                condominiumForm.value.neighborhood = data.neighborhood
+                condominiumForm.value.street = data.street
+            })
+            .catch((error) => {
+                app.popup('Erro!', app.resumeErrors(error, "CEP não encontrado"), 'warning')
+            })
+            .finally(() => {
+                app.loading(false)
+            })
     }
 }
 

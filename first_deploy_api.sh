@@ -7,8 +7,7 @@ set +a
 
 # Carregar credenciais
 export SSH_PRIVATE_KEY="$(cat id_ed25519)"
-export GCP_CREDENCIALS="$(cat ./api/.gcloud/$GOOGLE_APPLICATION_CREDENTIALS)"
-exit
+
 # Criar a instância no Google Cloud
 gcloud compute instances create $INSTANCE_NAME \
 --project=meus-lares \
@@ -18,8 +17,7 @@ gcloud compute instances create $INSTANCE_NAME \
 --metadata=startup-script="#! /bin/bash
 sudo su
 apt update && apt install -y python3 python3-venv python3-pip git nginx certbot python3-certbot-nginx
-pip3 install gunicorn
-mkdir -p /home/app
+sudo adduser --disabled-password --gecos "" novo_usuario
 
 # Configuração SSH para clonar repositório privado
 mkdir -p /root/.ssh
@@ -35,6 +33,7 @@ ssh-add /root/.ssh/id_ed25519
 git clone git@github.com:CiprianoLucas/meus-lares.git /home/app/meus-lares
 cd /home/app/meus-lares
 git checkout -b develop origin/develop
+sudo chown -R app:app /home/app
 
 # Criar arquivo .env com variáveis de ambiente
 
@@ -58,6 +57,7 @@ GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
 INTERFACE_PORT=$INTERFACE_PORT
 
 # GOOGLE
+GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS
 GOOGLE_CLOUD_PROJECT_ID=$GOOGLE_CLOUD_PROJECT_ID
 GS_BUCKET_MEDIA=$GS_BUCKET_MEDIA
 GS_BUCKET_STATIC=$GS_BUCKET_STATIC
@@ -72,9 +72,6 @@ EMAIL_HOST_PASSWORD=$EMAIL_HOST_PASSWORD
 
 # Docker
 IS_DOCKER=$IS_DOCKER
-EOF
-tee /home/app/meus-lares/api/.gcloud/$GOOGLE_APPLICATION_CREDENTIALS > /dev/null <<EOF
-echo $(echo $GCP_CREDENCIALS | sed 's/"/\\"/g')
 EOF
 
 cd api
@@ -94,7 +91,7 @@ User=root
 Group=root
 WorkingDirectory=/home/app/meus-lares/api
 EnvironmentFile=/home/app/meus-lares/.env
-ExecStart=/home/app/meus-lares/api/venv/bin/gunicorn --workers 3 --bind unix:/home/app/meus-lares/api/meus_lares.sock meus_lares.wsgi:application
+ExecStart=/home/app/meus-lares/api/venv/bin/gunicorn --workers $N_WORKERS --bind 0.0.0.0:9000 meus_lares.wsgi:application
 
 [Install]
 WantedBy=multi-user.target
@@ -110,8 +107,8 @@ tee /etc/nginx/sites-available/meus-lares > /dev/null <<EOF
 server {
 listen 80;
 server_name $HOST_BACK;
-return 301 https://\\\$host\\\$request_uri;
 location / {
+include proxy_params;
 proxy_pass http://127.0.0.1:$API_PORT;
 }
 }
@@ -122,6 +119,29 @@ systemctl restart nginx
 
 # Configurar HTTPS com Let's Encrypt
 certbot --nginx --non-interactive --agree-tos --redirect -d $HOST_BACK -m $EMAIL_HOST_USER
+
+tee /etc/nginx/sites-available/meus-lares > /dev/null <<EOF                                                               
+server {
+listen 80;
+server_name $HOST_BACK;
+return 301 https://\\\$host\\\$request_uri;
+}
+server {
+listen 443 ssl;
+server_name $HOST_BACK;
+
+ssl_certificate /etc/letsencrypt/live/$HOST_BACK/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/$HOST_BACK/privkey.pem;
+include /etc/letsencrypt/options-ssl-nginx.conf;
+ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+location / {
+include proxy_params;
+proxy_pass http://127.0.0.1:$API_PORT;
+}
+}
+EOF
+
 systemctl restart nginx
 " \
 --maintenance-policy=MIGRATE \
@@ -135,3 +155,6 @@ systemctl restart nginx
 --shielded-integrity-monitoring \
 --labels=goog-ec-src=vm_add-gcloud \
 --reservation-affinity=any
+
+sleep 600
+gcloud compute scp api/.gcloud/$GOOGLE_APPLICATION_CREDENTIALS app@meus-lares:/home/app/meus-lares/api/.gcloud

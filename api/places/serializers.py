@@ -212,7 +212,7 @@ class BulkSharedPlacesCreateSerializer(serializers.Serializer):
 
 
 class CitySerializer(serializers.ModelSerializer):
-    state = serializers.SerializerMethodField()
+    state = serializers.CharField(source="state.acronym", read_only=True)
 
     class Meta:
         model = City
