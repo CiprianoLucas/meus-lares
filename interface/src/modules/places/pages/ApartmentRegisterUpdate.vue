@@ -223,6 +223,7 @@ app.onMounted(async () => {
 })
 
 async function getApartmentValues() {
+    app.loading(true, "Buscando informações...")
     app.api
         .get(`/place/apartment/${apartmentId.value}/`)
         .then(({ data }) => {
@@ -230,6 +231,10 @@ async function getApartmentValues() {
         })
         .catch(() => {
             app.popup('Erro!', 'Falha ao obter informações do condomínio', 'warning')
+            router.go(-1)
+        })
+        .finally(()=>{
+            app.loading(false)
         })
 }
 </script>

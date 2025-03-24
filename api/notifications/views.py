@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.views import APIView
-
+from django.db.models import Prefetch
 from soft_components.views import SoftModelsViewSet
 
 from .models import Notification, UserNotification
@@ -22,16 +22,27 @@ class NotificationView(SoftModelsViewSet):
     def get_queryset(self):
         user = self.request.user
         now = timezone.now()
+        user_notification = UserNotification.objects.filter(user=user)
 
         notifications = Notification.objects.filter(
             Q(schedule__lt=now)
-            & Q(
-                Q(usernotification__user=user)
-                | Q(condominium__apartment__condotenant__user=user)
+            & (
+                (
+                    Q(usernotification__only_confirm=False)
+                    & Q(usernotification__user=user)
+                )
+                | (
+                    Q(usernotification__isnull=True) &
+                    Q(condominium__apartment__condotenant__user=user)
+                )
             )
-        ).distinct()
-
-        print(notifications)
+        ).prefetch_related(
+            Prefetch(
+                "usernotification_set",
+                queryset=user_notification,
+                to_attr="user_notification",
+            )
+        )
 
         return notifications
 

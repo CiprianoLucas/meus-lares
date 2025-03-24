@@ -1,5 +1,5 @@
 <template>
-    <div v-if="apartment.id">
+    <div>
         <div
             class="border-bottom d-flex flex-column justify-content-center align-items-center py-2"
         >
@@ -62,14 +62,6 @@
             </button>
         </div>
     </div>
-    <div v-else>
-        <div class="d-flex justify-content-center border-bottom px-4 py-3">
-            <p class="text-center">Falha ao obter informações do condominio.</p>
-        </div>
-        <div class="d-flex justify-content-center border-bottom px-4 py-3">
-            <button @click="goBack" class="btn btn-secondary py-1">Voltar</button>
-        </div>
-    </div>
 </template>
 
 <script lang="ts" setup>
@@ -79,11 +71,13 @@ import { useRouter } from 'vue-router'
 import type { Tenant } from '@/modules/tenant/interfaces'
 import ListCards from '@/components/tables/ListCards.vue'
 import ListTable from '@/components/tables/ListTable.vue'
+import { delay } from '@/components/handlers'
 
 const router = useRouter()
 const apartmentId = app.ref<string>(app.routeParam('id').toString())
 const apartment = app.ref<Apartment>({})
 const tenantsHistory = app.ref<Tenant[]>()
+const loadingTenants = app.ref(false)
 
 const headersTenants = app.ref({
     is_renter: 'Locador:',
@@ -104,10 +98,7 @@ const paramPathPark = app.ref({
 })
 
 app.onMounted(async () => {
-    app.loading(true)
     await getApartmentValues()
-    await getTenants()
-    app.loading(false)
 })
 
 function deleteApartment() {
@@ -144,11 +135,8 @@ function onOffApartment() {
         })
 }
 
-function goBack() {
-    router.go(-1)
-}
-
 async function getApartmentValues() {
+    app.loading(true)
     app.api
         .get(`/place/apartment/${apartmentId.value}/`)
         .then(({ data }) => {
@@ -156,17 +144,10 @@ async function getApartmentValues() {
         })
         .catch(() => {
             app.popup('Erro!', 'Falha ao obter informações do condomínio', 'warning')
+            router.go(-1)
         })
-}
-
-async function getTenants() {
-    app.api
-        .getListCashed<Tenant[]>('/relation/tenant/?apartment=' + apartmentId.value)
-        .then(({ result }) => {
-            tenantsHistory.value = result
-        })
-        .catch(() => {
-            app.popup('Erro!', 'Falha ao obter informações do condomínio', 'warning')
+        .finally(()=>{
+            app.loading(false)
         })
 }
 </script>

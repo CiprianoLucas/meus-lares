@@ -44,6 +44,7 @@ class UserNotification(models.Model):
         Notification, verbose_name=_("notification"), on_delete=models.DO_NOTHING
     )
     confirmed_at = models.DateTimeField(_("confirmed at"), null=True, blank=True)
+    only_confirm = models.BooleanField(_("only confirm"), default=True, db_index=True)
 
     class Meta:
         verbose_name = _("User notification")

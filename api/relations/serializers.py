@@ -76,7 +76,7 @@ class CondoTenantSerializer(softModelSerializer):
             "email": user.email,
             "birth": user.birth,
             "verified_status": user.verified_status,
-            "self_photo": user.self_photo.url,
+            "self_photo": user.self_photo.url if user.self_photo else None,
         }
         return result
 

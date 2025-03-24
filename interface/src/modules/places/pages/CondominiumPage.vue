@@ -1,5 +1,5 @@
 <template>
-    <div v-if="condominium.id">
+    <div>
         <div
             class="border-bottom d-flex flex-column justify-content-center align-items-center py-2"
         >
@@ -42,14 +42,6 @@
         </div>
         <div class="d-flex justify-content-center border-bottom px-4 pt-2 pb-5">
             <button class="btn btn-danger py-1">Excluir</button>
-        </div>
-    </div>
-    <div v-else>
-        <div class="d-flex justify-content-center border-bottom px-4 py-3">
-            <p class="text-center">Falha ao obter informações do condominio.</p>
-        </div>
-        <div class="d-flex justify-content-center border-bottom px-4 py-3">
-            <button @click="goBack" class="btn btn-secondary py-1">Voltar</button>
         </div>
     </div>
 </template>
@@ -114,6 +106,7 @@ async function getCondominiumValues() {
         })
         .catch(() => {
             app.popup('Erro!', 'Falha ao obter informações do condomínio', 'warning')
+            router.go(-1)
         })
         .finally(() => {
             app.loading(false)

@@ -251,6 +251,7 @@ async function getApartments() {
 }
 
 async function getParkValues() {
+    app.loading(true, "Buscando informações...")
     app.api
         .get(`/place/park/${parkId.value}/`)
         .then(({ data }) => {
@@ -258,6 +259,10 @@ async function getParkValues() {
         })
         .catch(() => {
             app.popup('Erro!', 'Falha ao obter informações do condomínio', 'warning')
+            router.go(-1)
+        })
+        .finally(()=>{
+            app.loading(false)
         })
 }
 </script>

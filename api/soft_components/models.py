@@ -6,15 +6,22 @@ from django.db.models.fields.files import FileField, ImageField
 from django.db.models.fields.related import ForeignKey
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from enum import Enum
 
 from .managers import SoftManager
 
-
+class SoftChoices(str, Enum):
+    
+    @classmethod
+    def choices(cls):
+        choices = [(role.name.lower(), role.value) for role in list(cls)]
+        return choices
+    
 class SoftModel(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    is_deleted = models.BooleanField(_("is deleted"), default=False)
-    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
-    is_active = models.BooleanField(_("is active"), default=True)
+    is_deleted = models.BooleanField(_("is deleted"), default=False, db_index=True)
+    is_active = models.BooleanField(_("is active"), default=True, db_index=True)
+    created_at = models.DateTimeField(_("created at"), auto_now_add=True, db_index=True)
     history = models.JSONField(_("history"), default=list, blank=True)
     objects = SoftManager()
 

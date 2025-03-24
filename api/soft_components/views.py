@@ -16,6 +16,11 @@ class SoftModelsViewSet(viewsets.ModelViewSet):
     search: list = []
     sort: dict = {}
     request: Request
+    permission_route : str = None
+    permission_get_role : list[str] = ['owner']
+    permission_update_role : list[str] = ['owner']
+    permission_create_role : list[str] = ['owner']
+    permission_delete_role : list[str] = ['owner']
 
     def perform_destroy(self, instance):
         instance.delete(user=self.request.user)

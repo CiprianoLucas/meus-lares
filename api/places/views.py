@@ -39,7 +39,7 @@ class CondominiumOwnerView(SoftModelsViewSet):
         user = self.request.user
         condominiums = Condominium.objects.filter(
             condostaff__user=user, condostaff__role="owner"
-        ).distinct()
+        ).select_related("city__state")
 
         condominiums = self.search_sort(condominiums)
 
@@ -59,10 +59,12 @@ class ApartmentOwnerView(SoftModelsViewSet):
     def get_queryset(self):
         user = self.request.user
 
-        apartments = Apartment.objects.filter(
-            condominium__condostaff__user=user,
-            condominium__condostaff__role__in=["owner"],
-        ).distinct()
+        apartments = (
+            Apartment.objects.filter(
+                condominium__condostaff__user=user,
+                condominium__condostaff__role__in=["owner"],
+            )
+        )
 
         query_params = self.request.query_params
         condominium_id = query_params.get("condominium")
@@ -105,7 +107,7 @@ class ApartmentByCondominiumView(APIView):
             condominium__condostaff__user=user,
             condominium__condostaff__role__in=["owner"],
             condominium__id=condominium_id,
-        ).distinct()
+        )
 
         results = [
             {"id": apartment.id, "identifier": apartment.identifier}
@@ -146,8 +148,9 @@ class ParkingView(SoftModelsViewSet):
         user = self.request.user
 
         parks = ParkingSpace.objects.filter(
-            condominium__condostaff__user=user, condominium__condostaff__role="owner"
-        ).distinct()
+            condominium__condostaff__user=user,
+            condominium__condostaff__role="owner",
+        ).select_related("apartment")
 
         query_params = self.request.query_params
         condominium_id = query_params.get("condominium")
@@ -183,8 +186,9 @@ class SharedPlacesView(SoftModelsViewSet):
         user = self.request.user
 
         places = SharedPlaces.objects.filter(
-            condominium__condostaff__user=user, condominium__condostaff__role="owner"
-        ).distinct()
+            condominium__condostaff__user=user,
+            condominium__condostaff__role="owner",
+        )
 
         condominium_id = self.request.query_params.get("condominium")
         if condominium_id:

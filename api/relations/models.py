@@ -3,8 +3,17 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from places.models import Apartment, Condominium, SharedPlaces
-from soft_components import SoftModel
+from soft_components.models import SoftModel, SoftChoices
 from users.models import User
+
+
+class StaffRoleChoices(SoftChoices):
+    OWNER = _("Owner")
+    MANAGER = _("Manager")
+    VIGILANT = _("Vigilant")
+    DOORMAN = _("Doorman")
+    CARETAKER = _("Caretaker")
+    CLEANER = _("Cleaner")
 
 
 class CondoTenant(SoftModel):
@@ -37,19 +46,14 @@ class CondoTenant(SoftModel):
 
 
 class CondoStaff(SoftModel):
-    ROLE_CHOICES = [
-        ("owner", _("Owner")),
-        ("manager", _("Manager")),
-        ("vigilant", _("Vigilant")),
-        ("doorman", _("Doorman")),
-        ("caretaker", _("Caretaker")),
-        ("cleaner", _("Cleaner")),
-    ]
+
     condominium = models.ForeignKey(
         Condominium, verbose_name=_("condominium"), on_delete=models.DO_NOTHING
     )
     user = models.ForeignKey(User, verbose_name=_("user"), on_delete=models.DO_NOTHING)
-    role = models.CharField(_("role"), max_length=10, choices=ROLE_CHOICES)
+    role = models.CharField(
+        _("role"), max_length=10, choices=StaffRoleChoices.choices(), db_index=True
+    )
     notes = models.TextField(_("notes"), blank=True, null=True)
 
     def __str__(self):

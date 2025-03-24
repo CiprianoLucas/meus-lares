@@ -26,9 +26,9 @@ class NotificationSerializer(softModelSerializer):
         }
 
     def get_confirmed_at(self, obj: Notification):
-        user_notification = UserNotification.objects.filter(notification=obj).first()
+        user_notification = obj.user_notification[0] if obj.user_notification else None
         return (
             localtime(user_notification.confirmed_at).isoformat()
-            if getattr(user_notification, "confirmed_at")
+            if user_notification and user_notification.confirmed_at
             else None
         )

@@ -284,6 +284,7 @@ app.onMounted(async () => {
 })
 
 async function getSharedPlaceValues() {
+    app.loading(true, 'Buscando informações...')
     app.api
         .get(`/place/shared/${sharedId.value}/`)
         .then(({ data }) => {
@@ -291,6 +292,10 @@ async function getSharedPlaceValues() {
         })
         .catch(() => {
             app.popup('Erro!', 'Falha ao obter informações do condomínio', 'warning')
+            router.go(-1)
+        })
+        .finally(() => {
+            app.loading(false)
         })
 }
 </script>

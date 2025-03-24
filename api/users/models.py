@@ -37,7 +37,7 @@ class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     cpf = models.CharField(_("document number"), max_length=11)
     nick = models.CharField(_("nick"), max_length=25)
-    email = models.EmailField(_("e-mail"))
+    email = models.EmailField(_("e-mail"), unique=True)
     phone_number = models.CharField(_("phone number"), max_length=15)
     full_name = models.CharField(_("full name"), max_length=255)
     birth = models.DateField(_("birth"))
@@ -82,9 +82,9 @@ class User(AbstractUser):
         null=True,
         storage=PrivateMediaStorage(),
     )
-    is_deleted = models.BooleanField(_("is deleted"), default=False)
+    is_deleted = models.BooleanField(_("is deleted"), default=False, db_index=True)
     history = models.JSONField(_("history"), default=list, blank=True)
-    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
+    created_at = models.DateTimeField(_("created at"), auto_now_add=True, db_index=True)
     objects = SoftUserManager()
 
     def clean(self):

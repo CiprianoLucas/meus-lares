@@ -120,7 +120,7 @@ class ParkingSerializer(softModelSerializer):
         extra_kwargs = {
             "id": {"read_only": True},
             "complement": {"required": False, "allow_null": True},
-            "condominium": {"required": False, "allow_null": True},
+            "condominium": {"required": False, "write_only": True, "allow_null": True},
             "apartment": {"required": False, "allow_null": True},
             "apartment_identifier": {"read_only": True},
         }
@@ -174,7 +174,7 @@ class SharedPlacesSerializer(softModelSerializer):
         extra_kwargs = {
             "id": {"read_only": True},
             "complement": {"required": False, "allow_null": True},
-            "condominium": {"required": False, "allow_null": True},
+            "condominium": {"required": False, "write_only": True, "allow_null": True},
             "is_reserveable": {"required": False, "allow_null": True},
             "clean_time": {"required": False, "allow_null": True},
             "capacity": {"required": False, "allow_null": True},

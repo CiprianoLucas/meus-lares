@@ -21,7 +21,7 @@ class CondoTenantView(SoftModelsViewSet):
         relations = CondoTenant.objects.filter(
             apartment__condominium__condostaff__user=user,
             apartment__condominium__condostaff__role="owner",
-        ).distinct()
+        ).select_related("apartment__condominium", "user")
 
         query_params = self.request.query_params
         apartment_id = query_params.get("apartment")

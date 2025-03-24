@@ -57,7 +57,7 @@
             label="Contato principal"
             help-tooltip="Será a primeira pessoa a aparecer nos registros relacionados ao apartamento"
             help-modal="Será a primeira pessoa a aparecer nos registros relacionados ao apartamento"
-            v-model="tenantForm.is_fisrt_contact"
+            v-model="tenantForm.is_first_contact"
         />
         <check-input
             id="responsible"
@@ -99,7 +99,7 @@ const tenantForm = app.ref({
     tenant_name: '',
     apartment: {} as Apartment | null,
     contract: '1',
-    is_fisrt_contact: false,
+    is_first_contact: false,
     is_responsible: false
 })
 
@@ -194,7 +194,7 @@ function registerTenant() {
         apartment: tenantForm.value.apartment.id,
         user: tenantForm.value.tenant_id,
         is_responsible: tenantForm.value.is_responsible,
-        is_fisrt_contact: tenantForm.value.is_fisrt_contact
+        is_first_contact: tenantForm.value.is_first_contact
     }
 
     app.api

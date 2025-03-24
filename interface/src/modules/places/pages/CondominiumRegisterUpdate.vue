@@ -144,6 +144,7 @@ async function getCondominiumValues() {
         })
         .catch(() => {
             app.popup('Erro!', 'Falha ao obter informações do condomínio', 'warning')
+            router.go(-1)
         })
         .finally(() => {
             app.loading(false)
