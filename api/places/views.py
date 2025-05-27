@@ -59,11 +59,9 @@ class ApartmentOwnerView(SoftModelsViewSet):
     def get_queryset(self):
         user = self.request.user
 
-        apartments = (
-            Apartment.objects.filter(
-                condominium__condostaff__user=user,
-                condominium__condostaff__role__in=["owner"],
-            )
+        apartments = Apartment.objects.filter(
+            condominium__condostaff__user=user,
+            condominium__condostaff__role__in=["owner"],
         )
 
         query_params = self.request.query_params

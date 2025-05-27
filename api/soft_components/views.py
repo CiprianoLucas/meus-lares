@@ -1,8 +1,9 @@
 from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
+from .permissions import SoftModelsPermission
+from .models import SoftModel
 
 
 class SoftPagination(PageNumberPagination):
@@ -12,15 +13,22 @@ class SoftPagination(PageNumberPagination):
 
 class SoftModelsViewSet(viewsets.ModelViewSet):
     pagination_class = SoftPagination
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [SoftModelsPermission]
     search: list = []
     sort: dict = {}
     request: Request
-    permission_route : str = None
-    permission_get_role : list[str] = ['owner']
-    permission_update_role : list[str] = ['owner']
-    permission_create_role : list[str] = ['owner']
-    permission_delete_role : list[str] = ['owner']
+    get_role: list[str] = ["*"]
+    update_role: list[str] = ["owner"]
+    create_role: list[str] = ["owner"]
+    delete_role: list[str] = []
+
+    def filter_by_roles(self, cls: SoftModel, user=None, roles=None):
+        if not user:
+            user = self.request.user
+        if not roles:
+            roles = self.get_role
+
+        cls.filter_by_roles(user, roles)
 
     def perform_destroy(self, instance):
         instance.delete(user=self.request.user)

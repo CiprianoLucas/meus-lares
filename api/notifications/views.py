@@ -32,8 +32,8 @@ class NotificationView(SoftModelsViewSet):
                     & Q(usernotification__user=user)
                 )
                 | (
-                    Q(usernotification__isnull=True) &
-                    Q(condominium__apartment__condotenant__user=user)
+                    Q(usernotification__isnull=True)
+                    & Q(condominium__apartment__condotenant__user=user)
                 )
             )
         ).prefetch_related(

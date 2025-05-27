@@ -10,23 +10,42 @@ from enum import Enum
 
 from .managers import SoftManager
 
+
 class SoftChoices(str, Enum):
-    
+
     @classmethod
     def choices(cls):
         choices = [(role.name.lower(), role.value) for role in list(cls)]
         return choices
-    
+
+
 class SoftModel(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     is_deleted = models.BooleanField(_("is deleted"), default=False, db_index=True)
     is_active = models.BooleanField(_("is active"), default=True, db_index=True)
     created_at = models.DateTimeField(_("created at"), auto_now_add=True, db_index=True)
     history = models.JSONField(_("history"), default=list, blank=True)
+    tags = models.ManyToManyField("relations.Tag")
     objects = SoftManager()
+    route: str = None
 
     class Meta:
         abstract = True
+
+    @classmethod
+    def filter_by_roles(cls, user, roles: list = ["owner"]):
+        full_route = "condominium__condostaff__"
+        if cls.route:
+            full_route = cls.route + "__" + full_route
+
+        user_route = full_route + "user"
+        role_route = full_route + "role__in"
+
+        filters = {user_route: user, role_route: roles}
+
+        objects = cls.objects.filter(**filters)
+
+        return objects
 
     def delete(self, *args, user=None, **kwargs):
         self.is_deleted = True

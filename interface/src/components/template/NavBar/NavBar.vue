@@ -75,11 +75,11 @@
             <div v-else class="pb-1">
                 <router-link
                     class="text-white text-decoration-none"
-                    to="/usuario/papel"
+                    to="/condominio/lista"
                     @click="hide"
                 >
                     <div class="d-flex mb-2 w-100 justify-content-center align-items-center">
-                        <span>Mudar de perfil</span>
+                        <span>Mudar de condomínio</span>
                     </div>
                 </router-link>
                 <a class="text-white text-decoration-none" to="/" @click="logout">

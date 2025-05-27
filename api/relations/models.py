@@ -1,10 +1,11 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-
+import uuid
 from places.models import Apartment, Condominium, SharedPlaces
 from soft_components.models import SoftModel, SoftChoices
 from users.models import User
+from meus_lares.storages import PublicMediaStorage
 
 
 class StaffRoleChoices(SoftChoices):
@@ -43,6 +44,34 @@ class CondoTenant(SoftModel):
                 name="unique_active_tenant_per_apartment",
             )
         ]
+
+
+class Role(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(_("name"), max_length=20)
+    picture = models.ImageField(
+        _("picture"),
+        upload_to="relation/role/",
+        blank=True,
+        storage=PublicMediaStorage(),
+    )
+
+
+class Tag(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    condominium = models.ForeignKey(Condominium, on_delete=models.DO_NOTHING, related_name="permission_tag")
+    can_get = models.BooleanField(_("can get"), default=True)
+    can_create = models.BooleanField(_("can create"), default=True)
+    can_update = models.BooleanField(_("can update"), default=True)
+    can_delete = models.BooleanField(_("can delete"), default=True)
+    deleteable = models.BooleanField(_("deleteable"), default=False)
+    name = models.CharField(_("name"), max_length=20)
+    model_name = models.CharField(
+        _("model name"),
+        max_length=100,
+        null=True,
+        blank=True,
+    )
 
 
 class CondoStaff(SoftModel):

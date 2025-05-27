@@ -11,7 +11,7 @@ class SoftInline(admin.TabularInline):
 
 
 class SoftAdmin(admin.ModelAdmin):
-    exclude = []
+    __exclude = []
     readonly_fields = ("created_at", "history")
 
     def save_model(self, request, obj: SoftModel, _, __):

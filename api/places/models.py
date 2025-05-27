@@ -16,7 +16,11 @@ class State(models.Model):
 class City(models.Model):
     name = models.CharField(_("name"), max_length=50)
     state = models.ForeignKey(
-        State, verbose_name=_("state"), on_delete=models.CASCADE, to_field="acronym", db_index=True
+        State,
+        verbose_name=_("state"),
+        on_delete=models.CASCADE,
+        to_field="acronym",
+        db_index=True,
     )
 
     def __str__(self):
@@ -43,12 +47,20 @@ class Condominium(SoftModel):
         null=True,
         storage=PublicMediaStorage(),
     )
+    tags = None
 
     def __str__(self):
         return self.name
 
     def temporary_url(self):
         return self.profile_photo.url if self.profile_photo else None
+
+    @classmethod
+    def get_with_permissions(cls, id, user, roles):
+        condominium = cls.objects.get(
+            id=id, condostaff__user=user, condostaff__role__in=roles
+        )
+        return condominium
 
     class Meta:
         verbose_name = _("Condominium")

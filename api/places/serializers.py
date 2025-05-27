@@ -143,8 +143,13 @@ class BulkParkCreateSerializer(serializers.Serializer):
     def create(self, validated_data):
         condominium_id = validated_data["condominium_id"]
         parks_data = validated_data["parks"]
+        request = self.context.get("request")
+        user = request.user
 
-        condominium = Condominium.objects.get(id=condominium_id)
+        condominium = Condominium.get_with_permissions(
+            condominium_id,
+            user,
+        )
 
         parks = [
             ParkingSpace(
